@@ -29,7 +29,7 @@ class WriterSpec extends WordSpec with MustMatchers {
 
   "Writer Functor using <$>" should {
     "work" in {
-      val writer =  { x: Int => x + 20 } `<$>` Writer(() => (List("een"), 10))
+      val writer = { x: Int => x + 20 } `<$>` Writer(() => (List("een"), 10))
 
       writer.run() mustBe (List("een"), 30)
     }

@@ -27,9 +27,9 @@ object Writer {
     }
   }
 
-  implicit def toFunctionFunctorOps[A, R](f: A => R) = new WriterFunctorOps[A, R](f)
+  implicit def toFunctionFunctorOps[A, B](f: A => B) = new WriterFunctorOps[A, B](f)
 }
 
 class WriterFunctorOps[A, B](f: A => B) {
-  def `<$>`[W](a: Writer[W, A]): Writer[W, B] = a fmap f
+  def `<$>`[W](writer: Writer[W, A]): Writer[W, B] = writer fmap f
 }
