@@ -4,10 +4,10 @@ import scala.language.postfixOps
 import org.scalatest.{MustMatchers, WordSpec}
 
 class MaybeSpec extends WordSpec with MustMatchers {
-  import FunctorOps._
-  import Maybe._
+  import com.backwards.fp.functor.FunctorOps._
+  import com.backwards.fp.functor.Maybe._
 
-  "Maybe functor" should {
+  "Maybe Functor" should {
     "works on Just" in {
       Just(1) fmap { x: Int => (x + 2) toString } mustBe Just("3")
     }
@@ -35,7 +35,7 @@ class MaybeSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "Maybe functor using <$>" should {
+  "Maybe Functor using <$>" should {
     "works on Just" in {
       { x: Int => (x + 2) toString } `<$>` Just(1) mustBe Just("3")
     }

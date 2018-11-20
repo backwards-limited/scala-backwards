@@ -13,7 +13,7 @@ object Disjunction {
     *     new FunctorOps[R, ({ type E[A] = D[L, A] })# E](disjunction)
     * }}}
     */
-  implicit def disjunctionToFunctorOps[L, R, D[L, R] <: Disjunction[L, R]](disjunction: D[L, R])(implicit functor: Functor[D[L, ?]]) =
+  implicit def toFunctorOps[L, R, D[L, R] <: Disjunction[L, R]](disjunction: D[L, R])(implicit functor: Functor[D[L, ?]]) =
     new FunctorOps[R, D[L, ?]](disjunction)
 
   /**

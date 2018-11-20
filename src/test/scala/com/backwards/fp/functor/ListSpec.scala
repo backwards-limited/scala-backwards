@@ -3,7 +3,7 @@ package com.backwards.fp.functor
 import org.scalatest.{MustMatchers, WordSpec}
 
 class ListSpec extends WordSpec with MustMatchers {
-  import FunctorOps._
+  import com.backwards.fp.functor.FunctorOps._
 
   implicit val listFunctor: Functor[List] = new Functor[List] {
     def fmap[A, B](fa: List[A])(f: A => B): List[B] = {
@@ -16,7 +16,7 @@ class ListSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "List functor" should {
+  "List Functor" should {
     "work on simple functions" in {
       List(1) fmap { x: Int => x + 1 } mustBe List(2)
 

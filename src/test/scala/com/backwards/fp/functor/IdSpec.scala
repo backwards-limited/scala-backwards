@@ -3,7 +3,7 @@ package com.backwards.fp.functor
 import org.scalatest.{MustMatchers, WordSpec}
 
 class IdSpec extends WordSpec with MustMatchers {
-  import FunctorOps._
+  import com.backwards.fp.functor.FunctorOps._
 
   "Id" should {
     "work on simple functions" in {

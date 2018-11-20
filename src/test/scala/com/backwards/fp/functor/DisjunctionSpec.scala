@@ -3,9 +3,9 @@ package com.backwards.fp.functor
 import org.scalatest.{MustMatchers, WordSpec}
 
 class DisjunctionSpec extends WordSpec with MustMatchers {
-  import Disjunction._
+  import com.backwards.fp.functor.Disjunction._
 
-  "Disjunction/Either functor" should {
+  "Disjunction/Either Functor" should {
     "works with left" in {
       LeftDisjunction[String, Int]("foo") fmap { x => s"${x}bar" } mustBe LeftDisjunction[String, Int]("foo")
 
