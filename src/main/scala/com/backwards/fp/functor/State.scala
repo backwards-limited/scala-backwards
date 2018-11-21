@@ -1,14 +1,9 @@
 package com.backwards.fp.functor
 
 import scala.language.{higherKinds, implicitConversions}
+import com.backwards.fp.State
 
-final case class State[S, A](run: S => (S, A)) {
-  def exec(s: S): S = run(s)._1
-
-  def eval(s: S): A = run(s)._2
-}
-
-object State {
+object StateOps {
   /**
     * Because of using the "kind projector" compiler plugin the following becomes much easier:
     * {{{
@@ -39,14 +34,10 @@ object State {
   }
 
   implicit def toStateFunctionOps[A, B](f: A => B) = new StateFunctionOps(f)
-
-  def put[S](s: S): State[S, Unit] = State(_ => (s, ()))
-
-  def get[S]: State[S, S] = State(s => (s, s))
-
-  def modify[S](f: S => S): State[S, Unit] = State(s => (f(s), ()))
 }
 
 class StateFunctionOps[A, B](f: A => B) {
+  import com.backwards.fp.functor.StateOps._
+
   def `<$>`[S](state: State[S, A]): State[S, B] = state fmap f
 }

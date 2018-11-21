@@ -3,7 +3,7 @@ package com.backwards.fp.monoid
 import org.scalatest.{MustMatchers, WordSpec}
 
 class ListMonoidSpec extends WordSpec with MustMatchers {
-  import com.backwards.fp.monoid.ListMonoid._
+  import com.backwards.fp.monoid.ListMonoidOps._
   import com.backwards.fp.monoid.MonoidOps._
 
   "List monoid" should {

@@ -4,7 +4,7 @@ import org.scalatest.{MustMatchers, WordSpec}
 
 class SimpleMonoidSpec extends WordSpec with MustMatchers {
   import com.backwards.fp.monoid.MonoidOps._
-  import com.backwards.fp.monoid.SimpleMonoid._
+  import com.backwards.fp.monoid.SimpleMonoidOps._
 
   "Sum monoid" should {
     "sum numbers" in {

@@ -1,10 +1,9 @@
 package com.backwards.fp.functor
 
 import scala.language.{higherKinds, implicitConversions}
+import com.backwards.fp.Writer
 
-final case class Writer[W, A](run: () => (W, A))
-
-object Writer {
+object WriterOps {
   /**
     * Because of using the "kind projector" compiler plugin the following becomes much easier (which was only a starting point):
     * {{{
@@ -31,5 +30,7 @@ object Writer {
 }
 
 class WriterFunctorOps[A, B](f: A => B) {
+  import com.backwards.fp.functor.WriterOps._
+
   def `<$>`[W](writer: Writer[W, A]): Writer[W, B] = writer fmap f
 }

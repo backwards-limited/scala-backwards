@@ -1,9 +1,11 @@
 package com.backwards.fp.functor
 
 import org.scalatest.{MustMatchers, WordSpec}
+import com.backwards.fp.Id
 
 class IdSpec extends WordSpec with MustMatchers {
   import com.backwards.fp.functor.FunctorOps._
+  import com.backwards.fp.functor.IdOps._
 
   "Id" should {
     "work on simple functions" in {

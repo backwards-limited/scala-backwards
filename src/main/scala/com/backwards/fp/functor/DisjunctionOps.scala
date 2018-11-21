@@ -1,10 +1,9 @@
 package com.backwards.fp.functor
 
 import scala.language.higherKinds
+import com.backwards.fp.{Disjunction, LeftDisjunction, RightDisjunction}
 
-sealed trait Disjunction[+L, +R]
-
-object Disjunction {
+object DisjunctionOps {
   /**
     * Because of using the "kind projector" compiler plugin the following becomes much easier:
     * {{{
@@ -26,28 +25,20 @@ object Disjunction {
     */
   implicit def disjunctionFunctor[L] = new Functor[Disjunction[L, ?]] {
     override def fmap[A, B](d: Disjunction[L, A])(f: A => B): Disjunction[L, B] = d match {
-      case l @ LeftDisjunction(_) => LeftDisjunction.leftDisjunctionFunctor.fmap(l)(f)
-      case RightDisjunction(value) => RightDisjunction(f(value))
+      case l @ LeftDisjunction(_) => leftDisjunctionFunctor.fmap(l)(f)
+      case r @ RightDisjunction(_) => rightDisjunctionFunctor.fmap(r)(f)
     }
+  }
+
+  implicit def leftDisjunctionFunctor[L, R] = new Functor[LeftDisjunction[L, ?]] {
+    def fmap[A, B](fa: LeftDisjunction[L, A])(f: A => B): LeftDisjunction[L, B] = LeftDisjunction[L, B](fa.value)
+  }
+
+  implicit def rightDisjunctionFunctor[L, R] = new Functor[RightDisjunction[L, ?]] {
+    def fmap[A, B](fa: RightDisjunction[L, A])(f: A => B): RightDisjunction[L, B] = RightDisjunction(f(fa.value))
   }
 
   def left[L, R](lv: L): Disjunction[L, R] = LeftDisjunction[L, R](lv)
 
   def right[L, R](rv: R): Disjunction[L, R] = RightDisjunction[L, R](rv)
-}
-
-final case class LeftDisjunction[L, R](value: L) extends Disjunction[L, R]
-
-object LeftDisjunction {
-  implicit def leftDisjunctionFunctor[L, R] = new Functor[LeftDisjunction[L, ?]] {
-    def fmap[A, B](fa: LeftDisjunction[L, A])(f: A => B): LeftDisjunction[L, B] = LeftDisjunction[L, B](fa.value)
-  }
-}
-
-final case class RightDisjunction[L, R](value: R) extends Disjunction[L, R]
-
-object RightDisjunction {
-  implicit def rightDisjunctionFunctor[L, R] = new Functor[RightDisjunction[L, ?]] {
-    def fmap[A, B](fa: RightDisjunction[L, A])(f: A => B): RightDisjunction[L, B] = RightDisjunction(f(fa.value))
-  }
 }

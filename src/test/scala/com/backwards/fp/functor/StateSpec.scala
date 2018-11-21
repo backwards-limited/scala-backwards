@@ -1,9 +1,10 @@
 package com.backwards.fp.functor
 
 import org.scalatest.{MustMatchers, WordSpec}
+import com.backwards.fp.State
 
 class StateSpec extends WordSpec with MustMatchers {
-  import com.backwards.fp.functor.State._
+  import com.backwards.fp.functor.StateOps._
 
   "State" should {
     "put" in {

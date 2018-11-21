@@ -1,9 +1,10 @@
 package com.backwards.fp.functor
 
 import org.scalatest.{MustMatchers, WordSpec}
+import com.backwards.fp.Writer
 
 class WriterSpec extends WordSpec with MustMatchers {
-  import com.backwards.fp.functor.Writer._
+  import com.backwards.fp.functor.WriterOps._
 
   "Writer Functor" should {
     "work" in {

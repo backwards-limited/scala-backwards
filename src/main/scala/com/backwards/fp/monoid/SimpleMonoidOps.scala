@@ -1,6 +1,6 @@
 package com.backwards.fp.monoid
 
-object SimpleMonoid {
+object SimpleMonoidOps {
   final case class Sum(value: Int) extends AnyVal
 
   implicit val sumMonoid: Monoid[Sum] = new Monoid[Sum] {
