@@ -10,7 +10,7 @@ object Functor {
   def apply[F[_]: Functor]: Functor[F] = implicitly[Functor[F]]
 }
 
-class FunctorOps[A, F[_]: Functor](a: F[A]) {
+class FunctorOps[F[_]: Functor, A](a: F[A]) {
   def fmap[B](f: A => B): F[B] = Functor[F].fmap(a)(f)
 
   /**
@@ -28,7 +28,7 @@ class FunctionFunctorOps[A, B](f: A => B) {
 }
 
 object FunctorOps {
-  implicit def toFunctorOps[A, F[_]: Functor](f: F[A]): FunctorOps[A, F] =
+  implicit def toFunctorOps[F[_]: Functor, A](f: F[A]): FunctorOps[F, A] =
     new FunctorOps(f)
 
   implicit def toFunctionFunctorOps[A, B](f: A => B): FunctionFunctorOps[A, B] =

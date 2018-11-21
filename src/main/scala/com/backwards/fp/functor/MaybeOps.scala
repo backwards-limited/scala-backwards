@@ -17,4 +17,8 @@ object MaybeOps {
   implicit val nothingFunctor: Functor[Nothing] = new Functor[Nothing] {
     def fmap[A, B](fa: Nothing[A])(f: A => B): Nothing[B] = Nothing[B]()
   }
+
+  def just[A](x: A): Maybe[A] = Just(x)
+
+  def nothing[A]: Maybe[A] = Nothing[A]()
 }

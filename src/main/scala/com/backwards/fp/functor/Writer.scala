@@ -7,11 +7,11 @@ object WriterOps {
   /**
     * Because of using the "kind projector" compiler plugin the following becomes much easier (which was only a starting point):
     * {{{
-    *   implicit def toFunctorOps[A, W](a: Writer[W, A]) = new FunctorOps[A, ({ type E[X] = Writer[W, X] }) # E](a)
+    *   implicit def toFunctorOps[W, A](a: Writer[W, A]) = new FunctorOps[({ type E[X] = Writer[W, X] }) # E, A](a)
     * }}}
     */
-  implicit def toFunctorOps[W, A, WRITER[W, A] <: Writer[W, A]](writer: WRITER[W, A])(implicit F: Functor[WRITER[W, ?]]) =
-    new FunctorOps[A, WRITER[W, ?]](writer)
+  implicit def toFunctorOps[WRITER[W, A] <: Writer[W, A], W, A](writer: WRITER[W, A])(implicit F: Functor[WRITER[W, ?]]) =
+    new FunctorOps[WRITER[W, ?], A](writer)
 
   /**
     * Because of using the "kind projector" compiler plugin the following becomes much easier:
