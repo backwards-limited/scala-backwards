@@ -3,7 +3,7 @@ package com.backwards.fp.monad
 import scala.language.{higherKinds, implicitConversions}
 import com.backwards.fp.functor.Functor
 
-abstract class Monad[M[_]: Functor] { // TODO - Do we need a contraint on functor?
+abstract class Monad[M[_]: Functor] {
   def pure[A](a: A): M[A]
 
   def flatMap[A, B](m: M[A])(f: A => M[B]): M[B]
