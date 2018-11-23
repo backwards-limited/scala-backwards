@@ -2,7 +2,7 @@ import sbt._
 
 object Dependencies {
   lazy val dependencies: Seq[ModuleID] =
-    Seq(scalaReflect, scalatest, cats, monocle, shapeless, simulacrum, fs2
+    Seq(scalaReflect, scalatest, airframe, logging, pureConfig, cats, monocle, shapeless, simulacrum, fs2, scalaUri
     ).flatten
 
   lazy val scalaReflect: Seq[ModuleID] = Seq(
@@ -12,6 +12,24 @@ object Dependencies {
   lazy val scalatest: Seq[ModuleID] = Seq(
     "org.scalatest" %% "scalatest" % "3.0.5" % "test, it"
   )
+
+  lazy val airframe: Seq[ModuleID] = Seq(
+    "org.wvlet.airframe" %% "airframe-log" % "0.69"
+  )
+
+  lazy val logging: Seq[ModuleID] = Seq(
+    "org.slf4j" % "log4j-over-slf4j" % "1.7.25",
+    "ch.qos.logback" % "logback-classic" % "1.2.3"
+  )
+  
+  lazy val pureConfig: Seq[ModuleID] = {
+    val version = "0.9.2"
+
+    Seq(
+      "com.github.pureconfig" %% "pureconfig",
+      "com.github.pureconfig" %% "pureconfig-http4s"
+    ).map(_ % version)
+  }
 
   lazy val cats: Seq[ModuleID] = {
     val version = "1.4.0"
@@ -55,4 +73,8 @@ object Dependencies {
       "co.fs2" %% "fs2-reactive-streams" % version
     )
   }
+
+  lazy val scalaUri: Seq[ModuleID] = Seq(
+    "io.lemonlabs" %% "scala-uri" % "1.3.1"
+  )
 }

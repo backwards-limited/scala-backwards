@@ -3,10 +3,9 @@ package com.backwards.fs2
 import java.nio.file.Paths
 import java.util.concurrent.Executors
 import scala.concurrent.{ExecutionContext, Future}
-import cats.effect.internals.IOContextShift
 import cats.effect._
+import cats.effect.internals.IOContextShift
 import cats.implicits._
-import cats.~>
 import fs2._
 import org.scalatest.{FreeSpec, MustMatchers}
 
@@ -167,18 +166,34 @@ class FS2Spec extends FreeSpec with MustMatchers {
             Indeed, Future is eager in Scala: the moment you create one it starts to executes on some thread, you don't have control of the execution and thus it breaks.
             FS2 is well aware of that and does not let you compile. To fix this we have to use a type called IO that wraps our bad Future.
           """ in {
-            import cats.effect.IO
-
-
-
-            val `Future ~> IO`: Future ~> IO = new (Future ~> IO) {
-              override def apply[A](future: Future[A]): IO[A] =
-                IO fromFuture IO(future)
-            }
-
+            import com.backwards.transform.Transform._
 
             userIds.translate(`Future ~> IO`).compile.toList.unsafeRunSync mustBe List(1, 2, 3)
           }
+
+          "equivalent" in {
+            userNames.evalMap[IO, Int](name => IO fromFuture IO(acquireUserId(name))).compile.toList.unsafeRunSync mustBe List(1, 2, 3)
+          }
+
+          """
+            In the end we have:
+            Stream[IO, Int]
+
+            which states:
+            This is a Stream that emits values of type Int and in order to do so, it needs to run an "effective function" that produces IO[Int] for each value.
+
+            Use "evalMap" instead of "map" when you want to apply a function that has an effect like acquireUserId to a Stream.
+
+            Stream[IO, Int] separates the concerns of "What" and "How" by letting you work only with the values and not worrying about how to get them (loading from the db).
+
+            Separating program description from evaluation is a key aspect of FP.
+
+            All the programs you write with Stream will do nothing until you use unsafeRunSync. Before that your code is effectively pure.
+
+            IO[Int] is an effect type that tells you: you will get Long values from IO (could be a file, the network, the console ...). It's a description and not a wrapper!
+
+            Finally, Future does not abide by this philosophy and thus is not compatible with FS2, you have to use IO type instead.
+          """ - {}
         }
       }
     }
