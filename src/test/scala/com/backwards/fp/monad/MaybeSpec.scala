@@ -4,10 +4,10 @@ import org.scalatest.{MustMatchers, WordSpec}
 import com.backwards.fp.{Just, Maybe, Nothing}
 
 class MaybeSpec extends WordSpec with MustMatchers {
-  import com.backwards.fp.monad.MaybeOps._
-  import com.backwards.fp.monad.MonadOps._
   import com.backwards.fp.functor.FunctorOps._
   import com.backwards.fp.functor.MaybeOps._
+  import com.backwards.fp.monad.MaybeOps._
+  import com.backwards.fp.monad.MonadOps._
 
   "Maybe Monad" should {
     "work with Just" in {
