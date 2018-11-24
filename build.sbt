@@ -30,5 +30,8 @@ def project(id: String, base: File): Project =
       scalacOptions in (Compile, doc) ++= Seq("-groups", "-implicits"),
       publishArtifact in Test := true,
       publishArtifact in IntegrationTest := true,
-      mappings in Universal += baseDirectory.value / "src" / "it" / "scala"
+      mappings in Universal += {
+        val jar = (sbt.Keys.`package` in IntegrationTest).value
+        jar -> s"lib/${jar.getName}"
+      }
     )
