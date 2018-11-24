@@ -29,5 +29,6 @@ def project(id: String, base: File): Project =
       fork in IntegrationTest := true,
       scalacOptions in (Compile, doc) ++= Seq("-groups", "-implicits"),
       publishArtifact in Test := true,
-      publishArtifact in IntegrationTest := true
+      publishArtifact in IntegrationTest := true,
+      mappings in Universal += baseDirectory.value / "src" / "it" / "scala"
     )
