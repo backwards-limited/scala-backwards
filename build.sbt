@@ -27,5 +27,6 @@ def project(id: String, base: File): Project =
       fork in Test := true,
       fork in IntegrationTest := true,
       scalacOptions in (Compile, doc) ++= Seq("-groups", "-implicits"),
-      publishArtifact in Test := true
+      publishArtifact in Test := true,
+      publishArtifact in IntegrationTest := true
     )
