@@ -9,3 +9,5 @@ addSbtPlugin("com.markatta" % "sbt-iterm2-integration" % "0.1")
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.8")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-site" % "1.3.2")
+
+addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.10")
