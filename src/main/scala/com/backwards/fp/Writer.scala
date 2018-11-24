@@ -1,3 +1,5 @@
 package com.backwards.fp
 
-final case class Writer[W, A](run: () => (W, A))
+import com.backwards.fp.monoid.Monoid
+
+final case class Writer[W: Monoid, A](run: () => (W, A))

@@ -2,14 +2,14 @@ package com.backwards.fp.monoid
 
 import org.scalatest.{MustMatchers, WordSpec}
 
-class PairMonoidSpec extends WordSpec with MustMatchers {
+class PairSpec extends WordSpec with MustMatchers {
   import com.backwards.fp.Pair
-  import com.backwards.fp.monoid.PairMonoidOps._
-  import com.backwards.fp.monoid.ListMonoidOps._
+  import com.backwards.fp.monoid.PairOps._
+  import com.backwards.fp.monoid.ListOps._
   import com.backwards.fp.monoid.MonoidOps._
   import com.backwards.fp.monoid.SimpleMonoidOps._
 
-  "Pair monoid" should {
+  "Pair Monoid" should {
     "append" in {
       Pair(Sum(1), Product(2)) |+|
       Pair(Sum(1), Product(2)) mustBe

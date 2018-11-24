@@ -1,3 +1,4 @@
+import com.scalapenos.sbt.prompt.SbtPrompt.autoImport._
 import Dependencies._
 import sbt._
 
@@ -9,6 +10,7 @@ def project(id: String, base: File): Project =
     .enablePlugins(JavaAppPackaging)
     .configs(IntegrationTest)
     .settings(Defaults.itSettings)
+    .settings(promptTheme := com.scalapenos.sbt.prompt.PromptThemes.ScalapenosTheme)
     .settings(
       resolvers ++= Seq(
         Resolver.sonatypeRepo("releases"),

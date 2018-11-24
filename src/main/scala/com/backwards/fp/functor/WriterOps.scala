@@ -2,6 +2,7 @@ package com.backwards.fp.functor
 
 import scala.language.{higherKinds, implicitConversions}
 import com.backwards.fp.Writer
+import com.backwards.fp.monoid.Monoid
 
 object WriterOps {
   /**
@@ -19,7 +20,7 @@ object WriterOps {
     *   implicit def writerFunctor[W] = new Functor[({ type E[X] = Writer[W, X] })# E]
     * }}}
     */
-  implicit def writerFunctor[W] = new Functor[Writer[W, ?]] {
+  implicit def writerFunctor[W: Monoid] = new Functor[Writer[W, ?]] {
     override def fmap[A, B](writer: Writer[W, A])(f: A => B): Writer[W, B] = {
       val (w, a) = writer.run()
       Writer(() => (w, f(a)))
@@ -32,5 +33,5 @@ object WriterOps {
 class WriterFunctorOps[A, B](f: A => B) {
   import com.backwards.fp.functor.WriterOps._
 
-  def `<$>`[W](writer: Writer[W, A]): Writer[W, B] = writer fmap f
+  def `<$>`[W: Monoid](writer: Writer[W, A]): Writer[W, B] = writer fmap f
 }

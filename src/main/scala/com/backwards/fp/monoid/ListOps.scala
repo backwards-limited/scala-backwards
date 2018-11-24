@@ -1,6 +1,6 @@
 package com.backwards.fp.monoid
 
-object ListMonoidOps {
+object ListOps {
   implicit def listMonoid[T]: Monoid[List[T]] = new Monoid[List[T]] {
     def mzero: List[T] = Nil
 

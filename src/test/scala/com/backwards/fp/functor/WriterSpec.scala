@@ -5,6 +5,7 @@ import com.backwards.fp.Writer
 
 class WriterSpec extends WordSpec with MustMatchers {
   import com.backwards.fp.functor.WriterOps._
+  import com.backwards.fp.monoid.ListOps._
 
   "Writer Functor" should {
     "work" in {

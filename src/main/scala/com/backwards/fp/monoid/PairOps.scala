@@ -2,7 +2,7 @@ package com.backwards.fp.monoid
 
 import com.backwards.fp.Pair
 
-object PairMonoidOps {
+object PairOps {
   import MonoidOps._
 
   implicit def pairMonoid[A, B](implicit aMonoid: Monoid[A], bMonoid: Monoid[B]): Monoid[Pair[A, B]] = new Monoid[Pair[A, B]] {

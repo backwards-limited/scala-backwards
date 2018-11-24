@@ -6,7 +6,7 @@ class SimpleMonoidSpec extends WordSpec with MustMatchers {
   import com.backwards.fp.monoid.MonoidOps._
   import com.backwards.fp.monoid.SimpleMonoidOps._
 
-  "Sum monoid" should {
+  "Sum Monoid" should {
     "sum numbers" in {
       Sum(10) |+| Sum(20) mustBe Sum(30)
     }
@@ -21,7 +21,7 @@ class SimpleMonoidSpec extends WordSpec with MustMatchers {
     }
   }
 
-  "Product monoid" should {
+  "Product Monoid" should {
     "multiply numbers" in {
       Product(10) |+| Product(20) mustBe Product(200)
     }

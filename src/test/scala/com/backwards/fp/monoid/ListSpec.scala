@@ -2,11 +2,11 @@ package com.backwards.fp.monoid
 
 import org.scalatest.{MustMatchers, WordSpec}
 
-class ListMonoidSpec extends WordSpec with MustMatchers {
-  import com.backwards.fp.monoid.ListMonoidOps._
+class ListSpec extends WordSpec with MustMatchers {
+  import com.backwards.fp.monoid.ListOps._
   import com.backwards.fp.monoid.MonoidOps._
 
-  "List monoid" should {
+  "List Monoid" should {
     "append lists" in {
       List(1, 2, 3) |+| List(4, 5, 6) mustBe List(1, 2, 3, 4, 5, 6)
     }
