@@ -6,6 +6,7 @@ lazy val root = project("scala-backwards", file("."))
 
 def project(id: String, base: File): Project =
   Project(id, base)
+    .enablePlugins(JavaAppPackaging)
     .configs(IntegrationTest)
     .settings(Defaults.itSettings)
     .settings(
