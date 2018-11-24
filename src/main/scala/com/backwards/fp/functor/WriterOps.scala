@@ -6,15 +6,6 @@ import com.backwards.fp.monoid.Monoid
 
 object WriterOps {
   /**
-    * Because of using the "kind projector" compiler plugin the following becomes much easier (which was only a starting point):
-    * {{{
-    *   implicit def toFunctorOps[W, A](a: Writer[W, A]) = new FunctorOps[({ type E[X] = Writer[W, X] }) # E, A](a)
-    * }}}
-    */
-  implicit def toFunctorOps[WRITER[W, A] <: Writer[W, A], W, A](writer: WRITER[W, A])(implicit F: Functor[WRITER[W, ?]]) =
-    new FunctorOps[WRITER[W, ?], A](writer)
-
-  /**
     * Because of using the "kind projector" compiler plugin the following becomes much easier:
     * {{{
     *   implicit def writerFunctor[W] = new Functor[({ type E[X] = Writer[W, X] })# E]
@@ -26,6 +17,15 @@ object WriterOps {
       Writer(() => (w, f(a)))
     }
   }
+
+  /**
+    * Because of using the "kind projector" compiler plugin the following becomes much easier (which was only a starting point):
+    * {{{
+    *   implicit def toFunctorOps[W, A](writer: Writer[W, A]) = new FunctorOps[({ type E[X] = Writer[W, X] })# E, A](writer)
+    * }}}
+    */
+  implicit def toFunctorOps[WRITER[W, A] <: Writer[W, A], W, A](writer: WRITER[W, A])(implicit F: Functor[WRITER[W, ?]]) =
+    new FunctorOps[WRITER[W, ?], A](writer)
 
   implicit def toFunctionFunctorOps[A, B](f: A => B) = new WriterFunctorOps[A, B](f)
 }
