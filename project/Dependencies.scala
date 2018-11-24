@@ -14,11 +14,11 @@ object Dependencies {
   )
 
   lazy val testcontainers: Seq[ModuleID] = Seq(
-    "org.testcontainers" % "testcontainers" % "1.9.1" % "test, it"
+    "org.testcontainers" % "testcontainers" % "1.10.1" % "test, it"
   )
   
   lazy val airframe: Seq[ModuleID] = Seq(
-    "org.wvlet.airframe" %% "airframe-log" % "0.69"
+    "org.wvlet.airframe" %% "airframe-log" % "0.73"
   )
 
   lazy val logging: Seq[ModuleID] = Seq(
@@ -27,7 +27,7 @@ object Dependencies {
   )
   
   lazy val pureConfig: Seq[ModuleID] = {
-    val version = "0.9.2"
+    val version = "0.10.0"
 
     Seq(
       "com.github.pureconfig" %% "pureconfig",
@@ -79,6 +79,6 @@ object Dependencies {
   }
 
   lazy val scalaUri: Seq[ModuleID] = Seq(
-    "io.lemonlabs" %% "scala-uri" % "1.3.1"
+    "io.lemonlabs" %% "scala-uri" % "1.4.0"
   )
 }

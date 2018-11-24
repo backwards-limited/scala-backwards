@@ -4,16 +4,13 @@ import scala.language.higherKinds
 import com.backwards.fp.{Disjunction, LeftDisjunction, RightDisjunction}
 
 object DisjunctionOps {
-  /**
-    * Because of using the "kind projector" compiler plugin the following becomes much easier:
-    * {{{
-    *   implicit def disjunctionToFunctorOps[D[L, R] <: Disjunction[L, R], L, R](disjunction: D[L, R])
-    *                                                                           (implicit functor: Functor[({ type E[A] = D[L, A] })# E]) =
-    *     new FunctorOps[({ type E[A] = D[L, A] })# E, R](disjunction)
-    * }}}
-    */
-  implicit def toFunctorOps[D[L, R] <: Disjunction[L, R], L, R](disjunction: D[L, R])(implicit functor: Functor[D[L, ?]]) =
-    new FunctorOps[D[L, ?], R](disjunction)
+  implicit def leftDisjunctionFunctor[L, R] = new Functor[LeftDisjunction[L, ?]] {
+    def fmap[A, B](fa: LeftDisjunction[L, A])(f: A => B): LeftDisjunction[L, B] = LeftDisjunction[L, B](fa.value)
+  }
+
+  implicit def rightDisjunctionFunctor[L, R] = new Functor[RightDisjunction[L, ?]] {
+    def fmap[A, B](fa: RightDisjunction[L, A])(f: A => B): RightDisjunction[L, B] = RightDisjunction(f(fa.value))
+  }
 
   /**
     * Because of using the "kind projector" compiler plugin the following becomes much easier:
@@ -30,15 +27,14 @@ object DisjunctionOps {
     }
   }
 
-  implicit def leftDisjunctionFunctor[L, R] = new Functor[LeftDisjunction[L, ?]] {
-    def fmap[A, B](fa: LeftDisjunction[L, A])(f: A => B): LeftDisjunction[L, B] = LeftDisjunction[L, B](fa.value)
-  }
-
-  implicit def rightDisjunctionFunctor[L, R] = new Functor[RightDisjunction[L, ?]] {
-    def fmap[A, B](fa: RightDisjunction[L, A])(f: A => B): RightDisjunction[L, B] = RightDisjunction(f(fa.value))
-  }
-
-  def left[L, R](lv: L): Disjunction[L, R] = LeftDisjunction[L, R](lv)
-
-  def right[L, R](rv: R): Disjunction[L, R] = RightDisjunction[L, R](rv)
+  /**
+    * Because of using the "kind projector" compiler plugin the following becomes much easier:
+    * {{{
+    *   implicit def toFunctorOps[D[L, R] <: Disjunction[L, R], L, R](disjunction: D[L, R])
+    *                                                                (implicit functor: Functor[({ type E[A] = D[L, A] })# E]) =
+    *     new FunctorOps[({ type E[A] = D[L, A] })# E, R](disjunction)
+    * }}}
+    */
+  implicit def toFunctorOps[D[L, R] <: Disjunction[L, R], L, R](disjunction: D[L, R])(implicit functor: Functor[D[L, ?]]) =
+    new FunctorOps[D[L, ?], R](disjunction)
 }
