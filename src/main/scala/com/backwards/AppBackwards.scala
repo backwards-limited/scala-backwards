@@ -9,7 +9,7 @@ import com.backwards.logging.Logging
   * There is a nice [SBT plugin](https://github.com/mefellows/sbt-dotenv) that essentially does the same thing.
   * However, it would seem the plugin would always pick up and apply configuration in a ".env" and sometimes I don't want that.
   */
-trait BackwardsApp extends App with Logging {
+trait AppBackwards extends App with Logging {
   Option(System getProperty "ENV") foreach { env =>
     info("Loading given environment into JVM's system properties...")
 

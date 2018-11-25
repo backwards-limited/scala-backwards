@@ -2,7 +2,7 @@ import sbt._
 
 object Dependencies {
   lazy val dependencies: Seq[ModuleID] =
-    Seq(scalaReflect, scalatest, testcontainers, airframe, logging, pureConfig, cats, monocle, shapeless, simulacrum, fs2, scalaUri
+    Seq(scalaReflect, scalatest, testcontainers, airframe, logging, pureConfig, cats, monocle, shapeless, scalacheckShapeless, simulacrum, fs2, scalaUri
     ).flatten
 
   lazy val scalaReflect: Seq[ModuleID] = Seq(
@@ -62,6 +62,10 @@ object Dependencies {
 
   lazy val shapeless: Seq[ModuleID] = Seq(
     "com.chuusai" %% "shapeless" % "2.3.3"
+  )
+
+  lazy val scalacheckShapeless: Seq[ModuleID] = Seq(
+    "com.github.alexarchambault" %% "scalacheck-shapeless_1.14" % "1.2.0"
   )
 
   lazy val simulacrum: Seq[ModuleID] = Seq(
