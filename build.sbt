@@ -4,6 +4,7 @@ import sbt._
 
 lazy val root = project("scala-backwards", file("."))
   .settings(description := "Scala by Backwards")
+  .settings(javaOptions in Test ++= Seq("-Dconfig.resource=application.test.conf"))
 
 def project(id: String, base: File): Project =
   Project(id, base)

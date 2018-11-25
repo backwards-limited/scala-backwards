@@ -15,7 +15,7 @@ object Monoid {
 }
 
 class MonoidOps[T: Monoid](lhs: T) {
-  def |+|(rhs: T): T = implicitly[Monoid[T]].mappend(lhs, rhs)
+  def |+|(rhs: T): T = Monoid[T].mappend(lhs, rhs)
 }
 
 object MonoidOps {

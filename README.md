@@ -1,43 +1,21 @@
 # Scala by Backwards
 
-- Functional Programming: Custom code for Category Theory
+## Table of Contents
 
-- FS2: Functional Streaming for Scala
+- [Setup](docs/setup.md)
 
-- Variance: Proofs
+- [SBT](docs/sbt.md)
 
-- Cats: TODO
+- [Release](docs/release.md)
 
-## Setup
+- [Notes](docs/notes.md)
 
-Apologies I shall only cover **Mac** - One day I may include Linux and Windows.
+- Modules
 
-Install [Homebrew](https://brew.sh) for easy package management on Mac:
+  - [Functional Programming: Custom code for Category Theory](docs/fp.md)
+  
+  - [Variance: Proofs](docs/variance.md)
 
-```bash
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-```
+  - [FS2: Functional Streaming for Scala](docs/fs2.md)
 
-Installation essentials:
-
-```bash
-brew update
-brew install scala
-brew install sbt
-```
-
-## SBT
-
-To check for updated dependencies:
-
-```bash
-sbt dependencyUpdates
-```
-
-## Release
-
-Currently released versions of this module can be added as a dependency from [JitPack](https://jitpack.io).
-
-```bash
-$ sbt "release with-defaults"
-```
+  - [Cats](docs/cats.md)

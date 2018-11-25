@@ -3,6 +3,7 @@ package com.backwards.fp.monad
 import scala.language.implicitConversions
 import com.backwards.fp.Writer
 import com.backwards.fp.monoid.Monoid
+import com.backwards.fp.monoid.MonoidOps._
 
 object WriterOps {
   import com.backwards.fp.functor.WriterOps._
@@ -20,7 +21,7 @@ object WriterOps {
       val (w1, a) = m.run()
       val (w2, b) = f(a).run()
 
-      Writer(() => (Monoid[W].mappend(w1, w2), b))
+      Writer(() => (w1 |+| w2, b))
     }
   }
 

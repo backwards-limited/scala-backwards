@@ -27,7 +27,7 @@ object Dependencies {
   )
   
   lazy val pureConfig: Seq[ModuleID] = {
-    val version = "0.10.0"
+    val version = "0.9.2"
 
     Seq(
       "com.github.pureconfig" %% "pureconfig",
