@@ -7,7 +7,7 @@ trait Functor[F[_]] {
 }
 
 object Functor {
-  def apply[F[_]: Functor]: Functor[F] = implicitly[Functor[F]]
+  def apply[F[_]: Functor]: Functor[F] = implicitly
 }
 
 class FunctorOps[F[_]: Functor, A](a: F[A]) {

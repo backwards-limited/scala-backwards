@@ -7,7 +7,7 @@ trait Sum[T] {
 }
 
 object Sum {
-  def apply[T: Sum]: Sum[T] = implicitly[Sum[T]]
+  def apply[T: Sum]: Sum[T] = implicitly
 
   object ops {
     implicit class SumOps[T: Sum](a: T) {

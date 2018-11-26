@@ -10,7 +10,7 @@ abstract class Monad[M[_]: Functor] {
 }
 
 object Monad {
-  def apply[M[_]: Monad]: Monad[M] = implicitly[Monad[M]]
+  def apply[M[_]: Monad]: Monad[M] = implicitly
 }
 
 class MonadOpsPure[A](a: A) {

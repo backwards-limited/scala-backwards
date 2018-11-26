@@ -9,7 +9,7 @@ trait Eq[T] {
 }
 
 object Eq {
-  def apply[T: Eq]: Eq[T] = implicitly[Eq[T]]
+  def apply[T: Eq]: Eq[T] = implicitly
 
   object ops {
     implicit class EqOps[T: Eq](a: T) {

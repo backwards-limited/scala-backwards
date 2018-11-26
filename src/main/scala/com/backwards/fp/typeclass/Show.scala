@@ -37,9 +37,9 @@ trait Show[A] {
   * where the typeclass constraint needs to be moved to the show function.
   */
 object Show {
-  def apply[A: Show]: Show[A] = implicitly[Show[A]]
+  def apply[A: Show]: Show[A] = implicitly
 
-  def apply[A: Show](a: A): String = implicitly[Show[A]].apply(a)
+  def apply[A: Show](a: A): String = Show[A].apply(a)
 
   object ops {
     def show[A: Show](a: A): String = Show[A](a)

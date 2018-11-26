@@ -9,7 +9,7 @@ trait Monoid[T] {
 }
 
 object Monoid {
-  def apply[T: Monoid]: Monoid[T] = implicitly[Monoid[T]]
+  def apply[T: Monoid]: Monoid[T] = implicitly
 
   def mzero[T: Monoid]: T = Monoid[T].mzero
 }
