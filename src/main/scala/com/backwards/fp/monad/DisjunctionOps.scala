@@ -5,6 +5,9 @@ import com.backwards.fp.{Disjunction, LeftDisjunction, RightDisjunction}
 object DisjunctionOps {
   import com.backwards.fp.functor.DisjunctionOps._
 
+  implicit def toMonadOps[D[L, R] <: Disjunction[L, R], L, R](disjunction: D[L, R])(implicit monad: Monad[D[L, ?]]) =
+    new MonadOps[D[L, ?], R](disjunction)
+
   /**
     * Because of using the "kind projector" compiler plugin the following becomes much easier:
     * {{{
@@ -19,7 +22,4 @@ object DisjunctionOps {
       case RightDisjunction(value) => f(value)
     }
   }
-
-  implicit def toMonadOps[D[L, R] <: Disjunction[L, R], L, R](disjunction: D[L, R])(implicit monad: Monad[D[L, ?]]) =
-    new MonadOps[D[L, ?], R](disjunction)
 }

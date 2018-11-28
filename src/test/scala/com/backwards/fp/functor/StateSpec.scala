@@ -16,6 +16,10 @@ class StateSpec extends WordSpec with MustMatchers {
 
       State.get.eval(10) mustBe 10
     }
+
+    "modify" in {
+      State.modify((s: String) => s + " Baby").run("Ye") mustBe ("Ye Baby", ())
+    }
   }
 
   "State Functor" should {

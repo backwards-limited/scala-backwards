@@ -12,7 +12,7 @@ class DisjunctionSpec extends WordSpec with MustMatchers {
 
   "Disjunction" should {
     "work with rights" in {
-      // TODO - Taking this import up to the other causes a "flatMap" not found error!!!
+      // TODO - Taking this import up to the others causes a "flatMap" not found error!!!
       import com.backwards.fp.monad.DisjunctionOps._
 
       val disjunction = for {
@@ -25,7 +25,7 @@ class DisjunctionSpec extends WordSpec with MustMatchers {
     }
 
     "work with lefts" in {
-      // TODO - Taking this import up to the other causes a "flatMap" not found error!!!
+      // TODO - Taking this import up to the others causes a "flatMap" not found error!!!
       import com.backwards.fp.monad.DisjunctionOps._
 
       val disjunction = for {
