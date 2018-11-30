@@ -26,7 +26,7 @@ object Eq {
   // This is not production code!
   import scala.concurrent.Future
 
-  implicit def futureEq[T](implicit eq: Lazy[Eq[T]], ec: ExecutionContext): Eq[Future[T]] = {
+  implicit def futureEq[T](implicit EQ: Lazy[Eq[T]], EC: ExecutionContext): Eq[Future[T]] = {
     import scala.concurrent.Await
     import scala.concurrent.duration._
 
@@ -35,12 +35,12 @@ object Eq {
         for {
           a <- aFuture
           b <- bFuture
-        } yield eq.value.eq(a, b),
+        } yield EQ.value.eq(a, b),
       100 millis)
   }
 
-  implicit def genericEq[T, R](implicit G: Generic.Aux[T, R], eq: Lazy[Eq[R]]): Eq[T] =
-    (a: T, b: T) => eq.value.eq(G.to(a), G.to(b))
+  implicit def genericEq[T, R](implicit G: Generic.Aux[T, R], EQ: Lazy[Eq[R]]): Eq[T] =
+    (a: T, b: T) => EQ.value.eq(G.to(a), G.to(b))
 
   implicit val hnilEq: Eq[HNil] =
     (a: HNil, b: HNil) => true

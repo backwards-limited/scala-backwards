@@ -1,7 +1,7 @@
 package com.backwards.fp.foldable
 
 import org.scalatest.{MustMatchers, WordSpec}
-import com.backwards.fp.Id
+import com.backwards.fp._
 
 class FoldableSpec extends WordSpec with MustMatchers {
   import com.backwards.fp.foldable.FoldableOps._
@@ -25,6 +25,28 @@ class FoldableSpec extends WordSpec with MustMatchers {
       ("a", "b").foldr("#")((x, acc) => acc + x) mustBe "#ba"
 
       ("a", "b", "c").foldr("#")((x, acc) => acc + x) mustBe "#cba"
+    }
+
+    "work with Maybe" in {
+      import com.backwards.fp.foldable.MaybeOps._
+
+      Just(1).foldr(0)((x, acc) => acc + x) mustBe 1
+
+      Nothing[Int]().foldr(0)((x, acc) => acc + x) mustBe 0
+
+      val maybe: Maybe[Int] = Just(1)
+      maybe.foldr(0)((x, acc) => acc + x) mustBe 1
+    }
+
+    "work with Disjunction" in {
+      import com.backwards.fp.foldable.DisjunctionOps._
+
+      RightDisjunction[String, String]("abc").foldr("#")((x, acc) => acc + x) mustBe "#abc"
+
+      LeftDisjunction[String, Int]("foo").foldr("#")((x, acc) => acc + x) mustBe "#"
+
+      val disjunction: Disjunction[String, String] = RightDisjunction[String, String]("abc")
+      disjunction.foldr("#")((x, acc) => acc + x) mustBe "#abc"
     }
   }
 }
