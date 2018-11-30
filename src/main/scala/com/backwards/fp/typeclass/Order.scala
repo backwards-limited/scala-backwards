@@ -6,8 +6,8 @@ trait Order[A] {
 
 object Order {
   @annotation.implicitNotFound("No instance of Order found")
-  def less[A](lhs: A, rhs: A)(implicit order: Order[A]): Boolean =
-    order.less(lhs, rhs)
+  def less[A](lhs: A, rhs: A)(implicit O: Order[A]): Boolean =
+    O.less(lhs, rhs)
 }
 
 object OrderInstances {
@@ -17,8 +17,8 @@ object OrderInstances {
   implicit val stringInstance: Order[String] =
     (lhs: String, rhs: String) => lhs < rhs
 
-  implicit def listInstance[T](implicit suborder: Order[T]): Order[List[T]] =
+  implicit def listInstance[T](implicit SUBORDER: Order[T]): Order[List[T]] =
     (lhs: List[T], rhs: List[T]) => lhs zip rhs forall {
-      case (l, r) => suborder.less(l, r)
+      case (l, r) => SUBORDER.less(l, r)
     }
 }

@@ -5,7 +5,7 @@ import com.backwards.fp.{Disjunction, LeftDisjunction, RightDisjunction}
 object DisjunctionOps {
   import com.backwards.fp.functor.DisjunctionOps._
 
-  implicit def toMonadOps[D[L, R] <: Disjunction[L, R], L, R](disjunction: D[L, R])(implicit monad: Monad[D[L, ?]]) =
+  implicit def toMonadOps[D[L, R] <: Disjunction[L, R], L, R](disjunction: D[L, R])(implicit M: Monad[D[L, ?]]) =
     new MonadOps[D[L, ?], R](disjunction)
 
   /**

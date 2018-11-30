@@ -31,10 +31,10 @@ object DisjunctionOps {
     * Because of using the "kind projector" compiler plugin the following becomes much easier:
     * {{{
     *   implicit def toFunctorOps[D[L, R] <: Disjunction[L, R], L, R](disjunction: D[L, R])
-    *                                                                (implicit functor: Functor[({ type E[A] = D[L, A] })# E]) =
+    *                                                                (implicit F: Functor[({ type E[A] = D[L, A] })# E]) =
     *     new FunctorOps[({ type E[A] = D[L, A] })# E, R](disjunction)
     * }}}
     */
-  implicit def toFunctorOps[D[L, R] <: Disjunction[L, R], L, R](disjunction: D[L, R])(implicit functor: Functor[D[L, ?]]) =
+  implicit def toFunctorOps[D[L, R] <: Disjunction[L, R], L, R](disjunction: D[L, R])(implicit F: Functor[D[L, ?]]) =
     new FunctorOps[D[L, ?], R](disjunction)
 }

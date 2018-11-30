@@ -10,7 +10,7 @@ trait Config {
       Right(Uri parse s)
     }
 
-  def load[C: ClassTag](namespace: String)(implicit reader: Derivation[ConfigReader[C]]): C =
+  def load[C: ClassTag](namespace: String)(implicit READER: Derivation[ConfigReader[C]]): C =
     loadConfigOrThrow[C](namespace)
 }
 

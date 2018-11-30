@@ -14,7 +14,7 @@ object TypeClass {
 }
 
 object TypeClassInstances {
-  implicit val intInstance: TypeClass[Int] = (a: Int) => "int"
+  implicit val intInstance: TypeClass[Int] = (_: Int) => "int"
 
-  implicit val stringInstance: TypeClass[String] = (a: String) => "string"
+  implicit val stringInstance: TypeClass[String] = (_: String) => "string"
 }

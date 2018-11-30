@@ -39,23 +39,23 @@ object Eq {
       100 millis)
   }
 
-  implicit def genericEq[T, R](implicit gen: Generic.Aux[T, R], eq: Lazy[Eq[R]]): Eq[T] =
-    (a: T, b: T) => eq.value.eq(gen.to(a), gen.to(b))
+  implicit def genericEq[T, R](implicit G: Generic.Aux[T, R], eq: Lazy[Eq[R]]): Eq[T] =
+    (a: T, b: T) => eq.value.eq(G.to(a), G.to(b))
 
   implicit val hnilEq: Eq[HNil] =
     (a: HNil, b: HNil) => true
 
-  implicit def hconsEq[H, T <: HList](implicit eqH: Lazy[Eq[H]], eqT: Lazy[Eq[T]]): Eq[H :: T] =
+  implicit def hconsEq[H, T <: HList](implicit EH: Lazy[Eq[H]], ET: Lazy[Eq[T]]): Eq[H :: T] =
     (a: H :: T, b: H :: T) =>
-      eqH.value.eq(a.head, b.head) && eqT.value.eq(a.tail, b.tail)
+      EH.value.eq(a.head, b.head) && ET.value.eq(a.tail, b.tail)
 
   implicit val cnilEq: Eq[CNil] =
     (a: CNil, b: CNil) => true
 
-  implicit def cconsEq[H, T <: Coproduct](implicit eqH: Lazy[Eq[H]], eqT: Lazy[Eq[T]]): Eq[H :+: T] =
+  implicit def cconsEq[H, T <: Coproduct](implicit EH: Lazy[Eq[H]], ET: Lazy[Eq[T]]): Eq[H :+: T] =
     (a: H :+: T, b: H :+: T) => (a, b) match {
-      case (Inl(ah), Inl(bh)) => eqH.value.eq(ah, bh)
-      case (Inr(at), Inr(bt)) => eqT.value.eq(at, bt)
+      case (Inl(ah), Inl(bh)) => EH.value.eq(ah, bh)
+      case (Inr(at), Inr(bt)) => ET.value.eq(at, bt)
       case _ => false
     }
 }

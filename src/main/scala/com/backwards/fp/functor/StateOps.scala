@@ -7,11 +7,11 @@ object StateOps {
   /**
     * Because of using the "kind projector" compiler plugin the following becomes much easier:
     * {{{
-    *   implicit def toFunctorOps[STATE[S, A], S, A](state: STATE[S, A])(implicit functor: Functor[({ type E[X] = STATE[S, X] })# E]) =
+    *   implicit def toFunctorOps[STATE[S, A], S, A](state: STATE[S, A])(implicit F: Functor[({ type E[X] = STATE[S, X] })# E]) =
     *     new FunctorOps[({ type E[X] = STATE[S, X] })# E, A](state)
     * }}}
     */
-  implicit def toFunctorOps[S, A](state: State[S, A])(implicit functor: Functor[State[S, ?]]) =
+  implicit def toFunctorOps[S, A](state: State[S, A])(implicit F: Functor[State[S, ?]]) =
     new FunctorOps[State[S, ?], A](state)
 
   implicit def toStateFunctionOps[A, B](f: A => B) = new StateFunctionOps(f)
