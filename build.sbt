@@ -30,7 +30,7 @@ def project(id: String, base: File): Project =
       libraryDependencies ++= dependencies,
       fork in Test := true,
       fork in IntegrationTest := true,
-      scalacOptions in (Compile, doc) ++= Seq("-groups", "-implicits"),
+      scalacOptions ++= Seq("-Ypartial-unification"),
       publishArtifact in Test := true,
       publishArtifact in IntegrationTest := true,
       addArtifact(artifact in (IntegrationTest, packageBin), packageBin in IntegrationTest).settings

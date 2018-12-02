@@ -2,7 +2,7 @@ import sbt._
 
 object Dependencies {
   lazy val dependencies: Seq[ModuleID] =
-    Seq(scalaReflect, scalatest, testcontainers, airframe, logging, pureConfig, cats, monocle, shapeless, scalacheckShapeless, simulacrum, fs2, scalaUri
+    Seq(scalaReflect, scalatest, scalacheck, testcontainers, airframe, logging, pureConfig, refined, cats, monocle, shapeless, scalacheckShapeless, simulacrum, fs2, scalaUri
     ).flatten
 
   lazy val scalaReflect: Seq[ModuleID] = Seq(
@@ -13,6 +13,10 @@ object Dependencies {
     "org.scalatest" %% "scalatest" % "3.0.5" % "test, it"
   )
 
+  lazy val scalacheck: Seq[ModuleID] = Seq(
+    "org.scalacheck" %% "scalacheck" % "1.14.0" % "test, it"  
+  )
+  
   lazy val testcontainers: Seq[ModuleID] = Seq(
     "org.testcontainers" % "testcontainers" % "1.10.1" % "test, it"
   )
@@ -32,6 +36,16 @@ object Dependencies {
     Seq(
       "com.github.pureconfig" %% "pureconfig",
       "com.github.pureconfig" %% "pureconfig-http4s"
+    ).map(_ % version)
+  }
+
+  lazy val refined: Seq[ModuleID] = {
+    val version = "0.9.3"
+
+    Seq(
+      "eu.timepit" %% "refined",
+      "eu.timepit" %% "refined-pureconfig",
+      "eu.timepit" %% "refined-cats"
     ).map(_ % version)
   }
 
