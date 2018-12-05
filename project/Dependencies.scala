@@ -2,7 +2,11 @@ import sbt._
 
 object Dependencies {
   lazy val dependencies: Seq[ModuleID] =
-    Seq(scalaReflect, scalatest, scalacheck, testcontainers, airframe, logging, pureConfig, refined, cats, monocle, shapeless, scalacheckShapeless, simulacrum, fs2, scalaUri
+    Seq(
+      scalaReflect, scalatest, scalacheck, scalacheckShapeless, testcontainers,
+      airframe, logging, pureConfig,
+      simulacrum, refined, cats, monocle, shapeless,
+      fs2, scalaUri
     ).flatten
 
   lazy val scalaReflect: Seq[ModuleID] = Seq(
@@ -16,13 +20,17 @@ object Dependencies {
   lazy val scalacheck: Seq[ModuleID] = Seq(
     "org.scalacheck" %% "scalacheck" % "1.14.0" % "test, it"  
   )
+
+  lazy val scalacheckShapeless: Seq[ModuleID] = Seq(
+    "com.github.alexarchambault" %% "scalacheck-shapeless_1.14" % "1.2.0"
+  )
   
   lazy val testcontainers: Seq[ModuleID] = Seq(
-    "org.testcontainers" % "testcontainers" % "1.10.1" % "test, it"
+    "org.testcontainers" % "testcontainers" % "1.10.2" % "test, it"
   )
   
   lazy val airframe: Seq[ModuleID] = Seq(
-    "org.wvlet.airframe" %% "airframe-log" % "0.73"
+    "org.wvlet.airframe" %% "airframe-log" % "0.76"
   )
 
   lazy val logging: Seq[ModuleID] = Seq(
@@ -39,6 +47,10 @@ object Dependencies {
     ).map(_ % version)
   }
 
+  lazy val simulacrum: Seq[ModuleID] = Seq(
+    "com.github.mpilquist" %% "simulacrum" % "0.14.0"
+  )
+  
   lazy val refined: Seq[ModuleID] = {
     val version = "0.9.3"
 
@@ -50,7 +62,7 @@ object Dependencies {
   }
 
   lazy val cats: Seq[ModuleID] = {
-    val version = "1.4.0"
+    val version = "1.5.0"
 
     Seq(
       "org.typelevel" %% "cats-laws",
@@ -58,7 +70,7 @@ object Dependencies {
     ).map(_ % version % "test, it") ++ Seq(
       "org.typelevel" %% "cats-core"
     ).map(_ % version) ++ Seq(
-      "org.typelevel" %% "cats-effect" % "1.0.0"
+      "org.typelevel" %% "cats-effect" % "1.1.0"
     )
   }
 
@@ -78,16 +90,8 @@ object Dependencies {
     "com.chuusai" %% "shapeless" % "2.3.3"
   )
 
-  lazy val scalacheckShapeless: Seq[ModuleID] = Seq(
-    "com.github.alexarchambault" %% "scalacheck-shapeless_1.14" % "1.2.0"
-  )
-
-  lazy val simulacrum: Seq[ModuleID] = Seq(
-    "com.github.mpilquist" %% "simulacrum" % "0.14.0"
-  )
-
   lazy val fs2: Seq[ModuleID] = {
-    val version = "1.0.0"
+    val version = "1.0.2"
     
     Seq(
       "co.fs2" %% "fs2-core" % version,

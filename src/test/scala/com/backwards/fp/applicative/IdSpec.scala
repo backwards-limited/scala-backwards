@@ -56,21 +56,21 @@ class IdSpec extends WordSpec with MustMatchers {
       We cannot repeat the above since we can only "lift" a function into a FunctionFunctorOps
       NOT a function within a higher kind i.e. the following will not compile:
       */
-      "`function curried via fmap`g `<$>` Id(20)" mustNot compile
+      "`function curried via fmap` `<$>` Id(20)" mustNot compile
 
       /*
       1) No existing "<*>" on F[function]
       2) com.backwards.fp.applicative.ApplicativeOps._ brings in toApplicativeOps
          This will "wrap" so long as there is an Id Applicative instance
       3) com.backwards.fp.applicative.IdOps._ brings in an Id Applicative instance
-      4) Id[function] is wrapped into ApplicativeOps ans we call the "<*>" with the provided Id
+      4) Id[function] is wrapped into ApplicativeOps and we call the "<*>" with the provided Id
       5) The call to "<*>" calls the brought in Id Applicative's "<*>" where:
          def <*>[A, R](f: Id[A => R])(fa: Id[A]): Id[R] = Id(f.value(fa.value))
       */
       val `function curried via app`: Id[Int => Int] = `function curried via fmap` <*> Id(20)
 
       /*
-      We continuing app(lying) until currying is complete and we have a result.
+      We continue app(lying) until currying is complete and we have a result.
       */
       val result: Id[Int] = `function curried via app` <*> Id(30)
 
