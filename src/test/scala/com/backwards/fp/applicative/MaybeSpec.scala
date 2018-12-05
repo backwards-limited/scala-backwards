@@ -30,13 +30,7 @@ class MaybeSpec extends WordSpec with MustMatchers {
     }
 
     "work with <$> and <*>" in {
-      val maybe: Maybe[Int => Int] = ((x: Int, y: Int) =>  x + y).curried `<$>` Nothing[Int]()
-
-      maybe <*> Just(10) mustBe Nothing[Int]()
-    }
-
-    "work with <$> and <*> - Noting that I have to force the type" in { // TODO - don't want to have to "force the type"
-      (((x: Int, y: Int) =>  x + y).curried `<$>` Nothing[Int](): Maybe[Int => Int]) <*> Just(10) mustBe Nothing[Int]()
+      (((x: Int, y: Int) =>  x + y).curried `<$>` Nothing[Int]()) <*> Just(10) mustBe Nothing[Int]()
     }
   }
 }

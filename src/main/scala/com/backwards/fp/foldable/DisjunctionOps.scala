@@ -7,16 +7,6 @@ object DisjunctionOps {
   /**
     * Because of using the "kind projector" compiler plugin the following becomes much easier:
     * {{{
-    *   implicit def toFoldableOps[D[L, R] <: Disjunction[L, R], L, R](disjunction: D[L, R])(implicit F: Foldable[({ type E[X] = D[L, X] })# E]) =
-    *     new FoldableOps[({ type E[X] = D[L, X] })# E, R](disjunction)
-    * }}}
-    */
-  implicit def toFoldableOps[D[_, _] <: Disjunction[_, _], L, R](disjunction: D[L, R])(implicit F: Foldable[D[L, ?]]): FoldableOps[D[L, ?], R] =
-    new FoldableOps[D[L, ?], R](disjunction)
-
-  /**
-    * Because of using the "kind projector" compiler plugin the following becomes much easier:
-    * {{{
     *   implicit def disjunctionFoldable[L] = new Foldable[({ type E[X] = Disjunction[L, X] })# E]
     * }}}
     */
@@ -46,4 +36,14 @@ object DisjunctionOps {
   implicit def leftDisjunctionFoldable[L, R] = new Foldable[LeftDisjunction[L, ?]] {
     def foldr[A, B](fa: LeftDisjunction[L, A])(acc: B)(f: (A, B) => B): B = acc
   }
+
+  /**
+    * Because of using the "kind projector" compiler plugin the following becomes much easier:
+    * {{{
+    *   implicit def toFoldableOps[D[L, R] <: Disjunction[L, R], L, R](disjunction: D[L, R])(implicit F: Foldable[({ type E[X] = D[L, X] })# E]) =
+    *     new FoldableOps[({ type E[X] = D[L, X] })# E, R](disjunction)
+    * }}}
+    */
+  implicit def toFoldableOps[D[_, _] <: Disjunction[_, _], L, R](disjunction: D[L, R])(implicit F: Foldable[D[L, ?]]): FoldableOps[D[L, ?], R] =
+    new FoldableOps[D[L, ?], R](disjunction)
 }

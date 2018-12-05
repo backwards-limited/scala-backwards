@@ -12,7 +12,7 @@ object MaybeOps {
     def <*>[A, R](f: Just[A => R])(fa: Just[A]): Just[R] = Just(f.value(fa.value))
   }
 
-  implicit val nothingApplicative = new Applicative[Nothing] {
+  implicit val nothingApplicative: Applicative[Nothing] = new Applicative[Nothing] {
     def pure[A](a: A): Nothing[A] = ???
 
     def <*>[A, R](f: Nothing[A => R])(fa: Nothing[A]): Nothing[R] = ???
@@ -27,4 +27,7 @@ object MaybeOps {
       case (jf @ Just(_), ja @ Just(_)) => justApplicative.<*>(jf)(ja)
     }
   }
+
+  implicit def nothingToApplicative[A, R](nothing: Nothing[A => R])(implicit APP: Applicative[Nothing]): ApplicativeOps[Maybe, A, R] =
+    new ApplicativeOps(nothing: Maybe[A => R])
 }

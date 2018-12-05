@@ -11,16 +11,6 @@ object WriterOps {
   /**
     * Because of using the "kind projector" compiler plugin the following becomes much easier:
     * {{{
-    *   implicit def toMonadOps[W: Monoid, A](writer: Writer[W, A]): MonadOps[({ type E[X] = Writer[W, X] })# E, A] =
-    *     new MonadOps[({ type E[X] = Writer[W, X] })# E, A](writer)
-    * }}}
-    */
-  implicit def toMonadOps[W: Monoid, A](writer: Writer[W, A]): MonadOps[Writer[W, ?], A] =
-    new MonadOps[Writer[W, ?], A](writer)
-
-  /**
-    * Because of using the "kind projector" compiler plugin the following becomes much easier:
-    * {{{
     *   implicit def writerMonad[W] = new Monad[({ type E[A] = Writer[W, A] })# E]
     * }}}
     */
@@ -34,4 +24,14 @@ object WriterOps {
       Writer(() => (w1 |+| w2, b))
     }
   }
+
+  /**
+    * Because of using the "kind projector" compiler plugin the following becomes much easier:
+    * {{{
+    *   implicit def toMonadOps[W: Monoid, A](writer: Writer[W, A]): MonadOps[({ type E[X] = Writer[W, X] })# E, A] =
+    *     new MonadOps[({ type E[X] = Writer[W, X] })# E, A](writer)
+    * }}}
+    */
+  implicit def toMonadOps[W: Monoid, A](writer: Writer[W, A]): MonadOps[Writer[W, ?], A] =
+    new MonadOps[Writer[W, ?], A](writer)
 }

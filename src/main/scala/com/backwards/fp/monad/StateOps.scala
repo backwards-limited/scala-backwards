@@ -8,16 +8,6 @@ object StateOps {
   /**
     * Because of using the "kind projector" compiler plugin the following becomes much easier:
     * {{{
-    *   implicit def toMonadOps[S, A](state: State[S, A])(implicit M: Monad[({ type E[X] = State[S, X] })# E]) =
-    *     new MonadOps[({ type E[X] = State[S, X] })# E, A](state)
-    * }}}
-    */
-  implicit def toMonadOps[S, A](state: State[S, A])(implicit M: Monad[State[S, ?]]) =
-    new MonadOps[State[S, ?], A](state)
-
-  /**
-    * Because of using the "kind projector" compiler plugin the following becomes much easier:
-    * {{{
     *   implicit def stateMonad[S] = new Monad[({ type E[X] = State[S, X] })# E]
     * }}}
     */
@@ -31,4 +21,14 @@ object StateOps {
       }
     }
   }
+
+  /**
+    * Because of using the "kind projector" compiler plugin the following becomes much easier:
+    * {{{
+    *   implicit def toMonadOps[S, A](state: State[S, A])(implicit M: Monad[({ type E[X] = State[S, X] })# E]) =
+    *     new MonadOps[({ type E[X] = State[S, X] })# E, A](state)
+    * }}}
+    */
+  implicit def toMonadOps[S, A](state: State[S, A])(implicit M: Monad[State[S, ?]]) =
+    new MonadOps[State[S, ?], A](state)
 }
