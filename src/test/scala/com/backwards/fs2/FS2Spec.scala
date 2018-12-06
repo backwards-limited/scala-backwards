@@ -4,7 +4,6 @@ import java.nio.file.Paths
 import java.util.concurrent.Executors
 import scala.concurrent.{ExecutionContext, Future}
 import cats.effect._
-import cats.effect.internals.IOContextShift
 import cats.implicits._
 import fs2._
 import org.scalatest.{FreeSpec, MustMatchers}
@@ -41,8 +40,7 @@ class FS2Spec extends FreeSpec with MustMatchers {
       val list = Source.fromFile("src/test/resources/fahrenheit.txt").getLines.toList
       java.lang.OutOfMemoryError: Java heap space
     """ in {
-      implicit def contextShift: ContextShift[IO] =
-        IOContextShift.global
+      implicit val contextShift: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
 
       def fahrenheitToCelsius(f: Double): Double =
         (f - 32.0) * (5.0 / 9.0)
