@@ -13,18 +13,18 @@ import com.backwards.fp.functor.Functor
 abstract class Applicative[F[_]: Functor] {
   def pure[A](a: A): F[A]
 
-  def <*>[A, R](f: F[A => R])(fa: F[A]): F[R]
+  def <*>[A, R](ff: F[A => R])(fa: F[A]): F[R]
 }
 
 object Applicative {
   def apply[F[_]: Applicative]: Applicative[F] = implicitly
 }
 
-class ApplicativeOps[F[_]: Applicative, A, R](f: F[A => R]) {
-  def <*>(fa: F[A]): F[R] = Applicative[F].<*>(f)(fa)
+class ApplicativeOps[F[_]: Applicative, A, R](ff: F[A => R]) {
+  def <*>(fa: F[A]): F[R] = Applicative[F].<*>(ff)(fa)
 }
 
 object ApplicativeOps {
-  implicit def toApplicativeOps[F[_]: Applicative, A, R](f: F[A => R]): ApplicativeOps[F, A, R] =
-    new ApplicativeOps[F, A, R](f)
+  implicit def toApplicativeOps[F[_]: Applicative, A, R](ff: F[A => R]): ApplicativeOps[F, A, R] =
+    new ApplicativeOps[F, A, R](ff)
 }

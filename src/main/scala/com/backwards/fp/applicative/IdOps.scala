@@ -8,6 +8,6 @@ object IdOps {
   implicit val idApplicative: Applicative[Id] = new Applicative[Id] {
     def pure[A](a: A): Id[A] = Id(a)
 
-    def <*>[A, R](f: Id[A => R])(fa: Id[A]): Id[R] = Id(f.value(fa.value))
+    def <*>[A, R](ff: Id[A => R])(fa: Id[A]): Id[R] = Id(ff.value(fa.value))
   }
 }

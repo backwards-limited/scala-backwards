@@ -6,23 +6,6 @@ import org.scalatest.{MustMatchers, WordSpec}
 
 class FizzBuzzSpec extends WordSpec with MustMatchers {
   "FizzBuzz" should {
-    "work - don't really like this one (I didn't either bother to add assertions)" ignore {
-      def f(divisor: Int, result: Int => String): PartialFunction[Int, String] = {
-        case i if i % divisor == 0 => result(i)
-      }
-      val f3  = f(3,  _ => "Fizz")
-      val f5  = f(5,  _ => "Buzz")
-      val f15 = f(15, x => f3(x) + f5(x))
-      val id  = f(1,  _.toString)
-
-      val fizzBuzz = f15 orElse f3 orElse f5 orElse id
-
-      (1 to 20).map(fizzBuzz andThen println)
-      // OR
-      println("-----------------------")
-      Stream.from(1).map(fizzBuzz).take(20).foreach(println)
-    }
-
     "work - prefer this one" in {
       val f3: PartialFunction[Int, String] = {
         case x if x % 3 == 0 => "Fizz"
@@ -56,5 +39,22 @@ class FizzBuzzSpec extends WordSpec with MustMatchers {
       fizzBuzz(5) mustBe "Buzz"
       fizzBuzz(15) mustBe "FizzBuzz"
     }
+  }
+
+  "work - don't really like this one (I didn't either bother to add assertions)" ignore {
+    def f(divisor: Int, result: Int => String): PartialFunction[Int, String] = {
+      case i if i % divisor == 0 => result(i)
+    }
+    val f3  = f(3,  _ => "Fizz")
+    val f5  = f(5,  _ => "Buzz")
+    val f15 = f(15, x => f3(x) + f5(x))
+    val id  = f(1,  _.toString)
+
+    val fizzBuzz = f15 orElse f3 orElse f5 orElse id
+
+    (1 to 20).map(fizzBuzz andThen println)
+    // OR
+    println("-----------------------")
+    Stream.from(1).map(fizzBuzz).take(20).foreach(println)
   }
 }
