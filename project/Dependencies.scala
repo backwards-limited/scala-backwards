@@ -5,7 +5,8 @@ object Dependencies {
     Seq(
       scalaReflect, scalatest, scalacheck, scalacheckShapeless, testcontainers,
       airframe, logging, pureConfig,
-      simulacrum, refined, cats, monocle, shapeless,
+      simulacrum, refined, monocle, shapeless,
+      cats, mouse,
       fs2, scalaUri
     ).flatten
 
@@ -61,19 +62,6 @@ object Dependencies {
     ).map(_ % version)
   }
 
-  lazy val cats: Seq[ModuleID] = {
-    val version = "1.5.0"
-
-    Seq(
-      "org.typelevel" %% "cats-laws",
-      "org.typelevel" %% "cats-testkit"
-    ).map(_ % version % "test, it") ++ Seq(
-      "org.typelevel" %% "cats-core"
-    ).map(_ % version) ++ Seq(
-      "org.typelevel" %% "cats-effect" % "1.1.0"
-    )
-  }
-
   lazy val monocle: Seq[ModuleID] = {
     val version = "1.5.0"
 
@@ -88,6 +76,23 @@ object Dependencies {
 
   lazy val shapeless: Seq[ModuleID] = Seq(
     "com.chuusai" %% "shapeless" % "2.3.3"
+  )
+
+  lazy val cats: Seq[ModuleID] = {
+    val version = "1.5.0"
+
+    Seq(
+      "org.typelevel" %% "cats-laws",
+      "org.typelevel" %% "cats-testkit"
+    ).map(_ % version % "test, it") ++ Seq(
+      "org.typelevel" %% "cats-core"
+    ).map(_ % version) ++ Seq(
+      "org.typelevel" %% "cats-effect" % "1.1.0"
+    )
+  }
+  
+  lazy val mouse: Seq[ModuleID] = Seq(
+    "org.typelevel" %% "mouse" % "0.19"
   )
 
   lazy val fs2: Seq[ModuleID] = {

@@ -40,8 +40,8 @@ class ShowSpec extends WordSpec with MustMatchers {
       implicit val fooShow: Show[Foo] =
         foo => s"case class Foo(foo: ${foo.foo})"
 
-      println(30.show)
-      println(Foo(42).show)
+      30.show mustBe "int 30"
+      Foo(42).show mustBe "case class Foo(foo: 42)"
     }
   }
 }
