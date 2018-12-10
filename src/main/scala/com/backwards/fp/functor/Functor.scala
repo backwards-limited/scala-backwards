@@ -22,7 +22,7 @@ class FunctorOps[F[_]: Functor, A](fa: F[A]) {
   def map[B](f: A => B): F[B] = Functor[F].fmap(fa)(f)
 }
 
-class FunctionFunctorOps[A, B](f: A => B) {
+class FunctorFunctionOps[A, B](f: A => B) {
   def `<$>`[F[_]: Functor](fa: F[A]): F[B] =
     Functor[F].fmap(fa)(f)
 }
@@ -31,6 +31,6 @@ object FunctorOps {
   implicit def toFunctorOps[F[_]: Functor, A](fa: F[A]): FunctorOps[F, A] =
     new FunctorOps(fa)
 
-  implicit def toFunctionFunctorOps[A, B](f: A => B): FunctionFunctorOps[A, B] =
-    new FunctionFunctorOps[A, B](f)
+  implicit def toFunctorFunctionOps[A, B](f: A => B): FunctorFunctionOps[A, B] =
+    new FunctorFunctionOps[A, B](f)
 }
