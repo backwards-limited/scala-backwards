@@ -5,15 +5,12 @@ import com.backwards.fp.State
 
 class StateSpec extends WordSpec with MustMatchers {
   import com.backwards.fp.functor.StateOps._
-  import com.backwards.fp.monad.MonadOps._
+  import com.backwards.fp.monad.StateOps._
 
   type MyState[A] = State[String, A]
 
   "State Monad" should {
     "work" in {
-      // TODO - Taking this import up to the others causes a "flatMap" not found error!!!
-      import com.backwards.fp.monad.StateOps._
-
       val quickCheck = 10.pure[MyState].flatMap(_ => State.get[String]).flatMap(s => State.put(s + " Baby"))
       quickCheck.run("Ye") mustBe ("Ye Baby", ())
 

@@ -6,15 +6,12 @@ import com.backwards.fp.{Disjunction, RightDisjunction}
 
 class DisjunctionSpec extends WordSpec with MustMatchers {
   import com.backwards.fp.functor.DisjunctionOps._
-  import com.backwards.fp.monad.MonadOps._
+  import com.backwards.fp.monad.DisjunctionOps._
 
   type Or[A] = Disjunction[String, A]
 
   "Disjunction" should {
     "work with rights" in {
-      // TODO - Taking this import up to the others causes a "flatMap" not found error!!!
-      import com.backwards.fp.monad.DisjunctionOps._
-
       val disjunction = for {
         x <- "a".pure[Or]
         y <- "b".pure[Or]
@@ -25,9 +22,6 @@ class DisjunctionSpec extends WordSpec with MustMatchers {
     }
 
     "work with lefts" in {
-      // TODO - Taking this import up to the others causes a "flatMap" not found error!!!
-      import com.backwards.fp.monad.DisjunctionOps._
-
       val disjunction = for {
         x <- 10.pure[Or]
         y <- left[String, Int]("boom")

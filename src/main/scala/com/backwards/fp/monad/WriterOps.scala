@@ -34,4 +34,6 @@ object WriterOps {
     */
   implicit def toMonadOps[W: Monoid, A](writer: Writer[W, A]): MonadOps[Writer[W, ?], A] =
     new MonadOps[Writer[W, ?], A](writer)
+
+  implicit def toMonadPureOps[A](a: A): MonadPureOps[A] = new MonadPureOps(a)
 }
