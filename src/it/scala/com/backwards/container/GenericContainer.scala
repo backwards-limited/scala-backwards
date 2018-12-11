@@ -7,8 +7,9 @@ import org.testcontainers.containers.{Network, GenericContainer => JGenericConta
   * Starting up a Container for testing is best to be done with dynamic port(s) to avoid port conflicts.
   * However, port binding can be set up if required.
   * @param imageName String The name of the required image to download from an appropriate Docker Registry
+  * @tparam SELF Allowing for fluent interface
   */
-class GenericContainer(val imageName: String) extends JGenericContainer[GenericContainer](imageName) with Container {
+class GenericContainer[SELF <: JGenericContainer[SELF]](val imageName: String) extends JGenericContainer[SELF](imageName) with Container {
   def network: Network = getNetwork
 
   def networkName: String = network match {
