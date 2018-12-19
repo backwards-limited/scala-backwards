@@ -16,7 +16,13 @@ class WriterSpec extends WordSpec with MustMatchers {
       val `<$> writer`: Writer[List[String], Int => Int => (Int, Int, Int)] =
         ((x: Int, y: Int, z: Int) => (x, y, z)).curried `<$>` Writer(() => (List("een"), 1))
 
-      `<$> writer` <*> Writer(() => (List("twee"), 2))
+      val `<$> writer <*>`: Writer[List[String], Int => (Int, Int, Int)] =
+        `<$> writer` <*> Writer(() => (List("twee"), 2))
+
+      val `<$> writer <*> <*>`: Writer[List[String], (Int, Int, Int)] =
+        `<$> writer <*>` <*> Writer(() => (List("dree"), 3))
+
+      `<$> writer <*> <*>`.run() mustBe (List("een", "twee", "dree"), (1, 2, 3))
     }
   }
 }
