@@ -20,8 +20,8 @@ object Applicative {
   def apply[F[_]: Applicative]: Applicative[F] = implicitly
 }
 
-class ApplicativeOps[F[_]: Applicative, A, R](ff: F[A => R]) {
-  def <*>(fa: F[A]): F[R] = Applicative[F].<*>(ff)(fa)
+class ApplicativeOps[F[_], A, R](ff: F[A => R]) {
+  def <*>(fa: F[A])(implicit APPLICATIVE: Applicative[F]): F[R] = APPLICATIVE.<*>(ff)(fa)
 }
 
 object ApplicativeOps {

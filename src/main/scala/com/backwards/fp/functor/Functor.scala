@@ -27,10 +27,12 @@ class FunctorFunctionOps[A, B](f: A => B) {
     Functor[F].fmap(fa)(f)
 }
 
-object FunctorOps {
+trait ToFunctorOps {
   implicit def toFunctorOps[F[_]: Functor, A](fa: F[A]): FunctorOps[F, A] =
     new FunctorOps(fa)
 
   implicit def toFunctorFunctionOps[A, B](f: A => B): FunctorFunctionOps[A, B] =
     new FunctorFunctionOps[A, B](f)
 }
+
+object FunctorOps extends ToFunctorOps
