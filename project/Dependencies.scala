@@ -15,7 +15,7 @@ object Dependencies {
   )
   
   lazy val scalatest: Seq[ModuleID] = Seq(
-    "org.scalatest" %% "scalatest" % "3.0.5" % "test, it"
+    "org.scalatest" %% "scalatest" % "3.0.7" % "test, it"
   )
 
   lazy val scalacheck: Seq[ModuleID] = Seq(
@@ -23,19 +23,20 @@ object Dependencies {
   )
 
   lazy val scalacheckShapeless: Seq[ModuleID] = Seq(
-    "com.github.alexarchambault" %% "scalacheck-shapeless_1.14" % "1.2.0"
+    "com.github.alexarchambault" %% "scalacheck-shapeless_1.14" % "1.2.1"
   )
   
   lazy val testcontainers: Seq[ModuleID] = Seq(
-    "org.testcontainers" % "testcontainers" % "1.10.2" % "test, it"
+    "org.testcontainers" % "testcontainers" % "1.11.2" % "test, it"
   )
   
   lazy val airframe: Seq[ModuleID] = Seq(
-    "org.wvlet.airframe" %% "airframe-log" % "0.76"
+    "org.wvlet.airframe" %% "airframe-log" % "19.4.1"
   )
 
   lazy val logging: Seq[ModuleID] = Seq(
-    "org.slf4j" % "log4j-over-slf4j" % "1.7.25",
+    "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
+    "org.slf4j" % "log4j-over-slf4j" % "1.7.26",
     "ch.qos.logback" % "logback-classic" % "1.2.3"
   )
   
@@ -49,11 +50,11 @@ object Dependencies {
   }
 
   lazy val simulacrum: Seq[ModuleID] = Seq(
-    "com.github.mpilquist" %% "simulacrum" % "0.14.0"
+    "com.github.mpilquist" %% "simulacrum" % "0.16.0"
   )
   
   lazy val refined: Seq[ModuleID] = {
-    val version = "0.9.3"
+    val version = "0.9.5"
 
     Seq(
       "eu.timepit" %% "refined",
@@ -79,7 +80,7 @@ object Dependencies {
   )
 
   lazy val cats: Seq[ModuleID] = {
-    val version = "1.5.0"
+    val version = "1.6.0"
 
     Seq(
       "org.typelevel" %% "cats-laws",
@@ -87,16 +88,16 @@ object Dependencies {
     ).map(_ % version % "test, it") ++ Seq(
       "org.typelevel" %% "cats-core"
     ).map(_ % version) ++ Seq(
-      "org.typelevel" %% "cats-effect" % "1.1.0"
+      "org.typelevel" %% "cats-effect" % "1.2.0"
     )
   }
   
   lazy val mouse: Seq[ModuleID] = Seq(
-    "org.typelevel" %% "mouse" % "0.19"
+    "org.typelevel" %% "mouse" % "0.20"
   )
 
   lazy val fs2: Seq[ModuleID] = {
-    val version = "1.0.2"
+    val version = "1.0.4"
     
     Seq(
       "co.fs2" %% "fs2-core" % version,
@@ -106,6 +107,6 @@ object Dependencies {
   }
 
   lazy val scalaUri: Seq[ModuleID] = Seq(
-    "io.lemonlabs" %% "scala-uri" % "1.4.0"
+    "io.lemonlabs" %% "scala-uri" % "1.4.5"
   )
 }

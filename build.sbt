@@ -2,6 +2,8 @@ import com.scalapenos.sbt.prompt.SbtPrompt.autoImport._
 import Dependencies._
 import sbt._
 
+lazy val IT = config("it") extend Test
+
 lazy val root = project("scala-backwards", file("."))
   .settings(description := "Scala by Backwards")
   .settings(javaOptions in Test ++= Seq("-Dconfig.resource=application.test.conf"))
@@ -9,7 +11,8 @@ lazy val root = project("scala-backwards", file("."))
 def project(id: String, base: File): Project =
   Project(id, base)
     .enablePlugins(JavaAppPackaging)
-    .configs(IntegrationTest)
+    .configs(IT)
+    .settings(inConfig(IT)(Defaults.testSettings))
     .settings(Defaults.itSettings)
     .settings(promptTheme := com.scalapenos.sbt.prompt.PromptThemes.ScalapenosTheme)
     .settings(
@@ -25,13 +28,14 @@ def project(id: String, base: File): Project =
       sbtVersion := BuildProperties("sbt.version"),
       organization := "com.backwards",
       name := id,
-      addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.9"),
+      addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.10"),
       addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full),
       libraryDependencies ++= dependencies,
       fork in Test := true,
-      fork in IntegrationTest := true,
+      fork in IT := true,
+      fork in run := true,
       scalacOptions ++= Seq("-Ypartial-unification"),
       publishArtifact in Test := true,
-      publishArtifact in IntegrationTest := true,
-      addArtifact(artifact in (IntegrationTest, packageBin), packageBin in IntegrationTest).settings
+      publishArtifact in IT := true,
+      addArtifact(artifact in (IT, packageBin), packageBin in IT).settings
     )
