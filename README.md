@@ -39,8 +39,6 @@ To see an example of the above, take a look at [Kafka Backwards](https://github.
 
 - [Release](docs/release.md)
 
-- [Notes](docs/notes.md)
-
 - Modules
 
   - [Functional Programming: Custom code for Category Theory](docs/fp.md)
