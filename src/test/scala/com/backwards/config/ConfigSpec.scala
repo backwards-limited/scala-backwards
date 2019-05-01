@@ -1,7 +1,9 @@
 package com.backwards.config
 
+import java.nio.file.{Path, Paths}
 import io.lemonlabs.uri.Uri
 import org.scalatest.{Assertion, MustMatchers, WordSpec}
+import better.files._
 
 class ConfigSpec extends WordSpec with MustMatchers {
   def checkConfig(myconfig: MyConfig): Assertion = {
@@ -22,6 +24,17 @@ class ConfigSpec extends WordSpec with MustMatchers {
   "Config using Trait" should {
     "read be read including properties from resource configuration" in new Config {
       checkConfig(load[MyConfig]("myconfig"))
+    }
+  }
+
+  // TODO - WIP
+  "Config from a particular file" should {
+    "be read" in new Config {
+      println(load[SpecificConfig](Resource getUrl "application.dev1.conf", "specific-config"))
+    }
+
+    "and again from a different file" in new Config {
+      println(load[SpecificConfig](Resource getUrl "application.dev2.conf", "specific-config"))
     }
   }
 }

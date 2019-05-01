@@ -1,5 +1,7 @@
 package com.backwards.config
 
+import java.net.{URI, URL}
+import java.nio.file.{Path, Paths}
 import scala.language.experimental.macros
 import scala.reflect.ClassTag
 import io.lemonlabs.uri.Uri
@@ -20,6 +22,15 @@ trait Config {
 
   def load[C: ClassTag](namespace: String)(implicit READER: Derivation[ConfigReader[C]]): C =
     loadConfigOrThrow[C](namespace)
+
+  def load[C: ClassTag](path: Path, namespace: String)(implicit READER: Derivation[ConfigReader[C]]): C =
+    loadConfigOrThrow[C](path, namespace)
+
+  def load[C: ClassTag](url: URL, namespace: String)(implicit READER: Derivation[ConfigReader[C]]): C =
+    load[C](url.toURI, namespace)
+
+  def load[C: ClassTag](uri: URI, namespace: String)(implicit READER: Derivation[ConfigReader[C]]): C =
+    loadConfigOrThrow[C](Paths get uri, namespace)
 }
 
 object Config extends Config

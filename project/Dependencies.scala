@@ -7,7 +7,8 @@ object Dependencies {
       airframe, logging, pureConfig,
       simulacrum, refined, monocle, shapeless,
       cats, mouse,
-      fs2, scalaUri
+      fs2,
+      scalaUri, betterFiles
     ).flatten
 
   lazy val scalaReflect: Seq[ModuleID] = Seq(
@@ -108,5 +109,9 @@ object Dependencies {
 
   lazy val scalaUri: Seq[ModuleID] = Seq(
     "io.lemonlabs" %% "scala-uri" % "1.4.5"
+  )
+  
+  lazy val betterFiles: Seq[ModuleID] = Seq(
+    "com.github.pathikrit" %% "better-files" % "3.7.1"
   )
 }
