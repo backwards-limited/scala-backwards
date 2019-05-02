@@ -8,6 +8,8 @@ import io.lemonlabs.uri.Uri
 import pureconfig._
 import pureconfig.generic.ExportMacros
 
+object Config extends Config
+
 /**
   * This trait, for convenience, hard codes the use of automatic derivation of readers and writers via copied code from [[pureconfig.generic.auto]]
   */
@@ -32,5 +34,3 @@ trait Config {
   def load[C: ClassTag](uri: URI, namespace: String)(implicit READER: Derivation[ConfigReader[C]]): C =
     loadConfigOrThrow[C](Paths get uri, namespace)
 }
-
-object Config extends Config
