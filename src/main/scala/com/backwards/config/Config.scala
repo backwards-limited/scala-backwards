@@ -7,6 +7,7 @@ import scala.reflect.ClassTag
 import io.lemonlabs.uri.Uri
 import pureconfig._
 import pureconfig.generic.ExportMacros
+import com.typesafe.config.{Config => TypesafeConfig}
 
 object Config extends Config
 
@@ -24,6 +25,9 @@ trait Config {
 
   def load[C: ClassTag](namespace: String)(implicit READER: Derivation[ConfigReader[C]]): C =
     loadConfigOrThrow[C](namespace)
+
+  def load[C: ClassTag](config: TypesafeConfig, namespace: String)(implicit READER: Derivation[ConfigReader[C]]): C =
+    loadConfigOrThrow[C](config, namespace)
 
   def load[C: ClassTag](path: Path, namespace: String)(implicit READER: Derivation[ConfigReader[C]]): C =
     loadConfigOrThrow[C](path, namespace)
