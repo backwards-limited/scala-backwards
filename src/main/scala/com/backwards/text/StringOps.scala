@@ -32,37 +32,37 @@ trait StringOps {
   def lowerCamel(s: String): String =
     convert(lowerCase, titleCase, "", s)
 
-  def lowerCamel[T](c: Class[T]): String =
+  def lowerCamel(c: Class[_]): String =
     lowerCamel(c.getSimpleName.takeWhile(_ != '$'))
 
   def upperCamel(s: String): String =
     convert(titleCase, titleCase, "", s)
 
-  def upperCamel[T](c: Class[T]): String =
+  def upperCamel(c: Class[_]): String =
     upperCamel(c.getSimpleName.takeWhile(_ != '$'))
 
   def lowerSnake(s: String): String =
     lowerCase(convert(lowerCase, lowerCase, "_", s))
 
-  def lowerSnake[T](c: Class[T]): String =
+  def lowerSnake(c: Class[_]): String =
     lowerSnake(c.getSimpleName.takeWhile(_ != '$'))
 
   def upperSnake(s: String): String =
     lowerCase(convert(upperCase, upperCase, "_", s))
 
-  def upperSnake[T](c: Class[T]): String =
+  def upperSnake(c: Class[_]): String =
     upperSnake(c.getSimpleName.takeWhile(_ != '$'))
 
   def lowerKebab(s: String): String =
     lowerCase(convert(lowerCase, lowerCase, "-", s))
 
-  def lowerKebab[T](c: Class[T]): String =
+  def lowerKebab(c: Class[_]): String =
     lowerKebab(c.getSimpleName.takeWhile(_ != '$'))
 
   def upperKebab(s: String): String =
     upperCase(convert(upperCase, upperCase, "-", s))
 
-  def upperKebab[T](c: Class[T]): String =
+  def upperKebab(c: Class[_]): String =
     upperKebab(c.getSimpleName.takeWhile(_ != '$'))
 
   def convert(headTransform: String => String, tailTransform: String => String, sep: String, str: String): String =
