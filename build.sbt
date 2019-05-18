@@ -29,6 +29,7 @@ def project(id: String, base: File): Project =
       organization := "com.backwards",
       name := id,
       autoStartServer := false,
+      triggeredMessage := Watched.clearWhenTriggered,
       addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.10"),
       addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full),
       libraryDependencies ++= dependencies,
