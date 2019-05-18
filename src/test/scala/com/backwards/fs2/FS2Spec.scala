@@ -196,4 +196,15 @@ class FS2Spec extends FreeSpec with MustMatchers {
       }
     }
   }
+
+  """Stream IO""" - {
+    """Let's print""" in {
+      val put: Int => IO[Unit] =
+        s => IO(println(s))
+
+      val stream: Stream[IO, Unit] = Stream(1, 2, 3).flatMap(x => Stream.repeatEval(put(x)).take(2))
+
+      stream.compile.drain.unsafeRunSync()
+    }
+  }
 }
