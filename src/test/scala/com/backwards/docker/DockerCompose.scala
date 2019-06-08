@@ -1,6 +1,5 @@
 package com.backwards.docker
 
-import java.io.File
 import java.nio.file.{Files, Path, Paths, StandardOpenOption}
 import java.util.UUID
 import java.util.zip.{ZipEntry, ZipOutputStream}
@@ -12,32 +11,30 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.sys.process.{Process, ProcessLogger}
 import scala.util.{Failure, Success, Try}
+import better.files._
 import com.typesafe.scalalogging.LazyLogging
 
 /**
   * TODO - WIP
   * @param name String
-  * @param dockerComposeFiles Seq[Path]
-  * @param workingDirectory Path Docker compose working directory
+  * @param dockerComposeFiles Seq[File]
   * @param environment Map[String, String] Environment variables. Example: Map("CONTAINER_EXPOSED_PORT" -> "80")
   */
 case class DockerCompose(
   name: String = UUID.randomUUID().toString,
-  dockerComposeFiles: Seq[Path],
-  workingDirectory: Path = Paths.get("").toAbsolutePath,
+  dockerComposeFiles: Seq[File],
   environment: Map[String, String] = Map.empty[String, String]
 ) extends LazyLogging {
 
   import DockerCompose._
 
-  logger.info(s"Docker compose files: ${dockerComposeFiles.map(_.toAbsolutePath).mkString(", ")}")
+  logger.info(s"Docker compose files: ${dockerComposeFiles.map(_.pathAsString).mkString(", ")}")
 
   private val defaultLongCommandTimeOut = 5 minutes
   private val defaultShortCommandTimeOut = 1 minute
 
   /**
     * Executes docker-compose up command using setup defined and waits for all containers with healthchecks to be in a healthy state.
-    *
     * @param timeOut maximum time for all containers be in a healthy state
     * @return true if all containers started and achieved a healthy state otherwise false
     */
@@ -46,7 +43,6 @@ case class DockerCompose(
 
   /**
     * Executes docker-compose down command using setup defined.
-    *
     * @return true if all containers were stopped and removed otherwise false
     */
   def down: Boolean =
@@ -54,7 +50,6 @@ case class DockerCompose(
 
   /**
     * Retrieves port that was mapped to binded port for specified service.
-    *
     * @param serviceName ServiceName
     * @param bindedPort port that was binded to some specific port
     * @return Returns a list of ports from all service containers that have binded port
@@ -68,7 +63,6 @@ case class DockerCompose(
   /**
     * Dump logs from STDOUT using docker-compose logs for each service.
     * Logs will be saved to target dir in a zip file with the name specified.
-    *
     * @param fileName zip file name
     * @param target directory where zip file will be saved
     * @return Try object that if fails contains exception, otherwise returns nothing
@@ -83,7 +77,6 @@ case class DockerCompose(
 
   /**
     * Compresses files to zip file and deletes files.
-    *
     * @param filePath file path including file name and directory where it will be created
     * @param files list of files path
     */
@@ -102,7 +95,6 @@ case class DockerCompose(
 
   /**
     * Creates a file, in filePath with the given content.
-    *
     * @param filePath path with file name
     * @param content list of strings that will be written in file
     * @return a Try object
@@ -112,7 +104,6 @@ case class DockerCompose(
 
   /**
     * Removes network and containers started by setup if still present.
-    *
     * @return true if setup network and containers were removed with success otherwise false
     */
   def cleanUp: Boolean = {
@@ -148,7 +139,7 @@ case class DockerCompose(
       port.toString
     )
 
-    runCmdWithOutput(command, workingDirectory.toFile, environment, defaultShortCommandTimeOut) match {
+    runCmdWithOutput(command, environment, defaultShortCommandTimeOut) match {
       case Success(output) if output.nonEmpty => output.head.replaceAll("^.+:", "")
       case _ => ""
     }
@@ -163,7 +154,7 @@ case class DockerCompose(
         composeFileArguments(dockerComposeFiles) ++
         Seq("-p", name, "ps", "-q", serviceName.value)
 
-    runCmdWithOutput(command, workingDirectory.toFile, environment, defaultShortCommandTimeOut) match {
+    runCmdWithOutput(command, environment, defaultShortCommandTimeOut) match {
       case Success(output) =>
         output
       case Failure(f) =>
@@ -178,7 +169,7 @@ case class DockerCompose(
         composeFileArguments(dockerComposeFiles) ++
         Seq("-p", name, "ps", "-q")
 
-    runCmdWithOutput(command, workingDirectory.toFile, environment, defaultShortCommandTimeOut) match {
+    runCmdWithOutput(command, environment, defaultShortCommandTimeOut) match {
       case Success(output) =>
         output
       case Failure(f) =>
@@ -193,7 +184,7 @@ case class DockerCompose(
         composeFileArguments(dockerComposeFiles) ++
         Seq("-p", name, "config", "--services")
 
-    runCmdWithOutput(command, workingDirectory.toFile, environment, defaultShortCommandTimeOut) match {
+    runCmdWithOutput(command, environment, defaultShortCommandTimeOut) match {
       case Success(output) =>
         output
       case Failure(f) =>
@@ -210,7 +201,7 @@ case class DockerCompose(
       "--format={{ .State.Health }}"
     )
 
-    runCmdWithOutput(command, workingDirectory.toFile, environment, defaultShortCommandTimeOut) match {
+    runCmdWithOutput(command, environment, defaultShortCommandTimeOut) match {
       case Success(output) =>
         output.nonEmpty && output.size == 1 && output.head != "<nil>"
       case Failure(f) =>
@@ -225,7 +216,7 @@ case class DockerCompose(
         composeFileArguments(dockerComposeFiles) ++
         Seq("-p", name, "up", "-d")
 
-    runCmd(command, workingDirectory.toFile, environment, defaultLongCommandTimeOut)
+    runCmd(command, environment, defaultLongCommandTimeOut)
   }
 
   def dockerComposeDown: Boolean = {
@@ -234,7 +225,7 @@ case class DockerCompose(
         composeFileArguments(dockerComposeFiles) ++
         Seq("-p", name, "down")
 
-    runCmd(command, workingDirectory.toFile, environment, defaultLongCommandTimeOut)
+    runCmd(command, environment, defaultLongCommandTimeOut)
   }
 
   def waitForHealthyContainer(containerId: String, timeout: Duration): Boolean = {
@@ -287,7 +278,7 @@ case class DockerCompose(
         Seq("-p", name, "logs", "--no-color") ++
         serviceName
 
-    runCmdWithOutput(command, workingDirectory.toFile, environment, defaultShortCommandTimeOut) match {
+    runCmdWithOutput(command, environment, defaultShortCommandTimeOut) match {
       case Success(output) =>
         output
       case Failure(f) =>
@@ -302,7 +293,7 @@ case class DockerCompose(
         composeFileArguments(dockerComposeFiles) ++
         Seq("-p", name, "ps", "-q")
 
-    runCmdWithOutput(command, workingDirectory.toFile, environment, defaultShortCommandTimeOut) match {
+    runCmdWithOutput(command, environment, defaultShortCommandTimeOut) match {
       case Success(output) =>
         output.isEmpty
       case Failure(f) =>
@@ -314,19 +305,19 @@ case class DockerCompose(
   private def stopAllContainers(ids: Seq[String]): Boolean =
     ids.forall { id =>
       val command = Seq("docker", "stop", id)
-      runCmd(command, workingDirectory.toFile, Map.empty, 1 minute)
+      runCmd(command, Map.empty, 1 minute)
     }
 
   private def removeAllContainers(ids: Seq[String]): Boolean =
     ids.forall { id =>
       val command = Seq("docker", "rm", "-f", id)
-      runCmd(command, workingDirectory.toFile, Map.empty, 1 minute)
+      runCmd(command, Map.empty, 1 minute)
     }
 
   private def networkId(network: String): Option[String] = {
     val command = Seq("docker", "network", "ls", "--filter", s"name=${network}_default", "-q")
 
-    runCmdWithOutput(command, workingDirectory.toFile, Map.empty, 10 seconds) match {
+    runCmdWithOutput(command, Map.empty, 10 seconds) match {
       case Success(list) => if (list.nonEmpty) list.headOption else None
       case Failure(_)    => None
     }
@@ -334,7 +325,7 @@ case class DockerCompose(
 
   private def removeNetwork(networkId: String): Boolean = {
     val command = Seq("docker", "network", "rm", networkId)
-    runCmd(command, workingDirectory.toFile, Map.empty, 10 seconds)
+    runCmd(command, Map.empty, 10 seconds)
   }
 
   private def waitProcessExit(process: Process, timeout: Duration): Int = {
@@ -352,21 +343,18 @@ case class DockerCompose(
 
   /**
     * Runs a command using specified working directory.
-    *
     * @param command list of strings that compose the command
-    * @param cwd working directory where command will be ran
     * @return a Try object with output lines list if succeeds
     */
   private def runCmdWithOutput(
     command: Seq[String],
-    cwd: File,
     envVars: Map[String, String],
     timeout: Duration
   ): Try[List[String]] = Try {
     val resultBuffer = new ListBuffer[String]()
 
     val process =
-      Process(command, cwd, envVars.toSeq: _*)
+      Process(command, None, envVars.toSeq: _*)
         .run(ProcessLogger(line => resultBuffer += line, line => logger.debug(line)))
 
     assert(waitProcessExit(process, timeout) == 0, s"Failed to run command: ${command.mkString(" ")}")
@@ -375,20 +363,18 @@ case class DockerCompose(
 
   /**
     * Runs a command using specified working directory.
-    *
     * @param command list of strings that compose the command
-    * @param cwd working directory where command will be ran
     * @return true if command ran with success
     */
-  private def runCmd(command: Seq[String], cwd: File, envVars: Map[String, String], timeout: Duration): Boolean = {
+  private def runCmd(command: Seq[String], envVars: Map[String, String], timeout: Duration): Boolean = {
     val process =
-      Process(command, cwd, envVars.toSeq: _*).run(ProcessLogger(_ => (), line => logger.debug(line)))
+      Process(command, None, envVars.toSeq: _*).run(ProcessLogger(_ => (), line => logger.debug(line)))
 
     waitProcessExit(process, timeout) == 0
   }
 
-  private def composeFileArguments(files: Seq[Path]): Seq[String] =
-    files.flatMap(file => Seq("-f", file.toString))
+  private def composeFileArguments(files: Seq[File]): Seq[String] =
+    files.flatMap(file => Seq("-f", file.pathAsString))
 }
 
 object DockerCompose {

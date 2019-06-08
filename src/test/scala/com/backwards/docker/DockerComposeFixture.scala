@@ -52,7 +52,7 @@ trait DockerComposeFixture extends SuiteMixin with LazyLogging {
 
   private def dockerComposeDown(): Unit =
     try {
-      if (dockerContainersUp.get()) for {
+      if (dockerContainersUp.get) for {
         dumpLocation <- logDumpLocation
         dumpFileName <- logDumpFileName
       } dockerCompose.dumpLogs(dumpFileName, dumpLocation) match {
