@@ -11,4 +11,9 @@ trait MapOps {
         properties.put(k.asInstanceOf[AnyRef], v.asInstanceOf[AnyRef])
         properties
     }
+
+  implicit class MapOps[K, V](m: Map[K, V]) {
+    def update(key: K, orElse: => V): (V => V) => Map[K, V] =
+      f => m.updated(key, f(m.getOrElse(key, orElse)))
+  }
 }
