@@ -4,6 +4,7 @@ import monix.eval.Task
 import monix.execution.Scheduler.Implicits.global
 import org.scalatest.MustMatchers
 import org.scalatest.wordspec.AnyWordSpec
+import com.backwards.monix.TaskOps._
 
 class TaskOpsSpec extends AnyWordSpec with MustMatchers {
   "Tasks" should {
