@@ -87,16 +87,16 @@ class MonadErrorSpec extends WordSpec with MustMatchers with ScalaFutures {
         * MonadError[MyEitherT, Throwable].recoverWith(eitherT) { ... }
         *
         * But we can also use the kind compiler plugin to create an anonymous type for us. That's what's happening
-        * in the EitherT[Future, ServiceError, ?] call below
+        * in the EitherT[Future, ServiceError, *] call below
         */
-      val recoveredEitherT = MonadError[EitherT[Future, ServiceError, ?], Throwable].recoverWith(eitherT) {
+      val recoveredEitherT = MonadError[EitherT[Future, ServiceError, *], Throwable].recoverWith(eitherT) {
         case t => EitherT.leftT[Future, Order](OtherError(s"future failed - ${t.getMessage}"): ServiceError)
       }
     }
 
     "step 2" in {
       implicit class RecoveringEitherT[F[_], A, B](underlying: EitherT[F, A, B])(implicit me: MonadError[F, Throwable]) {
-        def recoverF(op: Throwable => A): EitherT[F, A, B] = MonadError[EitherT[F, A, ?], Throwable].recoverWith(underlying) {
+        def recoverF(op: Throwable => A): EitherT[F, A, B] = MonadError[EitherT[F, A, *], Throwable].recoverWith(underlying) {
           case t => EitherT.fromEither[F](op(t).asLeft[B])
         }
       }

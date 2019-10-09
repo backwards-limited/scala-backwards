@@ -1,12 +1,12 @@
 package com.backwards.fs2
 
 import java.nio.file.Paths
-import java.util.concurrent.Executors
 import scala.concurrent.{ExecutionContext, Future}
 import cats.effect._
 import cats.implicits._
 import fs2._
-import org.scalatest.{FreeSpec, MustMatchers}
+import org.scalatest.MustMatchers
+import org.scalatest.freespec.AnyFreeSpec
 
 /**
   * [[https://medium.freecodecamp.org/a-streaming-library-with-a-superpower-fs2-and-functional-programming-6f602079f70a FS2 Article]]
@@ -27,7 +27,7 @@ import org.scalatest.{FreeSpec, MustMatchers}
   *   You can do some advanced stuff here.
   *   Streams can communicate together during the processing stage and not only at the end.
   */
-class FS2Spec extends FreeSpec with MustMatchers {
+class FS2Spec extends AnyFreeSpec with MustMatchers {
   """What can I do with Stream that List cannot?""" - {
     """
       Your data is too big to fit into memory
@@ -42,23 +42,21 @@ class FS2Spec extends FreeSpec with MustMatchers {
     """ in {
       implicit val contextShift: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
 
-      def fahrenheitToCelsius(f: Double): Double =
-        (f - 32.0) * (5.0 / 9.0)
+      val stream: Stream[IO, Unit] = Stream.resource(Blocker[IO]).flatMap { blocker =>
+        def fahrenheitToCelsius(f: Double): Double =
+          (f - 32.0) * (5.0 / 9.0)
 
-      val blockingExecutionContext = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(2))
+        io.file.readAll[IO](Paths.get("src/test/resources/fahrenheit.txt"), blocker, 4096)
+          .through(text.utf8Decode)
+          .through(text.lines)
+          .filter(s => !s.trim.isEmpty && !s.startsWith("//"))
+          .map(line => fahrenheitToCelsius(line.toDouble).toString)
+          .intersperse("\n")
+          .through(text.utf8Encode)
+          .through(io.file.writeAll(Paths.get("src/test/resources/celsius.txt"), blocker))
+      }
 
-      val task = io.file.readAll[IO](Paths.get("src/test/resources/fahrenheit.txt"), blockingExecutionContext, 4096)
-        .through(text.utf8Decode)
-        .through(text.lines)
-        .filter(s => !s.trim.isEmpty && !s.startsWith("//"))
-        .map(line => fahrenheitToCelsius(line.toDouble).toString)
-        .intersperse("\n")
-        .through(text.utf8Encode)
-        .through(io.file.writeAll(Paths.get("src/test/resources/celsius.txt"), blockingExecutionContext))
-        .compile.drain
-        .as(ExitCode.Success)
-
-      task.unsafeRunSync() mustBe ExitCode.Success
+      stream.compile.drain.as(ExitCode.Success).unsafeRunSync() mustBe ExitCode.Success
     }
 
     """
@@ -170,6 +168,8 @@ class FS2Spec extends FreeSpec with MustMatchers {
           }
 
           "equivalent" in {
+            implicit val contextShift: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
+
             userNames.evalMap[IO, Int](name => IO fromFuture IO(acquireUserId(name))).compile.toList.unsafeRunSync mustBe List(1, 2, 3)
           }
 

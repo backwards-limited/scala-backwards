@@ -1,9 +1,10 @@
 package com.backwards.fp.foldable
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.MustMatchers
+import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp._
 
-class FoldableSpec extends WordSpec with MustMatchers {
+class FoldableSpec extends AnyWordSpec with MustMatchers {
   import com.backwards.fp.foldable.FoldableOps._
 
   "Foldable" should {

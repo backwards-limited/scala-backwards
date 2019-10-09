@@ -12,7 +12,7 @@ object WriterOps {
     *   implicit def writerApplicative[W] = new Applicative[({ type E[X] = Writer[W, X] })# E]
     * }}}
     */
-  implicit def writerApplicative[W: Monoid](implicit F: Functor[Writer[W, ?]]): Applicative[Writer[W, ?]] = new Applicative[Writer[W, ?]] {
+  implicit def writerApplicative[W: Monoid](implicit Functor: Functor[Writer[W, *]]): Applicative[Writer[W, *]] = new Applicative[Writer[W, *]] {
     def pure[A](a: A): Writer[W, A] = Writer(() => (implicitly[Monoid[W]].mzero, a))
 
     def <*>[A, R](ff: Writer[W, A => R])(fa: Writer[W, A]): Writer[W, R] = {
@@ -28,6 +28,6 @@ object WriterOps {
     *   new ApplicativeOps[({ type E[X] = Writer[W, X] })# E, A, R](writer)
     * }}}
     */
-  implicit def toApplicativeOps[W: Monoid, A, R](writer: Writer[W, A => R]): ApplicativeOps[Writer[W, ?], A, R] =
-    new ApplicativeOps[Writer[W, ?], A, R](writer)
+  implicit def toApplicativeOps[W: Monoid, A, R](writer: Writer[W, A => R]): ApplicativeOps[Writer[W, *], A, R] =
+    new ApplicativeOps[Writer[W, *], A, R](writer)
 }

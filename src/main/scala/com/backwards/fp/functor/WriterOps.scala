@@ -11,7 +11,7 @@ object WriterOps extends ToFunctorOps {
     *   implicit def writerFunctor[W] = new Functor[({ type E[X] = Writer[W, X] })# E]
     * }}}
     */
-  implicit def writerFunctor[W: Monoid]: Functor[Writer[W, ?]] = new Functor[Writer[W, ?]] {
+  implicit def writerFunctor[W: Monoid]: Functor[Writer[W, *]] = new Functor[Writer[W, *]] {
     override def fmap[A, B](writer: Writer[W, A])(f: A => B): Writer[W, B] = {
       val (w, a) = writer.run()
       Writer(() => (w, f(a)))
@@ -24,8 +24,8 @@ object WriterOps extends ToFunctorOps {
     *   implicit def toFunctorOps[W, A](writer: Writer[W, A]) = new FunctorOps[({ type E[X] = Writer[W, X] })# E, A](writer)
     * }}}
     */
-  implicit def toFunctorOps[WRITER[_, _] <: Writer[_, _], W, A](writer: WRITER[W, A])(implicit F: Functor[WRITER[W, ?]]): FunctorOps[WRITER[W, ?], A] =
-    new FunctorOps[WRITER[W, ?], A](writer)
+  implicit def toFunctorOps[WRITER[_, _] <: Writer[_, _], W, A](writer: WRITER[W, A])(implicit Functor: Functor[WRITER[W, *]]): FunctorOps[WRITER[W, *], A] =
+    new FunctorOps[WRITER[W, *], A](writer)
 
   implicit def toFunctionFunctorOps[A, B](f: A => B): WriterFunctorOps[A, B] =
     new WriterFunctorOps[A, B](f)

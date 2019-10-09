@@ -1,11 +1,12 @@
 package com.backwards.fp.applicative
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.MustMatchers
+import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp.{Disjunction, LeftDisjunction, RightDisjunction}
 
-class DisjunctionSpec extends WordSpec with MustMatchers {
-  import com.backwards.fp.functor.DisjunctionOps._
+class DisjunctionSpec extends AnyWordSpec with MustMatchers {
   import com.backwards.fp.applicative.DisjunctionOps._
+  import com.backwards.fp.functor.DisjunctionOps._
 
   "Right Disjunction Applicative" should {
     "work using fmap and <*> separately" in {

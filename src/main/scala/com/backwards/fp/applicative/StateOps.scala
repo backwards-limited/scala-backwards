@@ -12,7 +12,7 @@ object StateOps {
     *   implicit def stateApplicative[S]: Applicative[({ type E[X] = State[S, X] })# E] = new Applicative[({ type E[X] = State[S, X] })# E]
     * }}}
     */
-  implicit def stateApplicative[S]: Applicative[State[S, ?]] = new Applicative[State[S, ?]] {
+  implicit def stateApplicative[S]: Applicative[State[S, *]] = new Applicative[State[S, *]] {
     override def pure[A](a: A): State[S, A] = State(s => (s, a))
 
     override def <*>[A, R](ff: State[S, A => R])(state: State[S, A]): State[S, R] = {
@@ -32,8 +32,8 @@ object StateOps {
     *     new ApplicativeOps[({ type E[X] = State[S, X] })# E, A, R](state)
     * }}}
     */
-  implicit def toApplicativeOps[S, A, R](state: State[S, A => R]): ApplicativeOps[State[S, ?], A, R] =
-    new ApplicativeOps[State[S, ?], A, R](state)
+  implicit def toApplicativeOps[S, A, R](state: State[S, A => R]): ApplicativeOps[State[S, *], A, R] =
+    new ApplicativeOps[State[S, *], A, R](state)
 
   implicit class StateOps[A](a: A) {
     def pure[S]: State[S, A] = stateApplicative[S].pure(a)

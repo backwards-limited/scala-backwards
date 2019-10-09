@@ -15,7 +15,7 @@ object StateOps {
     *       }
     * }}}
     */
-  implicit def stateFunctor[S]: Functor[State[S, ?]] = new Functor[State[S, ?]] {
+  implicit def stateFunctor[S]: Functor[State[S, *]] = new Functor[State[S, *]] {
     override def fmap[A, B](state: State[S, A])(f: A => B): State[S, B] =
       State { s =>
         val (nextS, a) = state run s
@@ -30,8 +30,8 @@ object StateOps {
     *     new FunctorOps[({ type E[X] = STATE[S, X] })# E, A](state)
     * }}}
     */
-  implicit def toFunctorOps[S, A](state: State[S, A])(implicit F: Functor[State[S, ?]]): FunctorOps[State[S, ?], A] =
-    new FunctorOps[State[S, ?], A](state)
+  implicit def toFunctorOps[S, A](state: State[S, A])(implicit Functor: Functor[State[S, *]]): FunctorOps[State[S, *], A] =
+    new FunctorOps[State[S, *], A](state)
 
   implicit def toStateFunctionOps[A, B](f: A => B): StateFunctionOps[A, B] =
     new StateFunctionOps(f)

@@ -14,7 +14,7 @@ object WriterOps {
     *   implicit def writerMonad[W] = new Monad[({ type E[A] = Writer[W, A] })# E]
     * }}}
     */
-  implicit def writerMonad[W: Monoid]: Monad[Writer[W, ?]] = new Monad[Writer[W, ?]] {
+  implicit def writerMonad[W: Monoid]: Monad[Writer[W, *]] = new Monad[Writer[W, *]] {
     def pure[A](a: A): Writer[W, A] = Writer(() => (Monoid.mzero, a))
 
     def flatMap[A, B](m: Writer[W, A])(f: A => Writer[W, B]): Writer[W, B] = {
@@ -32,8 +32,8 @@ object WriterOps {
     *     new MonadOps[({ type E[X] = Writer[W, X] })# E, A](writer)
     * }}}
     */
-  implicit def toMonadOps[W: Monoid, A](writer: Writer[W, A]): MonadOps[Writer[W, ?], A] =
-    new MonadOps[Writer[W, ?], A](writer)
+  implicit def toMonadOps[W: Monoid, A](writer: Writer[W, A]): MonadOps[Writer[W, *], A] =
+    new MonadOps[Writer[W, *], A](writer)
 
   implicit def toMonadPureOps[A](a: A): MonadPureOps[A] = new MonadPureOps(a)
 }

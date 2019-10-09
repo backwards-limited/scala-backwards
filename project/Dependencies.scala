@@ -20,7 +20,7 @@ object Dependencies {
   )
 
   lazy val scalacheck: Seq[ModuleID] = Seq(
-    "org.scalacheck" %% "scalacheck" % "1.14.0" % "test, it"  
+    "org.scalacheck" %% "scalacheck" % "1.14.2" % "test, it"
   )
 
   lazy val scalacheckShapeless: Seq[ModuleID] = Seq(
@@ -28,11 +28,11 @@ object Dependencies {
   )
   
   lazy val testcontainers: Seq[ModuleID] = Seq(
-    "org.testcontainers" % "testcontainers" % "1.12.1" % "test, it"
+    "org.testcontainers" % "testcontainers" % "1.12.2" % "test, it"
   )
   
   lazy val airframe: Seq[ModuleID] = Seq(
-    "org.wvlet.airframe" %% "airframe-log" % "19.9.3"
+    "org.wvlet.airframe" %% "airframe-log" % "19.10.1"
   )
 
   lazy val logging: Seq[ModuleID] = Seq(
@@ -42,11 +42,10 @@ object Dependencies {
   )
   
   lazy val pureConfig: Seq[ModuleID] = {
-    val version = "0.11.1"
+    val version = "0.12.1"
 
     Seq(
-      "com.github.pureconfig" %% "pureconfig",
-      "com.github.pureconfig" %% "pureconfig-http4s"
+      "com.github.pureconfig" %% "pureconfig"
     ).map(_ % version)
   }
 
@@ -55,7 +54,7 @@ object Dependencies {
   )
   
   lazy val refined: Seq[ModuleID] = {
-    val version = "0.9.9"
+    val version = "0.9.10"
 
     Seq(
       "eu.timepit" %% "refined",
@@ -65,7 +64,7 @@ object Dependencies {
   }
 
   lazy val monocle: Seq[ModuleID] = {
-    val version = "1.6.0"
+    val version = "2.0.0"
 
     Seq(
       "com.github.julien-truffaut" %% "monocle-law"
@@ -81,13 +80,12 @@ object Dependencies {
   )
 
   lazy val cats: Seq[ModuleID] = {
-    val version = "1.6.1"
+    val version = "2.0.0"
 
     Seq(
-      "org.typelevel" %% "cats-core"
+      "org.typelevel" %% "cats-core",
+      "org.typelevel" %% "cats-effect"
     ).map(_ % version) ++ Seq(
-      "org.typelevel" %% "cats-effect" % "1.4.0"
-    ) ++ Seq(
       "org.typelevel" %% "cats-laws",
       "org.typelevel" %% "cats-testkit"
     ).map(_ % version % "test, it")
@@ -98,11 +96,11 @@ object Dependencies {
   )
 
   lazy val monix: Seq[ModuleID] = Seq(
-    "io.monix" %% "monix" % "3.0.0-RC5"
+    "io.monix" %% "monix" % "3.0.0"
   )
 
   lazy val fs2: Seq[ModuleID] = {
-    val version = "1.0.5"
+    val version = "2.0.1"
 
     Seq(
       "co.fs2" %% "fs2-core",

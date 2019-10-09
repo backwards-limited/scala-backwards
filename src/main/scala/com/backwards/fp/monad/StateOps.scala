@@ -12,7 +12,7 @@ object StateOps {
     *   implicit def stateMonad[S] = new Monad[({ type E[X] = State[S, X] })# E]
     * }}}
     */
-  implicit def stateMonad[S]: Monad[State[S, ?]] = new Monad[State[S, ?]] {
+  implicit def stateMonad[S]: Monad[State[S, *]] = new Monad[State[S, *]] {
     def pure[A](a: A): State[S, A] = State(s => (s, a))
 
     def flatMap[A, B](m: State[S, A])(f: A => State[S, B]): State[S, B] = {
@@ -30,8 +30,8 @@ object StateOps {
     *     new MonadOps[({ type E[X] = State[S, X] })# E, A](state)
     * }}}
     */
-  implicit def toMonadOps[S, A](state: State[S, A])(implicit M: Monad[State[S, ?]]): MonadOps[State[S, ?], A] =
-    new MonadOps[State[S, ?], A](state)
+  implicit def toMonadOps[S, A](state: State[S, A])(implicit Monad: Monad[State[S, *]]): MonadOps[State[S, *], A] =
+    new MonadOps[State[S, *], A](state)
 
   implicit def toMonadPureOps[A](a: A): MonadPureOps[A] = new MonadPureOps(a)
 }

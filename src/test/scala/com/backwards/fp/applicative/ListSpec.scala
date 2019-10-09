@@ -1,12 +1,13 @@
 package com.backwards.fp.applicative
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.MustMatchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class ListSpec extends WordSpec with MustMatchers {
-  import com.backwards.fp.functor.FunctorOps._
-  import com.backwards.fp.functor.ListOps._
+class ListSpec extends AnyWordSpec with MustMatchers {
   import com.backwards.fp.applicative.ApplicativeOps._
   import com.backwards.fp.applicative.ListOps._
+  import com.backwards.fp.functor.FunctorOps._
+  import com.backwards.fp.functor.ListOps._
 
   "List Applicative" should {
     "work for fmap and <*>" in {

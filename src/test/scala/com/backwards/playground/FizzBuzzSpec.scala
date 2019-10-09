@@ -2,9 +2,10 @@ package com.backwards.playground
 
 import cats.implicits._
 import cats.kernel.Monoid
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.MustMatchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class FizzBuzzSpec extends WordSpec with MustMatchers {
+class FizzBuzzSpec extends AnyWordSpec with MustMatchers {
   "FizzBuzz" should {
     "work - prefer this one" in {
       val f3: PartialFunction[Int, String] = {
@@ -52,9 +53,9 @@ class FizzBuzzSpec extends WordSpec with MustMatchers {
 
     val fizzBuzz = f15 orElse f3 orElse f5 orElse id
 
-    (1 to 20).map(fizzBuzz andThen println)
+    (1 to 20).map(fizzBuzz.andThen(println(_)))
     // OR
     println("-----------------------")
-    Stream.from(1).map(fizzBuzz).take(20).foreach(println)
+    LazyList.from(1).map(fizzBuzz).take(20).foreach(println)
   }
 }

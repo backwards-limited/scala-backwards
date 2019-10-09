@@ -27,9 +27,9 @@ object MaybeOps {
     }
   }
 
-  implicit def justToApplication[A, R](just: Just[A => R])(implicit APP: Applicative[Just]): ApplicativeOps[Maybe, A, R] =
+  implicit def justToApplicative[A, R](just: Just[A => R])(implicit Applicative: Applicative[Just]): ApplicativeOps[Maybe, A, R] =
     new ApplicativeOps(just: Maybe[A => R])
 
-  implicit def nothingToApplicative[A, R](nothing: Nothing[A => R])(implicit APP: Applicative[Nothing]): ApplicativeOps[Maybe, A, R] =
+  implicit def nothingToApplicative[A, R](nothing: Nothing[A => R])(implicit Applicative: Applicative[Nothing]): ApplicativeOps[Maybe, A, R] =
     new ApplicativeOps(nothing: Maybe[A => R])
 }

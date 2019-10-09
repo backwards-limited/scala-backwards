@@ -1,11 +1,12 @@
 package com.backwards.fp.applicative
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.MustMatchers
+import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp.State
 
-class StateSpec extends WordSpec with MustMatchers {
-  import com.backwards.fp.functor.StateOps._
+class StateSpec extends AnyWordSpec with MustMatchers {
   import com.backwards.fp.applicative.StateOps._
+  import com.backwards.fp.functor.StateOps._
 
   def countAndRemove(char: Char): State[String, Int] = State { s: String =>
     val (chars, other) = s.partition(_ == char)

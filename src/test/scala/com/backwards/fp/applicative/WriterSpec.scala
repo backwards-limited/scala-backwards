@@ -1,11 +1,12 @@
 package com.backwards.fp.applicative
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.MustMatchers
+import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp.Writer
 
-class WriterSpec extends WordSpec with MustMatchers {
-  import com.backwards.fp.functor.WriterOps._
+class WriterSpec extends AnyWordSpec with MustMatchers {
   import com.backwards.fp.applicative.WriterOps._
+  import com.backwards.fp.functor.WriterOps._
   import com.backwards.fp.monoid.ListOps._
 
   "Writer Applicative" should {

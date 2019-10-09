@@ -74,7 +74,7 @@ class ApplicativeSpec extends WordSpec with MustMatchers with ScalaFutures {
         if (value.nonEmpty) value.valid else List(s"$key is empty").invalid
       }
 
-      val errorOrName = Applicative[Errors Validated ?].map2(validate("first name", "john"), validate("last name", "doe"))(_ + " " + _)
+      val errorOrName = Applicative[Errors Validated *].map2(validate("first name", "john"), validate("last name", "doe"))(_ + " " + _)
       errorOrName match {
         case Invalid(errors) => println("errors: " + errors.mkString(", "))
         case Valid(fullName) => println(fullName)

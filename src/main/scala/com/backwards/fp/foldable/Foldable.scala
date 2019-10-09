@@ -25,7 +25,7 @@ object FoldableOps {
     *     new FoldableOps[({ type E[X] = (X, X) })# E, A](fa)
     * }}}
     */
-  implicit def tuple2ToFoldableOps[A](fa: (A, A))(implicit FOLDABLE: Foldable[Lambda[X => (X, X)]]) =
+  implicit def tuple2ToFoldableOps[A](fa: (A, A))(implicit Foldable: Foldable[Lambda[X => (X, X)]]): FoldableOps[Lambda[X => (X, X)], A] =
     new FoldableOps[Lambda[X => (X, X)], A](fa)
 
   /**
@@ -35,6 +35,6 @@ object FoldableOps {
     *     new FoldableOps[({ type E[X] = (X, X, X) })# E, A](fa)
     * }}}
     */
-  implicit def tuple3ToFoldableOps[A](fa: (A, A, A))(implicit FOLDABLE: Foldable[Lambda[X => (X, X, X)]]) =
+  implicit def tuple3ToFoldableOps[A](fa: (A, A, A))(implicit Foldable: Foldable[Lambda[X => (X, X, X)]]): FoldableOps[Lambda[X => (X, X, X)], A] =
     new FoldableOps[Lambda[X => (X, X, X)], A](fa)
 }
