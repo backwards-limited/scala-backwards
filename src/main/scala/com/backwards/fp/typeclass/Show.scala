@@ -56,25 +56,25 @@ object Show {
     str => s"string $str"
 
   implicit def genericShow[A, H <: HList](
-    implicit GEN: LabelledGeneric.Aux[A, H],
-    SHOW: Lazy[Show[H]],
-    TAG: TypeTag[A]
+    implicit Gen: LabelledGeneric.Aux[A, H],
+    Show: Lazy[Show[H]],
+    TypeTag: TypeTag[A]
   ): Show[A] = { a =>
-    val sh = SHOW value GEN.to(a)
-    s"${TAG.tpe} :: $sh"
+    val sh = Show value Gen.to(a)
+    s"${TypeTag.tpe} :: $sh"
   }
 
   implicit val hnilShow: Show[HNil] =
-    hnil => ""
+    _ => ""
 
   implicit def hlistShow[K <: Symbol, H, T <: HList](
-    implicit WITNESS: Witness.Aux[K],
-    HSHOW: Show[H],
-    TSHOW: Show[T]
+    implicit Wit: Witness.Aux[K],
+    ShowH: Show[H],
+    ShowT: Show[T]
   ): Show[FieldType[K, H] :: T] = { case h :: t =>
-    val name = WITNESS.value.name
-    val head = HSHOW(h)
-    val tail = TSHOW(t)
+    val name = Wit.value.name
+    val head = ShowH(h)
+    val tail = ShowT(t)
 
     if (tail.isEmpty) s"$name: $head" else s"$name: $head, $tail"
   }

@@ -19,16 +19,16 @@ object Sum {
 
   implicit val stringSum: Sum[String] = _ + _
 
-  implicit def genericSum[T, R](implicit GEN: Generic.Aux[T, R], SUM: Lazy[Sum[R]]): Sum[T] =
+  implicit def genericSum[T, R](implicit Gen: Generic.Aux[T, R], Sum: Lazy[Sum[R]]): Sum[T] =
     (a: T, b: T) =>
-      GEN from SUM.value.sum(GEN to a, GEN to b)
+      Gen from Sum.value.sum(Gen to a, Gen to b)
 
   implicit val hnilSum: Sum[HNil] =
     (a: HNil, b: HNil) => a
 
-  implicit def hconsSum[H, T <: HList](implicit HSUM: Lazy[Sum[H]], TSUM: Lazy[Sum[T]]): Sum[H :: T] =
+  implicit def hconsSum[H, T <: HList](implicit SumH: Lazy[Sum[H]], SumT: Lazy[Sum[T]]): Sum[H :: T] =
     (a: H :: T, b: H :: T) =>
-      HSUM.value.sum(a.head, b.head) :: TSUM.value.sum(a.tail, b.tail)
+      SumH.value.sum(a.head, b.head) :: SumT.value.sum(a.tail, b.tail)
 }
 
 trait SumDifferentTypes[T, U] {
@@ -39,12 +39,12 @@ trait SumDifferentTypes[T, U] {
 
 object SumDifferentTypes {
   object ops {
-    implicit class SumDifferentTypesFunctionsOps[A, B, C](a: A => B)(implicit SDT: SumDifferentTypes[A => B, B => C] { type Res = A => C }) {
-      def |+|(b: B => C): A => C = SDT.sum(a, b)
+    implicit class SumDifferentTypesFunctionsOps[A, B, C](a: A => B)(implicit SumDifferentTypes: SumDifferentTypes[A => B, B => C] { type Res = A => C }) {
+      def |+|(b: B => C): A => C = SumDifferentTypes.sum(a, b)
     }
 
-    implicit class SumDifferentTypesOps[A, B, C](a: A)(implicit sdt: SumDifferentTypes[A, B] { type Res = C }) {
-      def |+|(b: B): C = sdt.sum(a, b)
+    implicit class SumDifferentTypesOps[A, B, C](a: A)(implicit SumDifferentTypes: SumDifferentTypes[A, B] { type Res = C }) {
+      def |+|(b: B): C = SumDifferentTypes.sum(a, b)
     }
   }
 
