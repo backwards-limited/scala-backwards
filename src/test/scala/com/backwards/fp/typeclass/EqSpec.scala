@@ -1,9 +1,10 @@
 package com.backwards.fp.typeclass
 
 import org.scalatest._
+import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp.typeclass.Eq.ops._
 
-class EqSpec extends WordSpec with MustMatchers {
+class EqSpec extends AnyWordSpec with MustMatchers {
   sealed trait Base
   
   sealed trait Baz extends Base

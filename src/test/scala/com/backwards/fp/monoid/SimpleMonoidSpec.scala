@@ -1,8 +1,9 @@
 package com.backwards.fp.monoid
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.MustMatchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class SimpleMonoidSpec extends WordSpec with MustMatchers {
+class SimpleMonoidSpec extends AnyWordSpec with MustMatchers {
   import com.backwards.fp.monoid.MonoidOps._
   import com.backwards.fp.monoid.SimpleMonoidOps._
 

@@ -1,12 +1,13 @@
 package com.backwards.fp.state
 
 import cats.data.State
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.MustMatchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
   * [[https://functional.works-hub.com/learn/a-simple-way-to-write-parsers-using-the-state-monad-d5863]]
   */
-class StateSpec extends WordSpec with MustMatchers {
+class StateSpec extends AnyWordSpec with MustMatchers {
   "State " should {
     "be simple" in {
       val c = State[String, Char](s => (s.tail, s.head))

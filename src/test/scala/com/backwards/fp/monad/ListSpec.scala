@@ -1,8 +1,9 @@
 package com.backwards.fp.monad
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.MustMatchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class ListSpec extends WordSpec with MustMatchers {
+class ListSpec extends AnyWordSpec with MustMatchers {
   import com.backwards.fp.functor.FunctorOps._
   import com.backwards.fp.functor.ListOps._
   import com.backwards.fp.monad.ListOps._

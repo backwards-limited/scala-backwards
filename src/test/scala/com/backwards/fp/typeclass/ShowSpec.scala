@@ -1,9 +1,10 @@
 package com.backwards.fp.typeclass
 
 import org.scalatest._
+import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp.typeclass.Show.ops._
 
-class ShowSpec extends WordSpec with MustMatchers {
+class ShowSpec extends AnyWordSpec with MustMatchers {
   case class Foo(foo: Int)
 
   case class Bar(b: Int, a: String, r: Int)

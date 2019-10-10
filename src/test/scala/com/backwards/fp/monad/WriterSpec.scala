@@ -1,13 +1,14 @@
 package com.backwards.fp.monad
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.MustMatchers
+import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp.Writer
 
-class WriterSpec extends WordSpec with MustMatchers {
+class WriterSpec extends AnyWordSpec with MustMatchers {
+  import com.backwards.fp.Writer._
+  import com.backwards.fp.functor.WriterOps._
   import com.backwards.fp.monad.WriterOps._
   import com.backwards.fp.monoid.ListOps._
-  import com.backwards.fp.functor.WriterOps._
-  import com.backwards.fp.Writer._
 
   "Writer Monad" should {
     "work" in {

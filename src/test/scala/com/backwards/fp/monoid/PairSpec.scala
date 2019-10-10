@@ -1,12 +1,13 @@
 package com.backwards.fp.monoid
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.MustMatchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class PairSpec extends WordSpec with MustMatchers {
+class PairSpec extends AnyWordSpec with MustMatchers {
   import com.backwards.fp.Pair
-  import com.backwards.fp.monoid.PairOps._
   import com.backwards.fp.monoid.ListOps._
   import com.backwards.fp.monoid.MonoidOps._
+  import com.backwards.fp.monoid.PairOps._
   import com.backwards.fp.monoid.SimpleMonoidOps._
 
   "Pair Monoid" should {
