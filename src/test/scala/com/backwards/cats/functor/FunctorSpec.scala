@@ -6,13 +6,14 @@ import cats.{Functor, Id}
 import monocle.Lens
 import monocle.macros.GenLens
 import monocle.macros.syntax.lens._
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
   * A Functor is a type class with a "map" method.
   * So, in simple terms any type constructor (type wrapping another type) that has a "map" method can be thought of as a Functor.
   */
-class FunctorSpec extends WordSpec with MustMatchers {
+class FunctorSpec extends AnyWordSpec with Matchers {
   case class LineItem(price: Double)
 
   val priceLineItemLens: Lens[LineItem, Double] =

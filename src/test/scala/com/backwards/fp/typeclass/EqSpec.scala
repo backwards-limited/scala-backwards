@@ -1,19 +1,19 @@
 package com.backwards.fp.typeclass
 
-import org.scalatest._
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp.typeclass.Eq.ops._
 
-class EqSpec extends AnyWordSpec with MustMatchers {
+class EqSpec extends AnyWordSpec with Matchers {
   sealed trait Base
   
   sealed trait Baz extends Base
   
-  final case class Foo1(foo: Int) extends Baz
+  case class Foo1(foo: Int) extends Baz
   
-  final case class Bar(b: Int, a: String, r: Int) extends Baz
+  case class Bar(b: Int, a: String, r: Int) extends Baz
   
-  final case class Foo2(foo: Int) extends Base
+  case class Foo2(foo: Int) extends Base
 
   "|=|" should {
     "work for ints" in {

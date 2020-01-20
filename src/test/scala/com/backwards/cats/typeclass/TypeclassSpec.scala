@@ -1,9 +1,10 @@
 package com.backwards.cats.typeclass
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.cats.typeclass.thirdparty.Train
 
-class TypeclassSpec extends WordSpec with MustMatchers {
+class TypeclassSpec extends AnyWordSpec with Matchers {
   trait Vehicle {
     def drive(): String
   }

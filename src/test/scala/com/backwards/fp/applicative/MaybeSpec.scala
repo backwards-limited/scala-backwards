@@ -1,13 +1,13 @@
 package com.backwards.fp.applicative
 
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp.{Just, Nothing}
 
 /**
   * Note that in some cases we use extra parentheses to keep IntelliJ happy.
   */
-class MaybeSpec extends AnyWordSpec with MustMatchers {
+class MaybeSpec extends AnyWordSpec with Matchers {
   import com.backwards.fp.applicative.MaybeOps._
   import com.backwards.fp.functor.FunctorOps._
   import com.backwards.fp.functor.MaybeOps._

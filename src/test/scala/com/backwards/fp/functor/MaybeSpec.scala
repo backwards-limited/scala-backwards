@@ -1,11 +1,11 @@
 package com.backwards.fp.functor
 
 import scala.language.postfixOps
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp.{Just, Maybe, Nothing}
 
-class MaybeSpec extends AnyWordSpec with MustMatchers {
+class MaybeSpec extends AnyWordSpec with Matchers {
   import com.backwards.fp.functor.FunctorOps._
   import com.backwards.fp.functor.MaybeOps._
 

@@ -1,12 +1,13 @@
 package com.backwards.cats.semigroupal
 
 import cats.Semigroupal
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
   * Cartesian
   */
-class SemigroupalSpec extends WordSpec with MustMatchers {
+class SemigroupalSpec extends AnyWordSpec with Matchers {
   "Semigroupal" should {
     "option" in {
       import cats.instances.option._

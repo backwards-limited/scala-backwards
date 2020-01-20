@@ -4,9 +4,10 @@ import java.nio.file.Paths
 import java.time.Instant
 import scala.language.postfixOps
 import cats.implicits._
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class DockerComposeSpec extends WordSpec with MustMatchers with DockerComposeFixture {
+class DockerComposeSpec extends AnyWordSpec with Matchers with DockerComposeFixture {
   val dockerCompose: DockerCompose =
     DockerCompose("kafka", Seq(Paths.get("src", "it", "resources", "docker-compose.yml")))
 

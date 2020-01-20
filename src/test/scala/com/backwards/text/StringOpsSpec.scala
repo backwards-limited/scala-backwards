@@ -1,8 +1,9 @@
 package com.backwards.text
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class StringOpsSpec extends WordSpec with MustMatchers with StringOps {
+class StringOpsSpec extends AnyWordSpec with Matchers with StringOps {
   "Lower kebab" should {
     object ConsumerDemoChoosePartition1
 

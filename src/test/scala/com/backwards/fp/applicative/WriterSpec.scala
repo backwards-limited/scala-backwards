@@ -1,10 +1,10 @@
 package com.backwards.fp.applicative
 
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp.Writer
 
-class WriterSpec extends AnyWordSpec with MustMatchers {
+class WriterSpec extends AnyWordSpec with Matchers {
   import com.backwards.fp.applicative.WriterOps._
   import com.backwards.fp.functor.WriterOps._
   import com.backwards.fp.monoid.ListOps._

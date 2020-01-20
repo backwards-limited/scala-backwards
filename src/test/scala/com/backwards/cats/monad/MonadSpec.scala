@@ -1,6 +1,7 @@
 package com.backwards.cats.monad
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
   * What's a Monad then? It is a type class that extends FlatMap and Applicative.
@@ -12,6 +13,6 @@ import org.scalatest.{MustMatchers, WordSpec}
   * We use the flatMap method to sequence effectful operations.
   * In simple terms effectful means the operations return monads i.e. Future[String].flatMap(...): Future[A]
   */
-class MonadSpec extends WordSpec with MustMatchers {
+class MonadSpec extends AnyWordSpec with Matchers {
 
 }

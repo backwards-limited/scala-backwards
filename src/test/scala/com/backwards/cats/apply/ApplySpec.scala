@@ -1,16 +1,17 @@
 package com.backwards.cats.apply
 
 import cats.Apply
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
   * Apply inherits from Functor and Semigroupal and adds a method "ap"
   */
-class ApplySpec extends WordSpec with MustMatchers {
+class ApplySpec extends AnyWordSpec with Matchers {
   "Apply" should {
     "option" in {
-      import cats.syntax.option._
       import cats.instances.option._
+      import cats.syntax.option._
 
       val ff: Option[String => Int] = Option(_.length)
 

@@ -3,11 +3,11 @@ package com.backwards.docker
 import java.nio.file.{Files, Path, Paths, StandardOpenOption}
 import java.util.UUID
 import java.util.zip.{ZipEntry, ZipOutputStream}
-import scala.collection.JavaConverters._
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 import scala.language.postfixOps
 import scala.sys.process.{Process, ProcessLogger}
 import scala.util.{Failure, Success, Try}

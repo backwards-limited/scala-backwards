@@ -1,6 +1,7 @@
 package com.backwards.variance
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
   * Checking that a snippet of code does not compile
@@ -17,7 +18,7 @@ import org.scalatest.{MustMatchers, WordSpec}
   * "val a: Int = 1" must compile
   * Although the previous three constructs are implemented with macros that determine at compile time whether the snippet of code represented by the string does or does not compile, errors are reported as test failures at runtime.
   */
-class VarianceSpec extends WordSpec with MustMatchers {
+class VarianceSpec extends AnyWordSpec with Matchers {
   class CSuper
 
   class C extends CSuper

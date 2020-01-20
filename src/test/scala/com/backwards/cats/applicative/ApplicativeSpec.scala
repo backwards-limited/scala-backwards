@@ -4,14 +4,15 @@ import scala.concurrent.Await
 import scala.language.postfixOps
 import cats.Applicative
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
   * Apply with the addition of the method "pure" forms an Applicative.
   * "pure" just takes an element and lifts it into the Applicative Functor.
   * In essence an Applicative lets us peform N operations independently, then it aggregates the results for us.
   */
-class ApplicativeSpec extends WordSpec with MustMatchers with ScalaFutures {
+class ApplicativeSpec extends AnyWordSpec with Matchers with ScalaFutures {
   "Applicative basics" should {
     "option" in {
       import cats.instances.option._
@@ -28,9 +29,9 @@ class ApplicativeSpec extends WordSpec with MustMatchers with ScalaFutures {
 
   "Applicative" should {
     "example 1" in {
-      import scala.concurrent.duration._
       import scala.concurrent.ExecutionContext.Implicits.global
       import scala.concurrent.Future
+      import scala.concurrent.duration._
       import cats.instances.future._
 
       def fetchFirstName: Future[String] = {

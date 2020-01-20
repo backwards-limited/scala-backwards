@@ -4,13 +4,14 @@ import cats.Id
 import cats.implicits._
 import monocle.macros.GenLens
 import monocle.std.option._
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp.FunctionOps._
 
-class BookRepositorySpec extends WordSpec with MustMatchers {
+class BookRepositorySpec extends AnyWordSpec with Matchers {
   val repository = new InMemoryBookRepository
 
-  val book = Book(
+  val book: Book = Book(
     id = Some(BookId("1")),
     title = "A Game of Thrones",
     author = "George R. R. Martin"

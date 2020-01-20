@@ -1,11 +1,11 @@
 package com.backwards.fp.functor
 
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp.Disjunction._
 import com.backwards.fp.{Disjunction, LeftDisjunction, RightDisjunction}
 
-class DisjunctionSpec extends AnyWordSpec with MustMatchers {
+class DisjunctionSpec extends AnyWordSpec with Matchers {
   import com.backwards.fp.functor.DisjunctionOps._
 
   "Disjunction/Either Functor" should {

@@ -1,10 +1,10 @@
 package com.backwards.cats.functor
 
-import scala.language.higherKinds
 import cats.Functor
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class BlahSpec extends WordSpec with MustMatchers {
+class BlahSpec extends AnyWordSpec with Matchers {
   "" should {
     "" in {
       import SomeImplicits._

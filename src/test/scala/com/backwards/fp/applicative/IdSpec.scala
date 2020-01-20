@@ -1,10 +1,10 @@
 package com.backwards.fp.applicative
 
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp.Id
 
-class IdSpec extends AnyWordSpec with MustMatchers {
+class IdSpec extends AnyWordSpec with Matchers {
   import com.backwards.fp.applicative.ApplicativeOps._
   import com.backwards.fp.applicative.IdOps._
   import com.backwards.fp.functor.FunctorOps._

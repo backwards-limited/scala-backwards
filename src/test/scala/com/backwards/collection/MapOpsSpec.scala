@@ -1,8 +1,9 @@
 package com.backwards.collection
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class MapOpsSpec extends WordSpec with MustMatchers with MapOps {
+class MapOpsSpec extends AnyWordSpec with Matchers with MapOps {
   "Map ops" should {
     "convert Map to Properties" in {
       """val p: java.util.Properties = Map[String, Int]("one" -> 1, "two" -> 2)""" must compile

@@ -5,8 +5,8 @@ import scala.concurrent.{ExecutionContext, Future}
 import cats.effect._
 import cats.implicits._
 import fs2._
-import org.scalatest.MustMatchers
 import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 
 /**
   * [[https://medium.freecodecamp.org/a-streaming-library-with-a-superpower-fs2-and-functional-programming-6f602079f70a FS2 Article]]
@@ -27,7 +27,7 @@ import org.scalatest.freespec.AnyFreeSpec
   *   You can do some advanced stuff here.
   *   Streams can communicate together during the processing stage and not only at the end.
   */
-class FS2Spec extends AnyFreeSpec with MustMatchers {
+class FS2Spec extends AnyFreeSpec with Matchers {
   """What can I do with Stream that List cannot?""" - {
     """
       Your data is too big to fit into memory

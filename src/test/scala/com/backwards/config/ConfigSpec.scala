@@ -1,11 +1,12 @@
 package com.backwards.config
 
-import java.nio.file.{Path, Paths}
-import io.lemonlabs.uri.Uri
-import org.scalatest.{Assertion, MustMatchers, WordSpec}
 import better.files._
+import io.lemonlabs.uri.Uri
+import org.scalatest.Assertion
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class ConfigSpec extends WordSpec with MustMatchers {
+class ConfigSpec extends AnyWordSpec with Matchers {
   def checkConfig(myconfig: MyConfig): Assertion = {
     myconfig.bootstrap mustBe BootstrapConfig(Seq(Uri.parse("127.0.0.1:9092")))
 

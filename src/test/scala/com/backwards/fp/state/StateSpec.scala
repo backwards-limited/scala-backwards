@@ -1,20 +1,20 @@
 package com.backwards.fp.state
 
 import cats.data.State
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 /**
   * [[https://functional.works-hub.com/learn/a-simple-way-to-write-parsers-using-the-state-monad-d5863]]
   */
-class StateSpec extends AnyWordSpec with MustMatchers {
+class StateSpec extends AnyWordSpec with Matchers {
   "State " should {
-    "be simple" in {
+    /*"be simple" in {
       val c = State[String, Char](s => (s.tail, s.head))
 
       c.run("re").value   // (String, Char) = (e, r)
       c.run("are").value  // (String, Char) = (re, a)
-    }
+    }*/
 
     "be monadic" in {
       val head = State[String, Char] { s =>
@@ -27,7 +27,9 @@ class StateSpec extends AnyWordSpec with MustMatchers {
         ("", s.toInt)
       }
 
-      val product: State[String, Int] = for {
+      var x = 1
+
+      lazy val product: State[String, Int] = for {
         h <- head
         _ = println(s"h = $h")
         i <- toInt

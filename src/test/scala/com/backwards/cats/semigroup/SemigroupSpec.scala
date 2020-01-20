@@ -1,7 +1,8 @@
 package com.backwards.cats.semigroup
 
 import cats.kernel.Semigroup
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
   * A Semigroup is a type class with a "combine" method
@@ -11,7 +12,7 @@ import org.scalatest.{MustMatchers, WordSpec}
   * A Semigroup has an associative binary operation.
   * Associativity allows us to partition the data any way we want and potentially parallelise the operations.
   */
-class SemigroupSpec extends WordSpec with MustMatchers {
+class SemigroupSpec extends AnyWordSpec with Matchers {
   "Semigroup basics" should {
     "int" in {
       import cats.instances.int._

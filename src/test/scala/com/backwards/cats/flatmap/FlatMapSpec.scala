@@ -2,7 +2,8 @@ package com.backwards.cats.flatmap
 
 import cats.FlatMap
 import mouse.boolean._
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
   * Adding to an Apply the methods flatten and flatMap, we are rewarded with a FlatMap and one step away from a Monad.
@@ -16,7 +17,7 @@ import org.scalatest.{MustMatchers, WordSpec}
   *   ("Hello".length != 0).option("World") // Some("World")
   * }}}
   */
-class FlatMapSpec extends WordSpec with MustMatchers {
+class FlatMapSpec extends AnyWordSpec with Matchers {
   "FlatMap" should {
     "opton" in {
       import cats.instances.option._

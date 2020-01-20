@@ -1,10 +1,10 @@
 package com.backwards.fp.functor
 
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp.State
 
-class StateSpec extends AnyWordSpec with MustMatchers {
+class StateSpec extends AnyWordSpec with Matchers {
   import com.backwards.fp.functor.StateOps._
 
   "State" should {

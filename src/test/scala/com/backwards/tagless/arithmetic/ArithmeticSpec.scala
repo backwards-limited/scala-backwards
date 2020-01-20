@@ -1,8 +1,9 @@
 package com.backwards.tagless.arithmetic
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class ArithmeticSpec extends WordSpec with MustMatchers {
+class ArithmeticSpec extends AnyWordSpec with Matchers {
   "Initial Alegbra" should {
     "evaluate" in {
       import com.backwards.tagless.arithmetic.Arithmetic.ADT._

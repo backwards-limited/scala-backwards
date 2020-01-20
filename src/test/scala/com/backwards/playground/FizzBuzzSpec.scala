@@ -2,10 +2,10 @@ package com.backwards.playground
 
 import cats.implicits._
 import cats.kernel.Monoid
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class FizzBuzzSpec extends AnyWordSpec with MustMatchers {
+class FizzBuzzSpec extends AnyWordSpec with Matchers {
   "FizzBuzz" should {
     "work - prefer this one" in {
       val f3: PartialFunction[Int, String] = {

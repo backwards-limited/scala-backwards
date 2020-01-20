@@ -2,9 +2,11 @@ package com.backwards.future
 
 import scala.concurrent.{Future, Promise}
 import cats.Monad
-import org.scalatest.{AsyncWordSpec, MustMatchers, OneInstancePerTest}
+import org.scalatest.OneInstancePerTest
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AsyncWordSpec
 
-class LazyFutureSpec extends AsyncWordSpec with OneInstancePerTest with MustMatchers {
+class LazyFutureSpec extends AsyncWordSpec with OneInstancePerTest with Matchers {
   val done = "done"
 
   val run: Promise[Boolean] = Promise[Boolean]()

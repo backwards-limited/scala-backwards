@@ -2,7 +2,7 @@ package com.backwards
 
 import java.io.FileInputStream
 import java.util.Properties
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import com.backwards.logging.Logging
 
 /**
@@ -16,7 +16,7 @@ trait AppBackwards extends App with Logging {
     val properties = new Properties
     properties load new FileInputStream(env)
 
-    propertiesAsScalaMap(properties) foreach { case (key, value) =>
+    properties.asScala foreach { case (key, value) =>
       info(s"Setting system property: $key...")
       System.setProperty(key, value)
     }

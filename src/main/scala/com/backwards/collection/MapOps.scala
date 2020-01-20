@@ -6,7 +6,7 @@ object MapOps extends MapOps
 
 trait MapOps {
   implicit def map2Properties[K, V]: Map[K, V] => Properties =
-    m => (new Properties /: m) {
+    _.foldLeft(new Properties) {
       case (properties, (k, v)) =>
         properties.put(k.asInstanceOf[AnyRef], v.asInstanceOf[AnyRef])
         properties

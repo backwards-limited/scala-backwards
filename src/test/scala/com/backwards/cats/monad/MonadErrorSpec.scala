@@ -2,12 +2,13 @@ package com.backwards.cats.monad
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
-import scala.language.{higherKinds, postfixOps}
+import scala.language.postfixOps
 import cats.MonadError
 import cats.data.EitherT
 import cats.syntax.either._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
   * Scala's Either type allows us to deal with two paths of execution (Left or Right).
@@ -17,13 +18,13 @@ import org.scalatest.{MustMatchers, WordSpec}
   *
   * A monad that also allows you to raise and or handle an error value. This type class allows one to abstract over error-handling monads.
   */
-class MonadErrorSpec extends WordSpec with MustMatchers with ScalaFutures {
+class MonadErrorSpec extends AnyWordSpec with Matchers with ScalaFutures {
   import scala.concurrent.ExecutionContext.Implicits.global
   import cats.instances.future._
 
-  final case class User()
+  case class User()
 
-  final case class Order()
+  case class Order()
 
   sealed trait ServiceError
 
@@ -48,7 +49,7 @@ class MonadErrorSpec extends WordSpec with MustMatchers with ScalaFutures {
       } yield order
 
       whenReady(eitherT.value) { order =>
-        order.right.get mustBe Order()
+        order mustBe Order().asRight
       }
 
       // Apart from the crappy futures and assertions, so far so good, at the end of the flow we will either have a ServiceError or an Order.
@@ -63,7 +64,7 @@ class MonadErrorSpec extends WordSpec with MustMatchers with ScalaFutures {
       } yield order
 
       whenReady(eitherT.value) { order =>
-        order.right.get mustBe Order()
+        order mustBe Order().asRight
       }
     }
   }

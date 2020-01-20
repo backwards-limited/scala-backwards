@@ -1,7 +1,8 @@
 package com.backwards.fp.traversable
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class TraversableSpec extends WordSpec with MustMatchers {
+class TraversableSpec extends AnyWordSpec with Matchers {
 
 }

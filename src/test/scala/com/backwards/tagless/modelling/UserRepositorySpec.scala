@@ -3,9 +3,10 @@ package com.backwards.tagless.modelling
 import cats.Id
 import cats.implicits._
 import monocle.macros.syntax.lens._
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class UserRepositorySpec extends WordSpec with MustMatchers {
+class UserRepositorySpec extends AnyWordSpec with Matchers {
   val repository = new InMemoryUserRepository
 
   val user = User(

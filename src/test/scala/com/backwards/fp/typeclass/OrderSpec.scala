@@ -1,11 +1,11 @@
 package com.backwards.fp.typeclass
 
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp.typeclass.Order._
 import com.backwards.fp.typeclass.OrderInstances._
 
-class OrderSpec extends AnyWordSpec with MustMatchers {
+class OrderSpec extends AnyWordSpec with Matchers {
   "Total order" should {
     "compare ints" in {
       less(5, 10) mustEqual true

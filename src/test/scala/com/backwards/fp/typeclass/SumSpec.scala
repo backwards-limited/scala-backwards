@@ -1,11 +1,11 @@
 package com.backwards.fp.typeclass
 
-import org.scalatest._
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp.typeclass.Sum.ops._
 import com.backwards.fp.typeclass.SumDifferentTypes.ops._
 
-class SumSpec extends AnyWordSpec with MustMatchers {
+class SumSpec extends AnyWordSpec with Matchers {
   "Sum" should {
     "sum two ints" in {
       1 |+| 2 mustBe 3

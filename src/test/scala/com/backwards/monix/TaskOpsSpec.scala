@@ -2,11 +2,11 @@ package com.backwards.monix
 
 import monix.eval.Task
 import monix.execution.Scheduler.Implicits.global
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.monix.TaskOps._
 
-class TaskOpsSpec extends AnyWordSpec with MustMatchers {
+class TaskOpsSpec extends AnyWordSpec with Matchers {
   "Tasks" should {
     "be run sequentially" in {
       lazy val task1 = "Task 1"

@@ -26,22 +26,22 @@ trait Config {
     }
 
   def load[C: ClassTag](namespace: String)(implicit READER: Derivation[ConfigReader[C]]): C =
-    loadConfigOrThrow[C](namespace)
+    ConfigSource.default.at(namespace).loadOrThrow[C]
 
   def load[C: ClassTag](classpath: Classpath, namespace: String)(implicit READER: Derivation[ConfigReader[C]]): C =
-    loadConfigOrThrow[C](ConfigFactory.load(classpath), namespace)
+    ConfigSource.fromConfig(ConfigFactory.load(classpath)).at(namespace).loadOrThrow[C]
 
   // TODO - Not sure I want the rest...
 
   def load[C: ClassTag](config: TypesafeConfig, namespace: String)(implicit READER: Derivation[ConfigReader[C]]): C =
-    loadConfigOrThrow[C](config, namespace)
+    ConfigSource.fromConfig(config).at(namespace).loadOrThrow[C]
 
   def load[C: ClassTag](path: Path, namespace: String)(implicit READER: Derivation[ConfigReader[C]]): C =
-    loadConfigOrThrow[C](path, namespace)
+    ConfigSource.default(ConfigSource.file(path)).at(namespace).loadOrThrow[C]
 
   def load[C: ClassTag](url: URL, namespace: String)(implicit READER: Derivation[ConfigReader[C]]): C =
     load[C](url.toURI, namespace)
 
   def load[C: ClassTag](uri: URI, namespace: String)(implicit READER: Derivation[ConfigReader[C]]): C =
-    loadConfigOrThrow[C](Paths get uri, namespace)
+    ConfigSource.default(ConfigSource.file(Paths get uri)).at(namespace).loadOrThrow[C]
 }

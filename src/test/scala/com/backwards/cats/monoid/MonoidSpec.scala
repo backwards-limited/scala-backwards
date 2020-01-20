@@ -1,12 +1,13 @@
 package com.backwards.cats.monoid
 
 import cats.kernel.Monoid
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
   * A Monoid is a Semigroup with a neutral element, that we'll call empty
   */
-class MonoidSpec extends WordSpec with MustMatchers {
+class MonoidSpec extends AnyWordSpec with Matchers {
   "Monoid basics" should {
     "int" in {
       import cats.instances.int._

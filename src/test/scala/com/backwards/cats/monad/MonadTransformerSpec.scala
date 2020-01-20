@@ -2,7 +2,8 @@ package com.backwards.cats.monad
 
 import cats.data.EitherT
 import cats.effect.IO
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
   * In simple terms a monad transformer is a piece of code that understands how to handle a specific monad e.g. Option.
@@ -20,10 +21,10 @@ import org.scalatest.{MustMatchers, WordSpec}
   * And as mentioned there is an EitherT:
   * EitherT[F[_], A, B]
   */
-class MonadTransformerSpec extends WordSpec with MustMatchers {
-  final case class User()
+class MonadTransformerSpec extends AnyWordSpec with Matchers {
+  case class User()
 
-  final case class Order()
+  case class Order()
 
   sealed trait ServiceError
 
