@@ -3,8 +3,10 @@ package com.backwards.cats.monad
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 import scala.language.postfixOps
-import cats.MonadError
+import scala.util.Try
+import cats.{Monad, MonadError}
 import cats.data.EitherT
+
 import cats.syntax.either._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
@@ -123,6 +125,22 @@ class MonadErrorSpec extends AnyWordSpec with Matchers with ScalaFutures {
 
       errorOrUserAndOrder.foreach(order => println(s"success: $order"))
       errorOrUserAndOrder.left.foreach(error => println(s"error: $error"))
+    }
+  }
+
+  "MonadError API" should {
+    import cats.effect.IO
+    import cats.implicits._
+
+    "" in {
+      def blah[F[_]](s: String)(implicit MonadError: MonadError[F, Throwable]): F[Int] = {
+        for {
+          x <- Try(s.toInt).fold(t => MonadError.raiseError[Int](new Exception("Whoops")), int => int.pure[F])
+        } yield x
+      }
+
+      blah[IO]("42").unsafeRunSync mustBe 42
+      an [Exception] must be thrownBy blah[IO]("xx").unsafeRunSync
     }
   }
 }

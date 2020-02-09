@@ -7,10 +7,9 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.util.{Failure, Success}
 import org.scalatest._
-import com.typesafe.scalalogging.LazyLogging
 
 // TODO - WIP
-trait DockerComposeFixture extends SuiteMixin with LazyLogging {
+trait DockerComposeFixture extends SuiteMixin {
   this: Suite =>
 
   val dockerCompose: DockerCompose
@@ -43,11 +42,11 @@ trait DockerComposeFixture extends SuiteMixin with LazyLogging {
   private def dockerComposeUp(): Unit = {
     parallelTestLimitSemaphore.acquire()
 
-    logger.info(s"Starting containers (${dockerCompose.name}) ...")
+    scribe info s"Starting containers (${dockerCompose.name}) ..."
     val started = dockerCompose.up(containerStartUpTimeout getOrElse 5.minutes)
     dockerContainersUp.set(!started)
     assert(started, s"Failed to start containers in test ${dockerCompose.name}!")
-    logger.info(s"Containers (${dockerCompose.name}) started!")
+    scribe info s"Containers (${dockerCompose.name}) started!"
   }
 
   private def dockerComposeDown(): Unit =
@@ -57,16 +56,16 @@ trait DockerComposeFixture extends SuiteMixin with LazyLogging {
         dumpFileName <- logDumpFileName
       } dockerCompose.dumpLogs(dumpFileName, dumpLocation) match {
         case Success(_) => ()
-        case Failure(f) => logger.error("Failed to dump logs!", f)
+        case Failure(f) => scribe.error("Failed to dump logs!", f)
       }
 
       val keep = (keepContainersOnSuccess && !dockerContainersUp.get()) || (keepContainersOnFailure && dockerContainersUp.get())
 
       if (!keep) {
-        logger.info(s"Removing containers (${dockerCompose.name}) ...")
+        scribe info s"Removing containers (${dockerCompose.name}) ..."
         val removed = dockerCompose.down
         assert(removed, s"Failed to remove containers in test ${dockerCompose.name}!")
-        logger.info(s"Containers (${dockerCompose.name}) removed!")
+        scribe info s"Containers (${dockerCompose.name}) removed!"
       }
     } finally {
       parallelTestLimitSemaphore.release()

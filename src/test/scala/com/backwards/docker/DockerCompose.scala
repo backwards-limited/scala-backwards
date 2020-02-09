@@ -12,7 +12,6 @@ import scala.language.postfixOps
 import scala.sys.process.{Process, ProcessLogger}
 import scala.util.{Failure, Success, Try}
 import better.files._
-import com.typesafe.scalalogging.LazyLogging
 
 /**
   * TODO - WIP
@@ -24,11 +23,10 @@ case class DockerCompose(
   name: String = UUID.randomUUID().toString,
   dockerComposeFiles: Seq[File],
   environment: Map[String, String] = Map.empty[String, String]
-) extends LazyLogging {
-
+) {
   import DockerCompose._
 
-  logger.info(s"Docker compose files: ${dockerComposeFiles.map(_.pathAsString).mkString(", ")}")
+  scribe info s"Docker compose files: ${dockerComposeFiles.map(_.pathAsString).mkString(", ")}"
 
   private val defaultLongCommandTimeOut = 5 minutes
   private val defaultShortCommandTimeOut = 1 minute
@@ -114,15 +112,15 @@ case class DockerCompose(
     val removedNetworks   = networkId(name).forall(removeNetwork)
 
     if (!stoppedContainers) {
-      logger.error("Failed to stop containers...")
+      scribe error "Failed to stop containers..."
     }
 
     if (!removedContainers) {
-      logger.error("Failed to remove containers...")
+      scribe error "Failed to remove containers..."
     }
 
     if (!removedNetworks) {
-      logger.error("Failed to remove networks...")
+      scribe error "Failed to remove networks..."
     }
 
     stoppedContainers && removedContainers && removedNetworks
@@ -158,7 +156,7 @@ case class DockerCompose(
       case Success(output) =>
         output
       case Failure(f) =>
-        logger.error(s"Failed to get service container Ids!", f)
+        scribe.error(s"Failed to get service container Ids!", f)
         List.empty
     }
   }
@@ -173,7 +171,7 @@ case class DockerCompose(
       case Success(output) =>
         output
       case Failure(f) =>
-        logger.error(s"Failed to get all project container Ids!", f)
+        scribe.error(s"Failed to get all project container Ids!", f)
         List.empty
     }
   }
@@ -188,7 +186,7 @@ case class DockerCompose(
       case Success(output) =>
         output
       case Failure(f) =>
-        logger.error(s"Failed to get all services!", f)
+        scribe.error(s"Failed to get all services!", f)
         List.empty
     }
   }
@@ -205,7 +203,7 @@ case class DockerCompose(
       case Success(output) =>
         output.nonEmpty && output.size == 1 && output.head != "<nil>"
       case Failure(f) =>
-        logger.error(s"Failed while checking if container $containerId contains healthcheck!", f)
+        scribe.error(s"Failed while checking if container $containerId contains healthcheck!", f)
         false
     }
   }
@@ -242,7 +240,7 @@ case class DockerCompose(
 
       while (!done) {
         val eventBuilder = new StringBuilder()
-        val process = Process(command).run(ProcessLogger(line => eventBuilder.append(line), line => logger.debug(line)))
+        val process = Process(command).run(ProcessLogger(line => eventBuilder.append(line), line => scribe.debug(line)))
         val exitValue = waitProcessExit(process, defaultShortCommandTimeOut)
 
         done = exitValue == 0 && eventBuilder.nonEmpty && eventBuilder.mkString == "healthy"
@@ -261,7 +259,7 @@ case class DockerCompose(
       Await.result(future, timeout)
     } catch {
       case e: TimeoutException =>
-        logger.error(s"Container $containerId didn't change to healthy state in ${timeout.toSeconds} seconds", e)
+        scribe.error(s"Container $containerId didn't change to healthy state in ${timeout.toSeconds} seconds", e)
         false
     }
   }
@@ -282,7 +280,7 @@ case class DockerCompose(
       case Success(output) =>
         output
       case Failure(f) =>
-        serviceName.foreach(name => logger.error(s"Failed while retrieving logs of $name", f))
+        serviceName.foreach(name => scribe.error(s"Failed while retrieving logs of $name", f))
         List.empty
     }
   }
@@ -297,7 +295,7 @@ case class DockerCompose(
       case Success(output) =>
         output.isEmpty
       case Failure(f) =>
-        logger.error("Failed while checking containers removal", f)
+        scribe.error("Failed while checking containers removal", f)
         false
     }
   }
@@ -335,7 +333,7 @@ case class DockerCompose(
       Await.result(future, timeout)
     } catch {
       case e: TimeoutException =>
-        logger.error(s"Process didn't finish in ${timeout.toSeconds} seconds", e)
+        scribe.error(s"Process didn't finish in ${timeout.toSeconds} seconds", e)
         process.destroy()
         process.exitValue()
     }
@@ -355,7 +353,7 @@ case class DockerCompose(
 
     val process =
       Process(command, None, envVars.toSeq: _*)
-        .run(ProcessLogger(line => resultBuffer += line, line => logger.debug(line)))
+        .run(ProcessLogger(line => resultBuffer += line, line => scribe.debug(line)))
 
     assert(waitProcessExit(process, timeout) == 0, s"Failed to run command: ${command.mkString(" ")}")
     resultBuffer.toList
@@ -368,7 +366,7 @@ case class DockerCompose(
     */
   private def runCmd(command: Seq[String], envVars: Map[String, String], timeout: Duration): Boolean = {
     val process =
-      Process(command, None, envVars.toSeq: _*).run(ProcessLogger(_ => (), line => logger.debug(line)))
+      Process(command, None, envVars.toSeq: _*).run(ProcessLogger(_ => (), line => scribe.debug(line)))
 
     waitProcessExit(process, timeout) == 0
   }

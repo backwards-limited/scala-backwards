@@ -17,10 +17,7 @@ def project(id: String, base: File): Project =
       resolvers ++= Seq(
         Resolver.sonatypeRepo("releases"),
         Resolver.sonatypeRepo("snapshots"),
-        Resolver.bintrayRepo("cakesolutions", "maven"),
-        "Artima Maven Repository" at "http://repo.artima.com/releases",
-        "jitpack" at "https://jitpack.io",
-        "Confluent Platform Maven" at "http://packages.confluent.io/maven/"
+        "jitpack" at "https://jitpack.io"
       ),
       scalaVersion := BuildProperties("scala.version"),
       sbtVersion := BuildProperties("sbt.version"),

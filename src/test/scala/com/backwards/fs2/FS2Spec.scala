@@ -2,6 +2,7 @@ package com.backwards.fs2
 
 import java.nio.file.Paths
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Random
 import cats.effect._
 import cats.implicits._
 import fs2._
@@ -205,6 +206,16 @@ class FS2Spec extends AnyFreeSpec with Matchers {
       val stream: Stream[IO, Unit] = Stream(1, 2, 3).flatMap(x => Stream.repeatEval(put(x)).take(2))
 
       stream.compile.drain.unsafeRunSync()
+    }
+  }
+
+  "Stream effects" - {
+    "will be realised" in {
+      val xs = Stream.eval(IO(Random.nextInt)).compile.toList
+      println(xs.unsafeRunSync)
+
+      val xsRepeat = Stream.repeatEval(IO(Random.nextInt)).take(5).compile.toList
+      println(xsRepeat.unsafeRunSync)
     }
   }
 }
