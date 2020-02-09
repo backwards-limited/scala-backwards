@@ -3,7 +3,7 @@ import sbt._
 object Dependencies {
   lazy val dependencies: Seq[ModuleID] =
     Seq(
-      scalaReflect, scalatest, scalacheck, scalacheckShapeless, testcontainers, scribe, pureConfig,
+      scalaReflect, scalatest, scalacheck, scalacheckShapeless, testcontainers, scalaTestContainers, scribe, pureConfig,
       cats, mouse, simulacrum, refined, monocle, shapeless,
       monix, fs2,
       scalaUri, betterFiles
@@ -28,6 +28,15 @@ object Dependencies {
   lazy val testcontainers: Seq[ModuleID] = Seq(
     "org.testcontainers" % "testcontainers" % "1.12.5" % "test, it" withSources() withJavadoc()
   )
+
+  lazy val scalaTestContainers: Seq[ModuleID] = {
+    val group = "com.dimafeng"
+    val version = "1.0.0-alpha1"
+
+    Seq(
+      "testcontainers-scala-scalatest", "testcontainers-scala-kafka", "testcontainers-scala-mysql"
+    ).map(group %% _ % version % "test, it" withSources() withJavadoc())
+  }
 
   lazy val scribe: Seq[ModuleID] = Seq(
     "com.outr" %% "scribe" % "2.7.10" withSources() withJavadoc()

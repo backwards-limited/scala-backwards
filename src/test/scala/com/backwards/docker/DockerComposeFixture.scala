@@ -8,7 +8,7 @@ import scala.language.postfixOps
 import scala.util.{Failure, Success}
 import org.scalatest._
 
-// TODO - WIP
+@deprecated(message = "Scala version of TestContainers now does the job, so use it", since = "9th February 2020")
 trait DockerComposeFixture extends SuiteMixin {
   this: Suite =>
 

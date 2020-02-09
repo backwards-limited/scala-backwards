@@ -14,11 +14,11 @@ import scala.util.{Failure, Success, Try}
 import better.files._
 
 /**
-  * TODO - WIP
   * @param name String
   * @param dockerComposeFiles Seq[File]
   * @param environment Map[String, String] Environment variables. Example: Map("CONTAINER_EXPOSED_PORT" -> "80")
   */
+@deprecated(message = "Scala version of TestContainers now does the job, so use it", since = "9th February 2020")
 case class DockerCompose(
   name: String = UUID.randomUUID().toString,
   dockerComposeFiles: Seq[File],

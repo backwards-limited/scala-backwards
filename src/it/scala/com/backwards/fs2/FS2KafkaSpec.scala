@@ -1,39 +1,31 @@
 package com.backwards.fs2
 
-import java.nio.file.Paths
-import java.util.concurrent.TimeUnit
-import scala.concurrent.Await
-import scala.concurrent.duration.FiniteDuration
+import scala.jdk.CollectionConverters._
 import cats.implicits._
-import monix.execution.{CancelableFuture, Scheduler}
-import monix.kafka
+import monix.eval.Task
+import monix.execution.Scheduler
+import monix.execution.schedulers.SchedulerService
 import monix.kafka.{KafkaConsumerConfig, KafkaConsumerObservable, KafkaProducer, KafkaProducerConfig}
-import monix.reactive.Observable
 import monocle.Lens
 import monocle.macros.GenLens
+import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import com.backwards.docker.{DockerCompose, DockerComposeFixture}
-import monocle.macros.syntax.lens._
-import scala.concurrent.duration._
-import monix.eval.Task
-import org.apache.kafka.clients.consumer.{ConsumerConfig, ConsumerRecord, ConsumerRecords, KafkaConsumer}
-import scala.jdk.CollectionConverters._
+import com.dimafeng.testcontainers.KafkaContainer
+import com.dimafeng.testcontainers.scalatest.TestContainerForAll
 
 /**
  * kafkacat -P -b localhost:9092 -t my-topic
  *
  * kafkacat -C -b localhost:9092 -t my-topic -o beginning
  */
-class FS2KafkaSpec extends AnyWordSpec with Matchers with DockerComposeFixture {
-  val dockerCompose: DockerCompose =
-    DockerCompose("kafka", Seq(Paths.get("src", "it", "resources", "docker-compose.yml")))
+class FS2KafkaSpec extends AnyWordSpec with Matchers with TestContainerForAll {
+  override val containerDef: KafkaContainer.Def = KafkaContainer.Def()
 
-  implicit val io = Scheduler.io("monix-kafka-tests")
+  implicit val io: SchedulerService = Scheduler.io("monix-kafka-tests")
 
   "" should {
-    "" in {
-      dockerCompose.services must contain only("zookeeper", "kafka")
+    "" in withContainers { kafkaContainer =>
 
       /////////////////////////////////////////////////
 
@@ -41,38 +33,37 @@ class FS2KafkaSpec extends AnyWordSpec with Matchers with DockerComposeFixture {
       val clientIdLens: Lens[KafkaProducerConfig, String] = GenLens[KafkaProducerConfig](_.clientId)
       val maxInFlightRequestsPerConnectionLens: Lens[KafkaProducerConfig, Int] = GenLens[KafkaProducerConfig](_.maxInFlightRequestsPerConnection)
 
-      val blah: KafkaProducerConfig => KafkaProducerConfig = bootstrapServersLens.set(List("localhost:9092")) andThen clientIdLens.set("my-producer") andThen maxInFlightRequestsPerConnectionLens.set(1)
+      val blah: KafkaProducerConfig => KafkaProducerConfig = bootstrapServersLens.set(List(kafkaContainer.bootstrapServers)) andThen clientIdLens.set("my-producer") andThen maxInFlightRequestsPerConnectionLens.set(1)
 
       val producer: KafkaProducer[String, String] = KafkaProducer[String, String](blah(KafkaProducerConfig.default), io)
 
-      val Some(recordMetadata) = producer.send("my-topic", "blah blah").runSyncUnsafe()
-      println(recordMetadata)
-
       /////////////////////////////////////////////////
-
 
       val bootstrapServers2Lens: Lens[KafkaConsumerConfig, List[String]] = GenLens[KafkaConsumerConfig](_.bootstrapServers)
       val groupIdLens: Lens[KafkaConsumerConfig, String] = GenLens[KafkaConsumerConfig](_.groupId)
       val enableAutoCommitLens: Lens[KafkaConsumerConfig, Boolean] = GenLens[KafkaConsumerConfig](_.enableAutoCommit)
-      val propertiesLens: Lens[KafkaConsumerConfig, Map[String, String]] = GenLens[KafkaConsumerConfig](_.properties)
 
-      val y = bootstrapServers2Lens.set(List("localhost:9092")) andThen groupIdLens.set("kafka-tests") andThen enableAutoCommitLens.set(true) andThen propertiesLens.modify(_ + (ConsumerConfig.AUTO_OFFSET_RESET_CONFIG -> "earliest"))
+      val y = bootstrapServers2Lens.set(List(kafkaContainer.bootstrapServers)) andThen groupIdLens.set("kafka-tests") andThen enableAutoCommitLens.set(true)
 
-      val v: Task[Vector[String]] =
+      val consumer: Task[KafkaConsumer[String, String]] =
         KafkaConsumerObservable.createConsumer[String, String](y(KafkaConsumerConfig.default), List("my-topic"))
           .map { c =>
             c.poll(0)
             c.seekToBeginning(c.assignment())
             c
           }
-          .map(_.poll(3000)).map(_.iterator.asScala.toVector.map(_.value))
-
 
       ////////////////////////////////////////////////
 
 
-      println(v.runSyncUnsafe())
+      //println(v.runSyncUnsafe())
 
+      val messages = for {
+        r <- producer.send("my-topic", "blah blah")
+        xxx <- consumer.map(_.poll(3000)).map(_.iterator.asScala.toVector.map(_.value))
+      } yield xxx
+
+      println(messages.runSyncUnsafe())
     }
   }
 }
