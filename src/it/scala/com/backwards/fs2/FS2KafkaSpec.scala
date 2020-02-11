@@ -9,61 +9,102 @@ import monix.kafka.{KafkaConsumerConfig, KafkaConsumerObservable, KafkaProducer,
 import monocle.Lens
 import monocle.macros.GenLens
 import org.apache.kafka.clients.consumer.KafkaConsumer
+import org.scalatest.Suite
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import com.dimafeng.testcontainers.KafkaContainer
-import com.dimafeng.testcontainers.scalatest.TestContainerForAll
+import org.testcontainers.lifecycle.Startable
+import com.dimafeng.testcontainers.ContainerDef
+import com.dimafeng.testcontainers.lifecycle.Stoppable
+//import com.dimafeng.testcontainers.KafkaContainer
+import com.dimafeng.testcontainers.scalatest.{IllegalWithContainersCall, TestContainerForAll}
+import fs2._
+import org.scalatest.SuiteMixin
+
+trait KafkaContainerForAll extends TestContainerForAll {
+  this: Suite =>
+
+  import com.dimafeng.testcontainers.KafkaContainer
+
+  override val containerDef: KafkaContainer.Def = KafkaContainer.Def()
+
+  def withKafkaContainer(runTest: Containers => Unit): Unit = {
+    withContainers { kafkaContainer =>
+      println(kafkaContainer.mappedPort(9092))
+      runTest(kafkaContainer)
+    }
+  }
+}
 
 /**
  * kafkacat -P -b localhost:9092 -t my-topic
  *
  * kafkacat -C -b localhost:9092 -t my-topic -o beginning
  */
-class FS2KafkaSpec extends AnyWordSpec with Matchers with TestContainerForAll {
-  override val containerDef: KafkaContainer.Def = KafkaContainer.Def()
-
+class FS2KafkaSpec extends AnyWordSpec with Matchers with KafkaContainerForAll {
   implicit val io: SchedulerService = Scheduler.io("monix-kafka-tests")
 
-  "" should {
-    "" in withContainers { kafkaContainer =>
+  "Kafka" should {
+    /*"work without FS2" in withContainers { kafkaContainer =>
+      val topic = "my-topic"
 
-      /////////////////////////////////////////////////
+      val producer: KafkaProducer[String, String] = {
+        val bootstrapServers: Lens[KafkaProducerConfig, List[String]] = GenLens[KafkaProducerConfig](_.bootstrapServers)
+        val clientId: Lens[KafkaProducerConfig, String] = GenLens[KafkaProducerConfig](_.clientId)
+        val maxInFlightRequestsPerConnection: Lens[KafkaProducerConfig, Int] = GenLens[KafkaProducerConfig](_.maxInFlightRequestsPerConnection)
 
-      val bootstrapServersLens: Lens[KafkaProducerConfig, List[String]] = GenLens[KafkaProducerConfig](_.bootstrapServers)
-      val clientIdLens: Lens[KafkaProducerConfig, String] = GenLens[KafkaProducerConfig](_.clientId)
-      val maxInFlightRequestsPerConnectionLens: Lens[KafkaProducerConfig, Int] = GenLens[KafkaProducerConfig](_.maxInFlightRequestsPerConnection)
+        val kafkaProducerConfig: KafkaProducerConfig => KafkaProducerConfig =
+          bootstrapServers.set(List(kafkaContainer.bootstrapServers)) andThen clientId.set("my-producer") andThen maxInFlightRequestsPerConnection.set(1)
 
-      val blah: KafkaProducerConfig => KafkaProducerConfig = bootstrapServersLens.set(List(kafkaContainer.bootstrapServers)) andThen clientIdLens.set("my-producer") andThen maxInFlightRequestsPerConnectionLens.set(1)
+        KafkaProducer[String, String](kafkaProducerConfig(KafkaProducerConfig.default), io)
+      }
 
-      val producer: KafkaProducer[String, String] = KafkaProducer[String, String](blah(KafkaProducerConfig.default), io)
+      val consumer: Task[KafkaConsumer[String, String]] = {
+        val bootstrapServers: Lens[KafkaConsumerConfig, List[String]] = GenLens[KafkaConsumerConfig](_.bootstrapServers)
+        val groupId: Lens[KafkaConsumerConfig, String] = GenLens[KafkaConsumerConfig](_.groupId)
+        val enableAutoCommit: Lens[KafkaConsumerConfig, Boolean] = GenLens[KafkaConsumerConfig](_.enableAutoCommit)
 
-      /////////////////////////////////////////////////
+        val kafkaConsumerConfig: KafkaConsumerConfig => KafkaConsumerConfig =
+          bootstrapServers.set(List(kafkaContainer.bootstrapServers)) andThen groupId.set("kafka-tests") andThen enableAutoCommit.set(true)
 
-      val bootstrapServers2Lens: Lens[KafkaConsumerConfig, List[String]] = GenLens[KafkaConsumerConfig](_.bootstrapServers)
-      val groupIdLens: Lens[KafkaConsumerConfig, String] = GenLens[KafkaConsumerConfig](_.groupId)
-      val enableAutoCommitLens: Lens[KafkaConsumerConfig, Boolean] = GenLens[KafkaConsumerConfig](_.enableAutoCommit)
+        KafkaConsumerObservable.createConsumer[String, String](kafkaConsumerConfig(KafkaConsumerConfig.default), List(topic)).map { consumer =>
+          import consumer._
 
-      val y = bootstrapServers2Lens.set(List(kafkaContainer.bootstrapServers)) andThen groupIdLens.set("kafka-tests") andThen enableAutoCommitLens.set(true)
-
-      val consumer: Task[KafkaConsumer[String, String]] =
-        KafkaConsumerObservable.createConsumer[String, String](y(KafkaConsumerConfig.default), List("my-topic"))
-          .map { c =>
-            c.poll(0)
-            c.seekToBeginning(c.assignment())
-            c
-          }
-
-      ////////////////////////////////////////////////
-
-
-      //println(v.runSyncUnsafe())
+          poll(0)
+          seekToBeginning(assignment)
+          consumer
+        }
+      }
 
       val messages = for {
-        r <- producer.send("my-topic", "blah blah")
-        xxx <- consumer.map(_.poll(3000)).map(_.iterator.asScala.toVector.map(_.value))
-      } yield xxx
+        _ <- producer.send(topic, "blah blah")
+        messages <- consumer.map(_.poll(3000)).map(_.iterator.asScala.toVector.map(_.value))
+      } yield messages
 
       println(messages.runSyncUnsafe())
+    }*/
+
+    "with FS2 once" in withKafkaContainer { kafkaContainer =>
+      val topic = "my-topic"
+
+      val producer: KafkaProducer[String, String] = {
+        val bootstrapServers: Lens[KafkaProducerConfig, List[String]] = GenLens[KafkaProducerConfig](_.bootstrapServers)
+        val clientId: Lens[KafkaProducerConfig, String] = GenLens[KafkaProducerConfig](_.clientId)
+        val maxInFlightRequestsPerConnection: Lens[KafkaProducerConfig, Int] = GenLens[KafkaProducerConfig](_.maxInFlightRequestsPerConnection)
+
+        val kafkaProducerConfig: KafkaProducerConfig => KafkaProducerConfig =
+          bootstrapServers.set(List(kafkaContainer.bootstrapServers)) andThen clientId.set("my-producer") andThen maxInFlightRequestsPerConnection.set(1)
+
+        KafkaProducer[String, String](kafkaProducerConfig(KafkaProducerConfig.default), io)
+      }
+
+      val s = Stream.eval(producer.send(topic, "blah blah"))
+
+      println(s.compile.lastOrError.runSyncUnsafe())
+      println("hi")
     }
+
+    /*"with FS2 repeat" in withContainers { kafkaContainer =>
+
+    }*/
   }
 }
