@@ -38,13 +38,3 @@ To see an example of the above, take a look at [Kafka Backwards](https://github.
 - [SBT](docs/sbt.md)
 
 - [Release](docs/release.md)
-
-- Modules
-
-  - [Functional Programming: Custom code for Category Theory](docs/fp.md)
-  
-  - [Variance: Proofs](docs/variance.md)
-
-  - [FS2: Functional Streaming for Scala](docs/fs2.md)
-
-  - [Cats](docs/cats.md)
