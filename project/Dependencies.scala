@@ -1,13 +1,12 @@
 import sbt._
 
 object Dependencies {
-  lazy val dependencies: Seq[ModuleID] =
-    Seq(
-      scalaReflect, scalatest, scalacheck, scalacheckShapeless, testcontainers, scalaTestContainers, scribe, pureConfig,
-      cats, mouse, simulacrum, refined, monocle, shapeless,
-      monix, fs2,
-      scalaUri, betterFiles
-    ).flatten
+  def apply(): Seq[ModuleID] = Seq(
+    scalaReflect, scalatest, scalacheck, scalacheckShapeless, testcontainers, scalaTestContainers, scribe, pureConfig,
+    cats, mouse, simulacrum, refined, monocle, shapeless,
+    monix, fs2,
+    scalaUri, betterFiles
+  ).flatten
 
   lazy val scalaReflect: Seq[ModuleID] = Seq(
     "org.scala-lang" % "scala-reflect" % BuildProperties("scala.version")
@@ -51,10 +50,10 @@ object Dependencies {
 
   lazy val cats: Seq[ModuleID] = {
     val group = "org.typelevel"
-    val version = "2.1.0"
+    val version = "2.1.1"
 
     Seq(
-      "cats-core", "cats-effect"
+      "cats-core", "cats-effect", "cats-free"
     ).map(group %% _ % version withSources() withJavadoc()) ++ Seq(
       "cats-laws", "cats-testkit"
     ).map(group %% _ % version % "test, it" withSources() withJavadoc())

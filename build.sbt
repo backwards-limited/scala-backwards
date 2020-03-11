@@ -1,4 +1,3 @@
-import Dependencies._
 import sbt._
 
 lazy val IT = config("it") extend Test
@@ -26,7 +25,7 @@ def project(id: String, base: File): Project =
       autoStartServer := false,
       addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.0" cross CrossVersion.full),
       addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
-      libraryDependencies ++= dependencies,
+      libraryDependencies ++= Dependencies(),
       scalacOptions ++= Seq(
         "-encoding", "utf8",
         "-deprecation",
@@ -35,8 +34,8 @@ def project(id: String, base: File): Project =
         "-language:higherKinds",
         "-language:existentials",
         "-language:postfixOps",
-        "-Ymacro-annotations",
-        "-Xfatal-warnings"
+        "-Ymacro-annotations"
+        //"-Xfatal-warnings"
         // "-Ywarn-value-discard"
       ),
       fork := true,
