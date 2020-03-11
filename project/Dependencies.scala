@@ -2,10 +2,9 @@ import sbt._
 
 object Dependencies {
   def apply(): Seq[ModuleID] = Seq(
-    scalaReflect, scalatest, scalacheck, scalacheckShapeless, testcontainers, scalaTestContainers, scribe, pureConfig,
+    scalaReflect, scalatest, scalacheck, scalacheckShapeless, testcontainers, scalaTestContainers, scribe, pureConfig, pprint,
     cats, mouse, simulacrum, refined, monocle, shapeless,
-    monix, fs2,
-    scalaUri, betterFiles
+    monix, fs2, scalaUri, betterFiles
   ).flatten
 
   lazy val scalaReflect: Seq[ModuleID] = Seq(
@@ -47,6 +46,10 @@ object Dependencies {
 
     Seq("pureconfig").map(group %% _ % version withSources() withJavadoc())
   }
+
+  lazy val pprint: Seq[ModuleID] = Seq(
+    "com.lihaoyi" %% "pprint" % "0.5.9"
+  )
 
   lazy val cats: Seq[ModuleID] = {
     val group = "org.typelevel"

@@ -1,12 +1,12 @@
 package com.backwards.fp.free
 
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import scala.collection.mutable
+import cats.data.State
 import cats.free.Free
 import cats.free.Free.liftF
-import cats.arrow.FunctionK
 import cats.{Id, ~>}
-import scala.collection.mutable
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
  * A free monad is a construction which allows you to build a monad from any Functor. Like other monads, it is a pure way to represent and manipulate computations.
@@ -84,9 +84,11 @@ class FreeMonadSpec extends AnyWordSpec with Matchers {
               println(s"put($key, $value)")
               kvs(key) = value
               ()
+
             case Get(key) =>
               println(s"get($key)")
               kvs.get(key).map(_.asInstanceOf[A])
+
             case Delete(key) =>
               println(s"delete($key)")
               kvs.remove(key)
@@ -104,6 +106,29 @@ class FreeMonadSpec extends AnyWordSpec with Matchers {
       // get(wild-cats)
       // delete(tame-cats)
       // result: Option[Int] = Some(14)
+
+      // An important aspect of foldMap is its stack-safety. It evaluates each step of computation on the stack then unstack and restart.
+      // This process is known as trampolining.
+
+      // 6. Use a pure compiler (optional)
+      type KVStoreState[A] = State[Map[String, Any], A]
+
+      val pureCompiler: KVStoreAlg ~> KVStoreState = new (KVStoreAlg ~> KVStoreState) {
+        def apply[A](fa: KVStoreAlg[A]): KVStoreState[A] = fa match {
+          case Put(key, value) =>
+            State.modify(_.updated(key, value))
+
+          case Get(key) =>
+            State.inspect(_.get(key).map(_.asInstanceOf[A]))
+
+          case Delete(key) =>
+            State.modify(_ - key)
+        }
+      }
+
+      val resultPure: (Map[String, Any], Option[Int]) = program.foldMap(pureCompiler).run(Map.empty).value
+      println(resultPure)
+      // resultPure: (Map[String,Any], Option[Int]) = (Map(wild-cats -> 14),Some(14))
     }
   }
 }
