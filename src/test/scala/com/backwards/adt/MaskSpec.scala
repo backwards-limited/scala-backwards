@@ -3,6 +3,7 @@ package com.backwards.adt
 import pprint._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import com.backwards.adt.Mask._
 import com.backwards.adt.Mask.ops._
 
 class MaskSpec extends AnyWordSpec with Matchers with MaskFixture {
@@ -21,7 +22,7 @@ class MaskSpec extends AnyWordSpec with Matchers with MaskFixture {
         maskedEvent.personalDetails.lastName.get,
         maskedEvent.personalDetails.mobile.get,
         maskedEvent.paymentAccounts.head.signupEmail
-      ).foreach(_ mustBe Mask.masking)
+      ).foreach(_ mustBe masking)
     }
   }
 }

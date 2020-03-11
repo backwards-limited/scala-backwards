@@ -38,3 +38,7 @@ To see an example of the above, take a look at [Kafka Backwards](https://github.
 - [SBT](docs/sbt.md)
 
 - [Release](docs/release.md)
+
+- Functionality
+
+    - [Masking](docs/masking.md)
