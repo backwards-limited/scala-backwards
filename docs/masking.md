@@ -10,3 +10,7 @@
   - Monocle
 - Type level programming
   - Shapeless
+
+
+
+![Create account success event](images/create-account-success-event.png)
