@@ -1,9 +1,7 @@
 package com.backwards.fp.demo.state
 
-import cats.Eval
-import cats.data.{IndexedStateT, State}
+import cats.data.State
 import cats.data.State._
-// import scalaz.syntax.state._
 import com.backwards.fp.demo.state.Signal._
 
 /**
