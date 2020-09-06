@@ -41,4 +41,8 @@ To see an example of the above, take a look at [Kafka Backwards](https://github.
 
 - Functionality
 
+    - [Kleisli](docs/kleisli.md) 
+    
+    - [MonadError](docs/monad-error.md)
+
     - [Masking](docs/masking.md)
