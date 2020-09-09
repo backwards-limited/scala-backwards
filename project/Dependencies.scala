@@ -2,9 +2,10 @@ import sbt._
 
 object Dependencies {
   def apply(): Seq[ModuleID] = Seq(
-    scalaReflect, scalatest, scalacheck, scalacheckShapeless, testcontainers, scalaTestContainers, scribe, pureConfig, pprint,
-    cats, mouse, simulacrum, refined, monocle, shapeless,
-    monix, fs2, scalaUri, betterFiles
+    scalaReflect, scalatest, scalacheck, scalacheckShapeless, testcontainers, scalaTestContainers, scribe, pprint, pureConfig,
+    cats, mouse, simulacrum, refined, monocle, shapeless, meowMtl,
+    http4s, monix, fs2, scalaUri, betterFiles,
+    circe
   ).flatten
 
   lazy val scalaReflect: Seq[ModuleID] = Seq(
@@ -84,15 +85,35 @@ object Dependencies {
     val version = "2.0.1"
 
     Seq(
-      "monocle-law"
-    ).map(group %% _ % version % "test, it" withSources() withJavadoc()) ++ Seq(
       "monocle-core", "monocle-macro", "monocle-generic"
-    ).map(group %% _ % version withSources() withJavadoc())
+    ).map(group %% _ % version withSources() withJavadoc()) ++ Seq(
+      "monocle-law"
+    ).map(group %% _ % version % "test, it" withSources() withJavadoc())
   }
 
   lazy val shapeless: Seq[ModuleID] = Seq(
     "com.chuusai" %% "shapeless" % "2.3.3"
   )
+
+  lazy val meowMtl: Seq[ModuleID] = {
+    val group = "com.olegpy"
+    val version = "0.4.0"
+
+    Seq(
+      "meow-mtl-core", "meow-mtl-effects", "meow-mtl-monix"
+    ).map(group %% _ % version withSources() withJavadoc())
+  }
+
+  lazy val http4s: Seq[ModuleID] = {
+    val group = "org.http4s"
+    val version = "1.0.0-M4"
+
+    Seq(
+      "http4s-core", "http4s-dsl", "http4s-circe", "http4s-client", "http4s-blaze-client", "http4s-server", "http4s-blaze-server"
+    ).map(group %% _ % version withSources() withJavadoc()) ++ Seq(
+      "http4s-testing"
+    ).map(group %% _ % version % "test, it" withSources() withJavadoc())
+  }
 
   lazy val monix: Seq[ModuleID] = {
     Seq(
@@ -118,4 +139,15 @@ object Dependencies {
   lazy val betterFiles: Seq[ModuleID] = Seq(
     "com.github.pathikrit" %% "better-files" % "3.8.0" withSources() withJavadoc()
   )
+
+  lazy val circe: Seq[ModuleID] = {
+    val group = "io.circe"
+    val version = "0.13.0"
+
+    Seq(
+      "circe-core", "circe-generic", "circe-generic-extras", "circe-parser", "circe-refined"
+    ).map(group %% _ % version withSources() withJavadoc()) ++ Seq(
+      "circe-testing", "circe-literal"
+    ).map(group %% _ % version % "test, it" withSources() withJavadoc())
+  }
 }

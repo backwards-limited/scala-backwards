@@ -218,4 +218,23 @@ class FS2Spec extends AnyFreeSpec with Matchers {
       println(xsRepeat.unsafeRunSync)
     }
   }
+
+  "Stream with pipes and sinks" - {
+    "apply" in {
+      val stream: Stream[IO, String] =
+        Stream eval IO.pure("Hello World")
+
+      val pipe: Pipe[IO, String, List[String]] =
+        _.map(_.split(" ").toList)
+
+      // val sink: Sink[IO, List[String]] = _.evalMap(xs => IO(xs.foreach(println))) <- Sink is deprecated
+      val sink: Pipe[IO, List[String], Unit] =
+        _.evalMap(xs => IO(xs.foreach(println)))
+
+      val program: Stream[IO, Unit] =
+        stream through pipe through sink
+
+      program.compile.drain.unsafeRunSync()
+    }
+  }
 }
