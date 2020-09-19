@@ -12,6 +12,8 @@ import shapeless.ops.hlist.Length
  * @see [[https://gigiigig.github.io/posts/2015/09/13/aux-pattern.html]]
  *
  * The Aux pattern is not a pattern, is a technique used in every library that is doing some type level programming that we need to use to overcome one Scala limitation.
+ *
+ * The Aux patter: A simple type with one type parameter.
  */
 class AuxSpec extends AnyWordSpec with Matchers {
   "Aux" should {

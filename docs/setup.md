@@ -8,34 +8,51 @@ Install [Homebrew](https://brew.sh) for easy package management on Mac:
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
 
-Required installations:
+## Required installations
+
+**Scala and Java:**
 
 ```bash
-$ brew cask install java
+$ brew tap adoptopenjdk/openjdk
+
+$ brew search jdk
+# Gives a list of JDKs we can install (we'll install version 15, the latest at this current time)
+
+$ brew cask install adoptopenjdk15
+```
+
+```bash
 $ brew install jenv
 $ brew install scala
 $ brew install sbt
 ```
 
-Other essentials (though optional):
+**Configure Java environment:**
+
+To manage your Java environment, let's use **jenv** (there are other managers out there). We add whatever Java versions we wish to manage:
+
+```bash
+$ jenv add /Library/Java/JavaVirtualMachines/adoptopenjdk-15.jdk/Contents/Home/
+openjdk64-15 added
+15 added
+```
+
+and then choose one of the managed versions to use with our code:
+
+```bash
+$ jenv versions
+  system
+  1.8.0.202
+  15
+  openjdk64-15
+  oracle64-1.8.0.202
+
+$ jenv local 15
+```
+
+## Optional Installations
 
 ```bash
 $ brew install curl
 $ brew install httpie
-```
-
-These install the necessary Java and Scala environment, where [jenv](http://www.jenv.be) manages said environment.
-
-To configure our JVM environment:
-
-```bash
-$ jenv versions
-    system
-  * 11.0.1 (set by /Users/davidainslie/workspace/backwards/scala-backwards/.java-version)
-```
-
-From the available versions, let's set the latest:
-
-```bash
-$ jenv local 11.0.1
 ```
