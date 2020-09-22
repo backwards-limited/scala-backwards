@@ -2,12 +2,81 @@ package com.backwards
 
 import scala.annotation.tailrec
 import scala.collection.mutable
+import scala.util.matching.Regex
 
 object CSpec extends App {
 
   sealed trait Expr
 
   object Expr {
+    val decimal: Regex = """[\d.]""".r
+
+    val isDecimal: Char => Boolean =
+      c => decimal.matches(String.valueOf(c))
+
+    def parse(s: String): Exprs = {
+      @tailrec
+      def parse(s: List[Char], exprs: Exprs, stack: List[Exprs]): Exprs = s match {
+        case '(' :: rest =>
+          parse(rest, exprs, Exprs() :: stack)
+
+        case ')' :: rest =>
+          val subExprs :: nextStack = stack
+
+          if (nextStack.isEmpty) {
+            parse(rest, exprs + subExprs, nextStack)
+          } else {
+            val preSubExprs :: nextNextStack = nextStack
+
+            parse(rest, exprs, preSubExprs + subExprs :: nextNextStack)
+          }
+
+        case '^' :: rest =>
+          parsed(Exponent, rest, exprs, stack)
+
+        case '*' :: rest =>
+          parsed(Multiply, rest, exprs, stack)
+
+        case '/' :: rest =>
+          parsed(Divide, rest, exprs, stack)
+
+        case '+' :: rest =>
+          parsed(Add, rest, exprs, stack)
+
+        case '-' :: rest =>
+          val (numbers, remaining) = rest.span(isDecimal)
+
+          if (numbers.isEmpty) {
+            parsed(Subtract, remaining, exprs, stack)
+          } else {
+            parsed(Num(('-' +: numbers).mkString.toDouble), remaining, exprs, stack)
+          }
+
+        case c :: rest =>
+          val (numbers, remaining) = rest.span(isDecimal)
+
+          if (numbers.isEmpty) {
+            parse(rest, exprs, stack)
+          } else {
+            parsed(Num((c +: numbers).mkString.toDouble), remaining, exprs, stack)
+          }
+
+        case Nil =>
+          exprs
+      }
+
+      def parsed(expr: Expr, s: List[Char], exprs: Exprs, stack: List[Exprs]): Exprs =
+        if (stack.isEmpty) {
+          parse(s, exprs + expr, stack)
+        } else {
+          val subExprs :: nextStack = stack
+
+          parse(s, exprs, subExprs + expr :: nextStack)
+        }
+
+      parse(s.toList, Exprs(), Nil)
+    }
+
     def eval(expr: Expr): Double =
       eval(Exprs(List(expr)))
 
@@ -21,11 +90,14 @@ object CSpec extends App {
           case ex => ex
         }
 
-      difference(factor(narrow(exprs))) match {
+      difference(factor(exponent(narrow(exprs)))) match {
         case List(Num(v)) => v
         case _ => 0.0
       }
     }
+
+    def exponent(exprs: List[Expr]): List[Expr] =
+      op(exprs, Exponent)
 
     def factor(exprs: List[Expr]): List[Expr] =
       op(exprs, Multiply, Divide)
@@ -52,6 +124,8 @@ object CSpec extends App {
       Option(op.apply)
   }
 
+  final case object Exponent extends Op(math.pow)
+
   final case object Multiply extends Op(_ * _)
 
   final case object Divide extends Op(_ / _)
@@ -65,25 +139,24 @@ object CSpec extends App {
   final case class Exprs(value: List[Expr] = Nil) extends Expr {
     def +(expr: Expr): Exprs =
       Exprs(value :+ expr)
-
-    def +(exprs: Exprs): Exprs =
-      if (value.isEmpty) exprs else Exprs(value :+ exprs)
   }
 
-  println(Expr.eval(Num(4)))
-  println(Expr.eval(Exprs(List(Num(4)))))
-  println(Expr.eval(Nil))
-  println(Expr.eval(List(Num(4), Add, Num(2))))
-  println(Expr.eval(List(Num(5), Add, Num(1), Add, Num(4), Add, Num(2))))
-  println(Expr.eval(List(Num(5), Subtract, Num(1), Add, Num(4), Add, Num(2))))
+  import Expr._
 
-  println(Expr.eval(List(Num(5), Add, Exprs(List(Num(5), Subtract, Num(1))))))
-  println(Expr.eval(List(Exprs(List(Num(5), Subtract, Num(1))), Add, Num(5))))
+  println(eval(Num(4)))
+  println(eval(Exprs(List(Num(4)))))
+  println(eval(Nil))
+  println(eval(List(Num(4), Add, Num(2))))
+  println(eval(List(Num(5), Add, Num(1), Add, Num(4), Add, Num(2))))
+  println(eval(List(Num(5), Subtract, Num(1), Add, Num(4), Add, Num(2))))
+
+  println(eval(List(Num(5), Add, Exprs(List(Num(5), Subtract, Num(1))))))
+  println(eval(List(Exprs(List(Num(5), Subtract, Num(1))), Add, Num(5))))
   //println(Expr.eval(List(Num(5), Subtract, Num(1), Add, Exprs(List(Num(5), Subtract, Num(1))), Add, Num(2))))
 
-  println(Expr.eval(List(Exprs(List(Num(5), Subtract, Exprs(List(Num(1), Add, Num(1))))), Add, Num(5))))
+  println(eval(List(Exprs(List(Num(5), Subtract, Exprs(List(Num(1), Add, Num(1))))), Add, Num(5))))
 
-  println(Expr.eval(List(Num(4), Multiply, Num(6))))
+  println(eval(List(Num(4), Multiply, Num(6))))
 
   println("---------------------------------------------")
 
@@ -96,60 +169,5 @@ object CSpec extends App {
   println(parse("4 + (6 + 55) + 2"))
 
 
-  def parse(s: String): Exprs = {
-    @tailrec
-    def parse(s: List[Char], exprs: Exprs, stack: List[Exprs]): Exprs = s match {
-      case '(' :: rest =>
-        parse(rest, exprs, Exprs() :: stack)
-
-      case ')' :: rest =>
-        val subExprs :: nextStack = stack
-
-        if (nextStack.isEmpty) {
-          parse(rest, exprs + subExprs, nextStack)
-        } else {
-          val preSubExprs :: nextNextStack = nextStack
-
-          parse(rest, exprs, preSubExprs + subExprs :: nextNextStack)
-        }
-
-      case c :: rest if c.isDigit =>
-        val (numbers, remaining) = rest.span(_.isDigit)
-
-        parsed(Num((c +: numbers).mkString.toDouble), remaining, exprs, stack)
-
-      case '*' :: rest =>
-        parsed(Multiply, rest, exprs, stack)
-
-      case '/' :: rest =>
-        parsed(Divide, rest, exprs, stack)
-
-      case '+' :: rest =>
-        parsed(Add, rest, exprs, stack)
-
-      case '-' :: rest =>
-        val (numbers, remaining) = rest.span(_.isDigit)
-
-        if (numbers.isEmpty) {
-          parsed(Subtract, remaining, exprs, stack)
-        } else {
-          parsed(Num(('-' +: numbers).mkString.toDouble), remaining, exprs, stack)
-        }
-
-      case _ :: rest =>
-        parse(rest, exprs, stack)
-
-      case Nil =>
-        exprs
-    }
-
-    def parsed(expr: Expr, s: List[Char], exprs: Exprs, stack: List[Exprs]): Exprs = {
-      val subExprs :: nextStack = stack
-
-      parse(s, exprs, subExprs + expr :: nextStack)
-    }
-
-    //parse(s.toList, Exprs(), Nil)
-    parse(s"($s)".toList, Exprs(), Nil)
-  }
+  println(parse("(2.16 - 48.34)^-1"))
 }
