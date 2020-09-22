@@ -2,7 +2,7 @@ import sbt._
 
 object Dependencies {
   def apply(): Seq[ModuleID] = Seq(
-    scalaReflect, scalatest, scalacheck, scalacheckShapeless, testcontainers, scalaTestContainers, scribe, pprint, pureConfig,
+    scalaReflect, scalatest, scalaMock, scalacheck, scalacheckShapeless, testcontainers, scalaTestContainers, scribe, pprint, pureConfig,
     cats, mouse, simulacrum, refined, monocle, shapeless, meowMtl,
     http4s, monix, fs2, scalaUri, betterFiles,
     circe
@@ -14,6 +14,10 @@ object Dependencies {
   
   lazy val scalatest: Seq[ModuleID] = Seq(
     "org.scalatest" %% "scalatest" % "3.1.0" % "test, it" withSources() withJavadoc()
+  )
+
+  lazy val scalaMock: Seq[ModuleID] = Seq(
+    "org.scalamock" %% "scalamock" % "4.4.0" % "test, it" withSources() withJavadoc()
   )
 
   lazy val scalacheck: Seq[ModuleID] = Seq(

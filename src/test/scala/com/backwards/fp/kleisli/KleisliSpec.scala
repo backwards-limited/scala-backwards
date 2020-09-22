@@ -48,4 +48,68 @@ class KleisliSpec extends AnyWordSpec with Matchers {
       combine2(()).unsafeRunSync() mustBe true
     }
   }
+
+  "Kleisli" should {
+    type Config = String
+    type Result = String
+
+    def getConfig: IO[Config] = IO("config")
+
+    def serviceCall(c: Config): IO[Result] = IO("result")
+
+    "without" in {
+      def program: IO[Result] = for {
+        config <- getConfig
+        result <- serviceCall(config)
+      } yield result
+
+      val v: Result = program.unsafeRunSync()
+
+      println(v)
+    }
+
+    "with IO" in {
+      def program: Kleisli[IO, Config, Result] = for {
+        config <- Kleisli.ask[IO, Config]
+        result <- Kleisli.liftF(serviceCall(config))
+      } yield result
+
+      val v: IO[Result] = getConfig.flatMap(program.run)
+
+      println(v.unsafeRunSync())
+    }
+
+    "with Option" in {
+      import cats.instances.option._
+
+      def getConfig: Option[Config] = Option("config")
+
+      def serviceCall(c: Config): Option[Result] = Option("result")
+
+      def program: Kleisli[Option, Config, Result] = for {
+        config <- Kleisli.ask[Option, Config]
+        result <- Kleisli.liftF(serviceCall(config))
+      } yield result
+
+      val v: Option[Result] = getConfig.flatMap(program.run)
+
+      println(v)
+    }
+
+    "with Option, though a bit more explicitly" in {
+      import cats.instances.option._
+
+      def getConfig: Option[Config] = Option("config")
+
+      def serviceCall(c: Config): Option[Result] = Option("result")
+
+      val v: Option[Result] = getConfig.flatMap { config =>
+        Kleisli.ask[Option, Config].flatMap { config =>
+          Kleisli.liftF(serviceCall(config))
+        }.run(config)
+      }
+
+      println(v)
+    }
+  }
 }
