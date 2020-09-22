@@ -62,7 +62,9 @@ object BSpec extends App {
 
   final case class Num(value: Double) extends Expr
 
-  final case class Exprs(value: List[Expr]) extends Expr
+  final case class Exprs(value: List[Expr] = Nil) extends Expr {
+    def +(exprs: List[Expr]): Exprs = Exprs(value ::: exprs)
+  }
 
   println(Expr.eval(Num(4)))
   println(Expr.eval(Exprs(List(Num(4)))))
@@ -89,21 +91,21 @@ object BSpec extends App {
   println(parse("4 + (6 + -5) + 2"))
   println(parse("4 + (6 + 55) + 2"))
 
-  def parse(s: String): List[Expr] = {
-    def parseOp(op: Op, s: List[Char], exprs: List[Expr], stack: mutable.Stack[List[Expr]]): List[Expr] = {
+  def parse(s: String): Exprs = {
+    def parseOp(op: Op, s: List[Char], exprs: Exprs, stack: mutable.Stack[List[Expr]]): Exprs = {
       val subExprs = stack.pop()
       stack.push(subExprs :+ op)
       parse(s, exprs, stack)
     }
 
-    def parseNum(num: Num, s: List[Char], exprs: List[Expr], stack: mutable.Stack[List[Expr]]): List[Expr] = {
+    def parseNum(num: Num, s: List[Char], exprs: Exprs, stack: mutable.Stack[List[Expr]]): Exprs = {
       val subExprs = stack.pop()
       stack.push(subExprs :+ num)
       parse(s, exprs, stack)
     }
 
     @tailrec
-    def parse(s: List[Char], exprs: List[Expr], stack: mutable.Stack[List[Expr]]): List[Expr] = s match {
+    def parse(s: List[Char], exprs: Exprs, stack: mutable.Stack[List[Expr]]): Exprs = s match {
       case '(' :: rest =>
         parse(rest, exprs, stack.push(Nil))
 
@@ -111,7 +113,7 @@ object BSpec extends App {
         val subExprs = stack.pop()
 
         if (stack.isEmpty) {
-          parse(rest, exprs :+ Exprs(subExprs), stack)
+          parse(rest, exprs + subExprs, stack)
         } else {
           val preSubExprs = stack.pop()
           stack.push(preSubExprs :+ Exprs(subExprs))
@@ -148,6 +150,6 @@ object BSpec extends App {
         exprs
     }
 
-    parse(s"($s)".toList, Nil, new mutable.Stack[List[Expr]])
+    parse(s"($s)".toList, Exprs(), new mutable.Stack[List[Expr]])
   }
 }
