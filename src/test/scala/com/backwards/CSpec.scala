@@ -52,13 +52,13 @@ object CSpec extends App {
             parsed(Num(('-' +: numbers).mkString.toDouble), remaining, exprs, stack)
           }
 
-        case c :: rest =>
-          val (numbers, remaining) = rest.span(isDecimal)
+        case all @ _ :: rest =>
+          val (numbers, remaining) = all.span(isDecimal)
 
           if (numbers.isEmpty) {
             parse(rest, exprs, stack)
           } else {
-            parsed(Num((c +: numbers).mkString.toDouble), remaining, exprs, stack)
+            parsed(Num(numbers.mkString.toDouble), remaining, exprs, stack)
           }
 
         case Nil =>
@@ -108,9 +108,14 @@ object CSpec extends App {
     def op(exprs: List[Expr], ops: Op*): List[Expr] = {
       @tailrec
       def go(exprs: List[Expr], results: List[Expr]): List[Expr] = exprs match {
-        case Num(n1) :: (op @ Op(fn)) :: Num(n2) :: rest if ops.contains(op) => go(List(Num(fn(n1, n2))) ::: rest, results)
-        case List(expr1, expr2, _*) => go(exprs.drop(2), results ::: List(expr1, expr2))
-        case rest => results ::: rest
+        case Num(n1) :: (op @ Op(fn)) :: Num(n2) :: rest if ops.contains(op) =>
+          go(List(Num(fn(n1, n2))) ::: rest, results)
+
+        case List(expr1, expr2, _*) =>
+          go(exprs.drop(2), results ::: List(expr1, expr2))
+
+        case rest =>
+          results ::: rest
       }
 
       go(exprs, Nil)
