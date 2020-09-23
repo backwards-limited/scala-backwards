@@ -3,7 +3,36 @@ package com.backwards
 import scala.annotation.tailrec
 import scala.collection.mutable
 import scala.util.matching.Regex
+import scala.math.BigDecimal
 
+/*
+The goal of this challenge is to create a simple calculator.
+The following operations should be supported (in order of precedence):
+1   ()       Brackets
+2   -        Unary minus
+3   ^        Exponent
+4   *, /     Multiply, Divide (left-to-right precedence)
+5   +, -     Add, Subtract (left-to-right precedence)
+
+Input:
+Your program should read lines from standard input. Each line contains mathematical expression.
+Each number in input expression is greater than -20,000 and less than 20,000. Each output number is greater than -20,000 and less than 20,000.
+
+Output:
+Print out the result of the calculation. If the output number is a floating point number it should be rounded to the 5th digit after the dot.
+E.g 14.132646 gets 14.13265, 14.132644 gets 14.13264, 14.132645 gets 14.13265.
+
+If the output number has less than 5 digits after the decimal point, you don't need to add zeros.
+Note: don't use any kind of eval function.
+
+
+Input:                  Output:
+3^6 / 117               6.23077
+
+
+Input:                  Output:
+(2.16 - 48.34)^-1       -0.02165
+*/
 object CSpec extends App {
   object Pipe {
     import scala.util.chaining._
@@ -56,7 +85,7 @@ object CSpec extends App {
           val (numbers, remaining) = rest.span(isDecimal)
 
           if (numbers.isEmpty) {
-            parsed(Subtract, remaining, exprs, stack)
+            parsed(Subtract, rest, exprs, stack)
           } else {
             parsed(Num(('-' +: numbers).mkString.toDouble), remaining, exprs, stack)
           }
@@ -86,6 +115,9 @@ object CSpec extends App {
       parse(s.toList, Exprs(), Nil)
     }
 
+    def eval(s: String): BigDecimal =
+      parse(s) |> eval |> BigDecimal.apply |> { _.setScale(5, BigDecimal.RoundingMode.HALF_UP) }
+
     def eval(expr: Expr): Double =
       eval(Exprs(List(expr)))
 
@@ -93,11 +125,10 @@ object CSpec extends App {
       eval(Exprs(exprs))
 
     def eval(exprs: Exprs): Double = {
-      val narrow: Exprs => List[Expr] =
-        _.value.map {
-          case Exprs(ex) => Num(eval(ex))
-          case ex => ex
-        }
+      val narrow: Exprs => List[Expr] = _.value.map {
+        case Exprs(value) => Num(eval(value))
+        case ex => ex
+      }
 
       exprs |> narrow |> exponent |> factor |> difference match {
         case List(Num(v)) => v
@@ -184,6 +215,13 @@ object CSpec extends App {
 
   println("---------------------------------------------")
 
+  BigDecimal(6.230769230769231).setScale(5, BigDecimal.RoundingMode.HALF_UP)
+
+  6.230769230769231
+  -0.021654395842355994
+
+
+
   //println(blah("4"))
   //println(blah("4 + 2"))
   //println(blah("4 + (6 + 5) + 2")) // List(Num(4), Add, Exprs(List(Num(6), Add, Num(4))), Add, Num(2))
@@ -193,5 +231,6 @@ object CSpec extends App {
   println(parse("4 + (6 + 55) + 2"))
 
 
+  println(parse("3^6 / 117"))
   println(parse("(2.16 - 48.34)^-1"))
 }
