@@ -5,6 +5,15 @@ import scala.collection.mutable
 import scala.util.matching.Regex
 
 object CSpec extends App {
+  object Pipe {
+    import scala.util.chaining._
+
+    implicit class PipeOps[A](val a: A) {
+      implicit def |>[B](f: A => B): B = a pipe f
+    }
+  }
+
+  import Pipe._
 
   sealed trait Expr
 
@@ -90,7 +99,7 @@ object CSpec extends App {
           case ex => ex
         }
 
-      difference(factor(exponent(narrow(exprs)))) match {
+      exprs |> narrow |> exponent |> factor |> difference match {
         case List(Num(v)) => v
         case _ => 0.0
       }
@@ -162,6 +171,16 @@ object CSpec extends App {
   println(eval(List(Exprs(List(Num(5), Subtract, Exprs(List(Num(1), Add, Num(1))))), Add, Num(5))))
 
   println(eval(List(Num(4), Multiply, Num(6))))
+
+  println("---------------------------------------------")
+
+  // 3^6 / 117               6.23077
+
+  // Exprs(List(Num(3.0), Exponent, Num(6.0), Divide, Num(117)))
+  println(eval(Exprs(List(Num(3.0), Exponent, Num(6.0), Divide, Num(117)))))
+
+  // (2.16 - 48.34)^-1       -0.02165
+  println(eval(Exprs(List(Exprs(List(Num(2.16), Subtract, Num(48.34))), Exponent, Num(-1.0)))))
 
   println("---------------------------------------------")
 
