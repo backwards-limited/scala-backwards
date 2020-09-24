@@ -6,7 +6,7 @@ import monocle.macros.GenLens
 import monocle.std.option._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import com.backwards.fp.FunctionOps._
+import com.backwards.fp.Function.syntax._
 
 class BookRepositorySpec extends AnyWordSpec with Matchers {
   val repository = new InMemoryBookRepository
