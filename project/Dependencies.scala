@@ -5,7 +5,7 @@ object Dependencies {
     scalaReflect, scalatest, scalaMock, scalacheck, scalacheckShapeless, testcontainers, scalaTestContainers, scribe, pprint, pureConfig,
     cats, mouse, simulacrum, refined, monocle, shapeless, meowMtl,
     http4s, monix, fs2, scalaUri, betterFiles,
-    circe
+    circe, parserCombinators
   ).flatten
 
   lazy val scalaReflect: Seq[ModuleID] = Seq(
@@ -13,11 +13,11 @@ object Dependencies {
   )
   
   lazy val scalatest: Seq[ModuleID] = Seq(
-    "org.scalatest" %% "scalatest" % "3.1.0" % "test, it" withSources() withJavadoc()
+    "org.scalatest" %% "scalatest" % "3.2.2" % "test, it" withSources() withJavadoc()
   )
 
   lazy val scalaMock: Seq[ModuleID] = Seq(
-    "org.scalamock" %% "scalamock" % "4.4.0" % "test, it" withSources() withJavadoc()
+    "org.scalamock" %% "scalamock" % "5.0.0" % "test, it" withSources() withJavadoc()
   )
 
   lazy val scalacheck: Seq[ModuleID] = Seq(
@@ -25,11 +25,11 @@ object Dependencies {
   )
 
   lazy val scalacheckShapeless: Seq[ModuleID] = Seq(
-    "com.github.alexarchambault" %% "scalacheck-shapeless_1.14" % "1.2.4" withSources() withJavadoc()
+    "com.github.alexarchambault" %% "scalacheck-shapeless_1.14" % "1.2.5" withSources() withJavadoc()
   )
   
   lazy val testcontainers: Seq[ModuleID] = Seq(
-    "org.testcontainers" % "testcontainers" % "1.12.5" % "test, it" withSources() withJavadoc()
+    "org.testcontainers" % "testcontainers" % "1.14.3" % "test, it" withSources() withJavadoc()
   )
 
   lazy val scalaTestContainers: Seq[ModuleID] = {
@@ -42,23 +42,23 @@ object Dependencies {
   }
 
   lazy val scribe: Seq[ModuleID] = Seq(
-    "com.outr" %% "scribe" % "2.7.10" withSources() withJavadoc()
+    "com.outr" %% "scribe" % "2.7.12" withSources() withJavadoc()
   )
   
   lazy val pureConfig: Seq[ModuleID] = {
     val group = "com.github.pureconfig"
-    val version = "0.12.2"
+    val version = "0.14.0"
 
     Seq("pureconfig").map(group %% _ % version withSources() withJavadoc())
   }
 
   lazy val pprint: Seq[ModuleID] = Seq(
-    "com.lihaoyi" %% "pprint" % "0.5.9"
+    "com.lihaoyi" %% "pprint" % "0.6.0"
   )
 
   lazy val cats: Seq[ModuleID] = {
     val group = "org.typelevel"
-    val version = "2.1.1"
+    val version = "2.2.0"
 
     Seq(
       "cats-core", "cats-effect", "cats-free"
@@ -68,7 +68,7 @@ object Dependencies {
   }
 
   lazy val mouse: Seq[ModuleID] = Seq(
-    "org.typelevel" %% "mouse" % "0.24" withSources() withJavadoc()
+    "org.typelevel" %% "mouse" % "0.25" withSources() withJavadoc()
   )
 
   lazy val simulacrum: Seq[ModuleID] = Seq(
@@ -77,7 +77,7 @@ object Dependencies {
   
   lazy val refined: Seq[ModuleID] = {
     val group = "eu.timepit"
-    val version = "0.9.12"
+    val version = "0.9.16"
 
     Seq(
       "refined", "refined-pureconfig", "refined-cats"
@@ -86,7 +86,7 @@ object Dependencies {
 
   lazy val monocle: Seq[ModuleID] = {
     val group = "com.github.julien-truffaut"
-    val version = "2.0.1"
+    val version = "2.1.0"
 
     Seq(
       "monocle-core", "monocle-macro", "monocle-generic"
@@ -101,7 +101,7 @@ object Dependencies {
 
   lazy val meowMtl: Seq[ModuleID] = {
     val group = "com.olegpy"
-    val version = "0.4.0"
+    val version = "0.4.1"
 
     Seq(
       "meow-mtl-core", "meow-mtl-effects", "meow-mtl-monix"
@@ -121,15 +121,15 @@ object Dependencies {
 
   lazy val monix: Seq[ModuleID] = {
     Seq(
-      "io.monix" %% "monix" % "3.1.0" withSources() withJavadoc()
+      "io.monix" %% "monix" % "3.2.2" withSources() withJavadoc()
     ) ++ Seq(
-      "io.monix" %% "monix-kafka-11" % "1.0.0-RC5" withSources() withJavadoc()
+      "io.monix" %% "monix-kafka-11" % "1.0.0-RC6" withSources() withJavadoc()
     )
   }
 
   lazy val fs2: Seq[ModuleID] = {
     val group = "co.fs2"
-    val version = "2.2.2"
+    val version = "2.4.4"
 
     Seq(
       "fs2-core", "fs2-io", "fs2-reactive-streams"
@@ -137,11 +137,11 @@ object Dependencies {
   }
 
   lazy val scalaUri: Seq[ModuleID] = Seq(
-    "io.lemonlabs" %% "scala-uri" % "1.5.1" withSources() withJavadoc()
+    "io.lemonlabs" %% "scala-uri" % "2.3.1" withSources() withJavadoc()
   )
   
   lazy val betterFiles: Seq[ModuleID] = Seq(
-    "com.github.pathikrit" %% "better-files" % "3.8.0" withSources() withJavadoc()
+    "com.github.pathikrit" %% "better-files" % "3.9.1" withSources() withJavadoc()
   )
 
   lazy val circe: Seq[ModuleID] = {
@@ -154,4 +154,8 @@ object Dependencies {
       "circe-testing", "circe-literal"
     ).map(group %% _ % version % "test, it" withSources() withJavadoc())
   }
+
+  lazy val parserCombinators: Seq[ModuleID] = Seq(
+    "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
+  )
 }
