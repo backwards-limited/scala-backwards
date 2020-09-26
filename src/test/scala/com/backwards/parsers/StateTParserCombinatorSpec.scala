@@ -1,5 +1,6 @@
 package com.backwards.parsers
 
+import scala.util.matching.Regex
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import cats.data.StateT._
@@ -136,6 +137,15 @@ class StateTParserCombinatorSpec extends AnyWordSpec with Matchers {
 
     val natural: Parser[Int] = token(nat)
 
+    val number: Parser[Double] = {
+      val number: Regex = """[-\d.]""".r
+
+      val isNumber: Char => Boolean =
+        c => number.matches(String.valueOf(c))
+
+      token(many1(sat(isNumber)).map(_.mkString.toDouble))
+    }
+
     def symbol(s: String): Parser[String] = token(string(s))
 
     "number" in {
@@ -143,33 +153,42 @@ class StateTParserCombinatorSpec extends AnyWordSpec with Matchers {
       r mustBe Option(" 54" -> 105)
     }
 
-    lazy val expr: Parser[Int] =
+    lazy val expr: Parser[Double] =
       for {
-        t <- term
+        t <- factor
         res <- (for {
                   _ <- symbol("+")
                   e <- expr
                 } yield t + e) <+> t.pure[Parser]
       } yield res
 
-    lazy val term: Parser[Int] =
+    lazy val factor: Parser[Double] =
       for {
-        f <- factor
+        f <- exp
         res <- (for {
                   _ <- symbol("*")
-                  t <- term
+                  t <- factor
                 } yield f * t) <+> f.pure[Parser]
       } yield res
 
-    lazy val factor: Parser[Int] =
+    lazy val exp: Parser[Double] =
+      for {
+        f <- parentheses
+        res <- (for {
+          _ <- symbol("^")
+          t <- factor
+        } yield math.pow(f, t)) <+> f.pure[Parser]
+      } yield res
+
+    lazy val parentheses: Parser[Double] =
       (for {
         _ <- symbol("(")
         e <- expr
         _ <- symbol(")")
-      } yield e) <+> natural
+      } yield e) <+> number
 
     "arithmetic" in {
-      def eval(input: String): String Either Int =
+      def eval(input: String): String Either Double =
         expr.run(input) match {
           case Some(("", n))  => Right(n)
           case Some((out, _)) => Left(s"unconsumed input: $out")
@@ -177,6 +196,8 @@ class StateTParserCombinatorSpec extends AnyWordSpec with Matchers {
         }
 
       eval("2 * (3 + 4)") mustBe Right(14)
+
+      println(eval("(2.16 + 48.34) ^ -1"))
 
       eval("2 * 3 + 4") mustBe Right(10)
 
