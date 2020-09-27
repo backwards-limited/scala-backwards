@@ -31,7 +31,7 @@ object Eval {
   val isDecimal: Char => Boolean =
     c => decimal.matches(String.valueOf(c))
 
-  def parse(s: String): Exprs = {
+  def parse(s: String): String Either Exprs = {
     @tailrec
     def parse(s: List[Char], exprs: Exprs, stack: List[Exprs]): Exprs = s match {
       case '(' :: rest =>
@@ -91,11 +91,14 @@ object Eval {
         parse(s, exprs, subExprs + expr :: nextStack)
       }
 
-    parse(s.toList, Exprs(), Nil)
+    parse(s.toList, Exprs(), Nil) match {
+      case Exprs(Nil) => Left(s"Invalid expression: $s")
+      case exprs => Right(exprs)
+    }
   }
 
-  def eval(s: String): BigDecimal =
-    parse(s) |> eval |> BigDecimal.apply |> { _.setScale(5, BigDecimal.RoundingMode.HALF_UP) }
+  def eval(s: String): String Either BigDecimal =
+    parse(s).map(eval(_) |> BigDecimal.apply |> { _.setScale(5, BigDecimal.RoundingMode.HALF_UP) })
 
   def eval(expr: Expr): Double =
     eval(Exprs(List(expr)))
