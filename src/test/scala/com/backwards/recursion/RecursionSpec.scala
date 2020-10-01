@@ -1,4 +1,4 @@
-package com.backwards
+package com.backwards.recursion
 
 import scala.util.Try
 import org.scalatest.matchers.must.Matchers
