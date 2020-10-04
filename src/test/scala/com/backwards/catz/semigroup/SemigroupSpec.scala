@@ -1,4 +1,4 @@
-package com.backwards.cats.semigroup
+package com.backwards.catz.semigroup
 
 import cats.kernel.Semigroup
 import org.scalatest.matchers.must.Matchers

@@ -1,4 +1,4 @@
-package com.backwards.cats.monad
+package com.backwards.catz.monad
 
 import cats.{Eval, Monad}
 import cats.data.IndexedStateT

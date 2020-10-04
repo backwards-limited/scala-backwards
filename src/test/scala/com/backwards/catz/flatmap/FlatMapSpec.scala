@@ -1,4 +1,4 @@
-package com.backwards.cats.flatmap
+package com.backwards.catz.flatmap
 
 import cats.FlatMap
 import mouse.boolean._

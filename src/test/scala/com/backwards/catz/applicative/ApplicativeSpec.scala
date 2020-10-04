@@ -1,4 +1,4 @@
-package com.backwards.cats.applicative
+package com.backwards.catz.applicative
 
 import scala.concurrent.Await
 import scala.language.postfixOps

@@ -1,4 +1,4 @@
-package com.backwards.cats.monoid
+package com.backwards.catz.monoid
 
 import cats.kernel.Monoid
 import org.scalatest.matchers.must.Matchers

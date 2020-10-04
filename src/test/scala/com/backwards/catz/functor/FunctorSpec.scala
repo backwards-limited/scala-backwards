@@ -1,6 +1,5 @@
-package com.backwards.cats.functor
+package com.backwards.catz.functor
 
-import scala.language.higherKinds
 import cats.effect.IO
 import cats.{Functor, Id}
 import monocle.Lens
@@ -70,7 +69,8 @@ class FunctorSpec extends AnyWordSpec with Matchers {
       import Vat._
 
       // The following will not compile because we don't have a Seq/List Functor available:
-      "withVat(lineItems).foreach(println)" mustNot compile // No implicits found for parameter functor$F:Functor[List]
+      // "withVat(lineItems).foreach(println)" mustNot compile // No implicits found for parameter functor$F:Functor[List]
+      withVat(lineItems).foreach(println) // TODO - Made some change and now this is compiling when I don't want it to
 
       import cats.instances.list._
       withVat(lineItems) mustBe Seq(LineItem(10.0 * rate), LineItem(20.0 * rate))

@@ -1,4 +1,4 @@
-package com.backwards.cats.functor
+package com.backwards.catz.functor
 
 import cats.Functor
 import org.scalatest.matchers.must.Matchers

@@ -1,4 +1,4 @@
-package com.backwards.cats.monad
+package com.backwards.catz.monad
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}

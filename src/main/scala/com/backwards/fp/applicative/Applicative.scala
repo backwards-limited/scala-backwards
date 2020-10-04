@@ -1,6 +1,6 @@
 package com.backwards.fp.applicative
 
-import scala.language.{higherKinds, implicitConversions}
+import scala.language.implicitConversions
 import com.backwards.fp.functor.Functor
 
 /**

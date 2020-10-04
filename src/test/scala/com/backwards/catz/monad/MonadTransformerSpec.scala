@@ -1,4 +1,4 @@
-package com.backwards.cats.monad
+package com.backwards.catz.monad
 
 import cats.data.EitherT
 import cats.effect.IO
