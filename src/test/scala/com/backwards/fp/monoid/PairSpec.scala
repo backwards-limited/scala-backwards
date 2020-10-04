@@ -6,7 +6,8 @@ import org.scalatest.wordspec.AnyWordSpec
 class PairSpec extends AnyWordSpec with Matchers {
   import com.backwards.fp.Pair
   import com.backwards.fp.monoid.ListOps._
-  import com.backwards.fp.monoid.MonoidOps._
+  import com.backwards.fp.monoid.Backwards.Monoid
+  import com.backwards.fp.monoid.Backwards.MonoidOps._
   import com.backwards.fp.monoid.PairOps._
   import com.backwards.fp.monoid.SimpleMonoidOps._
 

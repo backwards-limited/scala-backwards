@@ -55,7 +55,7 @@ class ReaderWriterStateSpec extends AnyWordSpec with Matchers with MockFactory {
       // ReaderWriterStateT[IO, Environment, Log, Cache[UUID, User], Option[User]]
 
       // One of the ways it can be constructed is by using the function:
-      val f: (Environment, Cache[UUID, User]) => IO[(Log, Cache[UUID, User], Option[User])] = ???
+      // val f: (Environment, Cache[UUID, User]) => IO[(Log, Cache[UUID, User], Option[User])] = ???
 
       // The getUser could then be:
       def getUser(uuid: UUID): ReaderWriterStateT[IO, Environment, Log, Cache[UUID, User], Option[User]] =
@@ -74,7 +74,7 @@ class ReaderWriterStateSpec extends AnyWordSpec with Matchers with MockFactory {
 
       // Usage:
       class HttpClientStub extends HttpClient {
-        def get(url: String)(id: UUID): IO[Option[User]] = ???
+        def get(url: String)(id: UUID): IO[Option[User]] = IO(None)
       }
 
       val result = for {

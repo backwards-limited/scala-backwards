@@ -1,6 +1,7 @@
 package com.backwards.fp.foldable
 
 import com.backwards.fp.{Just, Maybe, Nothing}
+import com.backwards.fp.foldable.Backwards._
 
 object MaybeOps {
   implicit val maybeFoldable: Foldable[Maybe] = new Foldable[Maybe] {

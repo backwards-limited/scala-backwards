@@ -1,7 +1,8 @@
 package com.backwards.fp.applicative
 
 import scala.language.implicitConversions
-import com.backwards.fp.State
+import com.backwards.fp.applicative.Backwards._
+import com.backwards.fp.state.Backwards.State
 
 object StateOps {
   import com.backwards.fp.functor.StateOps._

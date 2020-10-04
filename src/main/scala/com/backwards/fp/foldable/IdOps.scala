@@ -1,6 +1,7 @@
 package com.backwards.fp.foldable
 
 import com.backwards.fp.Id
+import com.backwards.fp.foldable.Backwards._
 
 object IdOps {
   implicit val idFoldable: Foldable[Id] = new Foldable[Id] {

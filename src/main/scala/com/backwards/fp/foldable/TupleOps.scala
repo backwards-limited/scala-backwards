@@ -1,6 +1,7 @@
 package com.backwards.fp.foldable
 
 import scala.annotation.tailrec
+import com.backwards.fp.foldable.Backwards._
 
 object TupleOps {
   /**

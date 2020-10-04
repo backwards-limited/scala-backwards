@@ -1,6 +1,7 @@
 package com.backwards.fp.applicative
 
 import com.backwards.fp.Id
+import com.backwards.fp.applicative.Backwards._
 
 object IdOps {
   import com.backwards.fp.functor.IdOps._

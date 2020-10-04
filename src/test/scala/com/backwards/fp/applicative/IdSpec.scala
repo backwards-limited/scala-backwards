@@ -5,9 +5,9 @@ import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp.Id
 
 class IdSpec extends AnyWordSpec with Matchers {
-  import com.backwards.fp.applicative.ApplicativeOps._
+  import com.backwards.fp.applicative.Backwards.ApplicativeOps._
   import com.backwards.fp.applicative.IdOps._
-  import com.backwards.fp.functor.FunctorOps._
+  import com.backwards.fp.functor.Backwards.FunctorOps._
   import com.backwards.fp.functor.IdOps._
 
   "Id Applicative" should {

@@ -1,9 +1,10 @@
 package com.backwards.fp.monad
 
 import scala.language.implicitConversions
-import com.backwards.fp.Writer
-import com.backwards.fp.monoid.Monoid
-import com.backwards.fp.monoid.MonoidOps._
+import com.backwards.fp.monoid.Backwards.Monoid
+import com.backwards.fp.monoid.Backwards.MonoidOps._
+import com.backwards.fp.monad.Backwards._
+import com.backwards.fp.writer.Backwards.Writer
 
 object WriterOps {
   import com.backwards.fp.functor.WriterOps._

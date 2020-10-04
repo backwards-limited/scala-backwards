@@ -5,7 +5,8 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class ListSpec extends AnyWordSpec with Matchers {
   import com.backwards.fp.monoid.ListOps._
-  import com.backwards.fp.monoid.MonoidOps._
+  import com.backwards.fp.monoid.Backwards.Monoid
+  import com.backwards.fp.monoid.Backwards.MonoidOps._
 
   "List Monoid" should {
     "append lists" in {

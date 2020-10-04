@@ -9,7 +9,7 @@ import com.backwards.fp.{Just, Nothing}
   */
 class MaybeSpec extends AnyWordSpec with Matchers {
   import com.backwards.fp.applicative.MaybeOps._
-  import com.backwards.fp.functor.FunctorOps._
+  import com.backwards.fp.functor.Backwards.FunctorOps._
   import com.backwards.fp.functor.MaybeOps._
 
   "Maybe applicative of Just" should {

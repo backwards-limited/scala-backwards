@@ -1,6 +1,7 @@
 package com.backwards.fp.monoid
 
 import com.backwards.fp.Pair
+import com.backwards.fp.monoid.Backwards._
 
 object PairOps {
   import MonoidOps._

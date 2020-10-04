@@ -2,10 +2,10 @@ package com.backwards.fp.monad
 
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import com.backwards.fp.Writer
+import com.backwards.fp.writer.Backwards.Writer
 
 class WriterSpec extends AnyWordSpec with Matchers {
-  import com.backwards.fp.Writer._
+  import com.backwards.fp.writer.Backwards.Writer._
   import com.backwards.fp.functor.WriterOps._
   import com.backwards.fp.monad.WriterOps._
   import com.backwards.fp.monoid.ListOps._

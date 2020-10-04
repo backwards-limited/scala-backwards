@@ -2,7 +2,7 @@ package com.backwards.fp.functor
 
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import com.backwards.fp.Writer
+import com.backwards.fp.writer.Backwards.Writer
 
 class WriterSpec extends AnyWordSpec with Matchers {
   import com.backwards.fp.functor.WriterOps._

@@ -1,6 +1,7 @@
 package com.backwards.fp.monad
 
 import scala.annotation.tailrec
+import com.backwards.fp.monad.Backwards._
 
 object ListOps {
   import com.backwards.fp.functor.ListOps._

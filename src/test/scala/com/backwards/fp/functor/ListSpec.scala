@@ -4,7 +4,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class ListSpec extends AnyWordSpec with Matchers {
-  import com.backwards.fp.functor.FunctorOps._
+  import com.backwards.fp.functor.Backwards.FunctorOps._
   import com.backwards.fp.functor.ListOps._
 
   "List Functor" should {

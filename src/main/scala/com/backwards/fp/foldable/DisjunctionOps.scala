@@ -1,6 +1,6 @@
 package com.backwards.fp.foldable
 
-import scala.language.higherKinds
+import com.backwards.fp.foldable.Backwards._
 import com.backwards.fp.{Disjunction, LeftDisjunction, RightDisjunction}
 
 object DisjunctionOps {

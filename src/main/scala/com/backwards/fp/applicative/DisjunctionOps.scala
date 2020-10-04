@@ -1,8 +1,9 @@
 package com.backwards.fp.applicative
 
-import scala.language.{higherKinds, implicitConversions}
+import scala.language.implicitConversions
+import com.backwards.fp.applicative.Backwards._
+import com.backwards.fp.functor.Backwards.{Functor, FunctorFunctionOps}
 import com.backwards.fp.{Disjunction, LeftDisjunction, RightDisjunction}
-import com.backwards.fp.functor.{Functor, FunctorFunctionOps}
 
 object DisjunctionOps {
   implicit def disjunctionApplicative[L](implicit Functor: Functor[Disjunction[L, *]]): Applicative[Disjunction[L, *]] = new Applicative[Disjunction[L, *]] {
