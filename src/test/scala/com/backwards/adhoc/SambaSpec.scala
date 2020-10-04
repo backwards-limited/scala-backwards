@@ -1,7 +1,7 @@
 package com.backwards.adhoc
 
-import cats.{Id, Monad}
-import cats.implicits._
+import _root_.cats.{Id, Monad}
+import _root_.cats.implicits._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

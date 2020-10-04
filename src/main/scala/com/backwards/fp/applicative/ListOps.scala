@@ -1,7 +1,5 @@
 package com.backwards.fp.applicative
 
-import com.backwards.fp.applicative.Backwards._
-
 object ListOps {
   import com.backwards.fp.functor.ListOps._
 

@@ -1,7 +1,5 @@
 package com.backwards.fp.foldable
 
-import com.backwards.fp.foldable.Backwards._
-
 object ListOps {
   implicit val listFoldable: Foldable[List] = new Foldable[List] {
     def foldr[A, B](fa: List[A])(acc: B)(f: (A, B) => B): B = {

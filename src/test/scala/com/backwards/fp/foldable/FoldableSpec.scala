@@ -5,7 +5,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import com.backwards.fp._
 
 class FoldableSpec extends AnyWordSpec with Matchers {
-  import com.backwards.fp.foldable.Backwards.FoldableOps._
+  import com.backwards.fp.foldable.FoldableOps._
 
   "Foldable" should {
     "work with Id" in {

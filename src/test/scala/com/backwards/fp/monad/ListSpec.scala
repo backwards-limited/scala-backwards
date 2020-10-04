@@ -4,10 +4,10 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class ListSpec extends AnyWordSpec with Matchers {
-  import com.backwards.fp.functor.Backwards.FunctorOps._
+  import com.backwards.fp.functor.FunctorOps._
   import com.backwards.fp.functor.ListOps._
   import com.backwards.fp.monad.ListOps._
-  import com.backwards.fp.monad.Backwards.MonadOps._
+  import com.backwards.fp.monad.MonadOps._
 
   "List Monad" should {
     "work" in {

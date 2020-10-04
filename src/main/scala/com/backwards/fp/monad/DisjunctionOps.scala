@@ -1,7 +1,6 @@
 package com.backwards.fp.monad
 
-import scala.language.implicitConversions
-import com.backwards.fp.monad.Backwards._
+import scala.language.{higherKinds, implicitConversions}
 import com.backwards.fp.{Disjunction, LeftDisjunction, RightDisjunction}
 
 object DisjunctionOps {

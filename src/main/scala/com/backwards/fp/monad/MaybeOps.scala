@@ -1,7 +1,6 @@
 package com.backwards.fp.monad
 
 import com.backwards.fp.{Just, Maybe, Nothing}
-import com.backwards.fp.monad.Backwards._
 
 object MaybeOps {
   import com.backwards.fp.functor.MaybeOps._

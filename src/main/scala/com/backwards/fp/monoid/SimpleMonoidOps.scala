@@ -1,7 +1,5 @@
 package com.backwards.fp.monoid
 
-import com.backwards.fp.monoid.Backwards.Monoid
-
 object SimpleMonoidOps {
   final case class Sum(value: Int) extends AnyVal
 

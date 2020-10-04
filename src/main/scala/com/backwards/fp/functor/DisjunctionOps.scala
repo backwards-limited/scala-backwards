@@ -1,7 +1,7 @@
 package com.backwards.fp.functor
 
+import scala.language.higherKinds
 import com.backwards.fp.{Disjunction, LeftDisjunction, RightDisjunction}
-import com.backwards.fp.functor.Backwards._
 
 object DisjunctionOps {
   implicit def leftDisjunctionFunctor[L, R]: Functor[LeftDisjunction[L, *]] = new Functor[LeftDisjunction[L, *]] {

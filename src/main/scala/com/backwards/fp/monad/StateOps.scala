@@ -1,8 +1,7 @@
 package com.backwards.fp.monad
 
 import scala.language.implicitConversions
-import com.backwards.fp.monad.Backwards._
-import com.backwards.fp.state.Backwards.State
+import com.backwards.fp.State
 
 object StateOps {
   import com.backwards.fp.functor.StateOps._

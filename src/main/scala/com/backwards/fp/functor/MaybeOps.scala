@@ -1,7 +1,6 @@
 package com.backwards.fp.functor
 
 import com.backwards.fp.{Just, Maybe, Nothing}
-import com.backwards.fp.functor.Backwards.Functor
 
 object MaybeOps {
   implicit val justFunctor: Functor[Just] = new Functor[Just] {
