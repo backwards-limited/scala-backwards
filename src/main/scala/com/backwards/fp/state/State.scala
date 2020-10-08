@@ -1,4 +1,4 @@
-package com.backwards.fp
+package com.backwards.fp.state
 
 final case class State[S, A](run: S => (S, A)) {
   def exec(s: S): S = run(s)._1

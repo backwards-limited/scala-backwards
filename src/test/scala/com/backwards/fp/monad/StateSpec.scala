@@ -2,7 +2,7 @@ package com.backwards.fp.monad
 
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import com.backwards.fp.State
+import com.backwards.fp.state.State
 
 class StateSpec extends AnyWordSpec with Matchers {
   import com.backwards.fp.functor.StateOps._

@@ -1,4 +1,4 @@
-package com.backwards.fp
+package com.backwards.fp.writer
 
 import com.backwards.fp.monoid.Monoid
 

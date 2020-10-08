@@ -1,8 +1,8 @@
 package com.backwards.fp.functor
 
 import scala.language.{higherKinds, implicitConversions}
-import com.backwards.fp.Writer
 import com.backwards.fp.monoid.Monoid
+import com.backwards.fp.writer.Writer
 
 object WriterOps extends ToFunctorOps {
   /**

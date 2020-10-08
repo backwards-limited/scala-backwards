@@ -1,7 +1,7 @@
 package com.backwards.fp.functor
 
 import scala.language.{higherKinds, implicitConversions}
-import com.backwards.fp.State
+import com.backwards.fp.state.State
 
 object StateOps {
   /**
