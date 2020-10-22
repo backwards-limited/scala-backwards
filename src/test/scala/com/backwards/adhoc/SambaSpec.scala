@@ -24,6 +24,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class SambaSpec extends AnyWordSpec with Matchers {
   sealed trait D[T]
 
+  // TODO - Use Traverse
   object D {
     def apply[M[_]: Monad, A, B](fn: A => M[B])(d: D[A]): M[D[B]] =
       f[M, A, B].andThen(_(d))(fn)
