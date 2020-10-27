@@ -2,9 +2,9 @@ import sbt._
 
 object Dependencies {
   def apply(): Seq[ModuleID] = Seq(
-    scalaReflect, scalatest, scalaMock, scalacheck, scalacheckShapeless, testcontainers, scalaTestContainers, scribe, pprint, pureConfig,
-    cats, mouse, simulacrum, refined, monocle, shapeless, meowMtl,
-    http4s, monix, fs2, scalaUri, betterFiles,
+    scalaReflect, scalatest, scalaMock, scalacheck, scalacheckShapeless, testcontainers, scalaTestContainers, log4Cats, scribe, pprint, pureConfig,
+    cats, catsRetry, mouse, simulacrum, refined, monocle, shapeless, meowMtl,
+    http4s, monix, fs2, scalaUri, betterFiles, sttp,
     circe, parserCombinators
   ).flatten
 
@@ -41,6 +41,15 @@ object Dependencies {
     ).map(group %% _ % version % "test, it" withSources() withJavadoc())
   }
 
+  lazy val log4Cats: Seq[ModuleID] = {
+    val group = "io.chrisdavenport"
+    val version = "1.1.1"
+
+    Seq(
+      "log4cats-core", "log4cats-slf4j"
+    ).map(group %% _ % version)
+  }
+
   lazy val scribe: Seq[ModuleID] = Seq(
     "com.outr" %% "scribe" % "2.7.12" withSources() withJavadoc()
   )
@@ -66,6 +75,10 @@ object Dependencies {
       "cats-laws", "cats-testkit"
     ).map(group %% _ % version % "test, it" withSources() withJavadoc())
   }
+
+  lazy val catsRetry: Seq[ModuleID] = Seq(
+    "com.github.cb372" %% "cats-retry" % "2.0.0"
+  )
 
   lazy val mouse: Seq[ModuleID] = Seq(
     "org.typelevel" %% "mouse" % "0.25" withSources() withJavadoc()
@@ -143,6 +156,15 @@ object Dependencies {
   lazy val betterFiles: Seq[ModuleID] = Seq(
     "com.github.pathikrit" %% "better-files" % "3.9.1" withSources() withJavadoc()
   )
+
+  lazy val sttp: Seq[ModuleID] = {
+    val group = "com.softwaremill.sttp.client"
+    val version = "2.2.9"
+
+    Seq(
+      "core", "circe", "async-http-client-backend-cats"
+    ).map(group %% _ % version withSources() withJavadoc())
+  }
 
   lazy val circe: Seq[ModuleID] = {
     val group = "io.circe"
