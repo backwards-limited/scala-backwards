@@ -65,7 +65,7 @@ class RetrySpec extends AnyWordSpec with Matchers {
         OnErrorRetry.adInfinitum(readTextFromFile(new File("README.md"), StandardCharsets.UTF_8.name))
 
       // Fine as no retry will occur because the file exists
-      content.unsafeRunSync() must startWith("# Scala by Backwards")
+      content.unsafeRunSync() must startWith("# Main")
 
       // DO NOT RUN - This will loop for ever
       // OnErrorRetry.adInfinitum(readTextFromFile(new File("non-existing"), StandardCharsets.UTF_8.name)).unsafeRunSync()
@@ -128,7 +128,7 @@ class RetrySpec extends AnyWordSpec with Matchers {
             RetryOutcome.Next
         }
 
-      contents(new File("README.md")).unsafeRunSync() must startWith("# Scala by Backwards")
+      contents(new File("README.md")).unsafeRunSync() must startWith("# Main")
 
       val Left(exception) = contents(new File("non-existing")).attempt.unsafeRunSync()
       exception mustBe a [FileNotFoundException]
@@ -179,7 +179,7 @@ class RetrySpec extends AnyWordSpec with Matchers {
           RetryOutcome.Next
       }
 
-      contents(new File("README.md")).unsafeRunSync() must startWith("# Scala by Backwards")
+      contents(new File("README.md")).unsafeRunSync() must startWith("# Main")
 
       val Left(exception) = contents(new File("non-existing")).attempt.unsafeRunSync()
       exception mustBe a [FileNotFoundException]

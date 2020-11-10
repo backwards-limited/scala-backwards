@@ -2,14 +2,19 @@ import sbt._
 
 object Dependencies {
   def apply(): Seq[ModuleID] = Seq(
-    scalaReflect, scalatest, scalaMock, scalacheck, scalacheckShapeless, testcontainers, scalaTestContainers, log4Cats, scribe, pprint, pureConfig,
+    scalaReflect, scalaMeta, scalatest, scalaMock, scalacheck, scalacheckShapeless, testcontainers, scalaTestContainers, s3mock,
+    log4Cats, scribe, pprint, pureConfig,
     cats, catsRetry, mouse, simulacrum, refined, monocle, shapeless, meowMtl,
-    http4s, monix, fs2, scalaUri, betterFiles, sttp,
+    http4s, monix, fs2, scalaUri, betterFiles, sttp, awsJava,
     circe, parserCombinators
   ).flatten
 
   lazy val scalaReflect: Seq[ModuleID] = Seq(
     "org.scala-lang" % "scala-reflect" % BuildProperties("scala.version")
+  )
+
+  lazy val scalaMeta: Seq[ModuleID] = Seq(
+    "org.scalameta" %% "scalameta" % "4.3.24"
   )
   
   lazy val scalatest: Seq[ModuleID] = Seq(
@@ -40,6 +45,10 @@ object Dependencies {
       "testcontainers-scala-scalatest", "testcontainers-scala-kafka", "testcontainers-scala-mysql"
     ).map(group %% _ % version % "test, it" withSources() withJavadoc())
   }
+
+  lazy val s3mock: Seq[ModuleID] = Seq(
+    "io.findify" %% "s3mock" % "0.2.6" % "test, it"
+  )
 
   lazy val log4Cats: Seq[ModuleID] = {
     val group = "io.chrisdavenport"
@@ -165,6 +174,10 @@ object Dependencies {
       "core", "circe", "async-http-client-backend-cats"
     ).map(group %% _ % version withSources() withJavadoc())
   }
+
+  lazy val awsJava: Seq[ModuleID] = Seq(
+    "com.amazonaws" % "aws-java-sdk" % "1.11.893"
+  )
 
   lazy val circe: Seq[ModuleID] = {
     val group = "io.circe"

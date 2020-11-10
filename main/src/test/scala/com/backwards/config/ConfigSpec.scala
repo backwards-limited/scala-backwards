@@ -18,13 +18,13 @@ class ConfigSpec extends AnyWordSpec with Matchers {
     import com.backwards.config.Config._
 
     "read be read including properties from resource configuration" in {
-      checkConfig(load[MyConfig]("myconfig"))
+      checkConfig(load[MyConfig]("application.test.conf", "myconfig"))
     }
   }
 
   "Config using Trait" should {
     "read be read including properties from resource configuration" in new Config {
-      checkConfig(load[MyConfig]("myconfig"))
+      checkConfig(load[MyConfig]("application.test.conf", "myconfig"))
     }
   }
 
