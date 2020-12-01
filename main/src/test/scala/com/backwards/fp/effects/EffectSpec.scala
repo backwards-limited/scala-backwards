@@ -97,9 +97,14 @@ class EffectSpec extends AnyWordSpec with Matchers with ScalaFutures {
 
       type Trace[A] = Writer[List[Computation], A]
 
-      val user = "mat".pure[Trace] <* List(Computation("fetched user", 100)).tell
-      val id = 17827382L.pure[Trace] <* List(Computation("fetched id", 1000)).tell
-      val age = 1.3.pure[Trace] <* List(Computation("fetched age", 10000)).tell
+      val user: Trace[String] =
+        "mat".pure[Trace] <* List(Computation("fetched user", 100)).tell
+
+      val id: Trace[Long] =
+        17827382L.pure[Trace] <* List(Computation("fetched id", 1000)).tell
+
+      val age: Trace[Double] =
+        1.3.pure[Trace] <* List(Computation("fetched age", 10000)).tell
 
       val t: Trace[User] = doThing(user, id, age)
       val (computations: List[Computation], tracedUser: User) = t.run
