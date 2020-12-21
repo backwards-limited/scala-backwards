@@ -1,6 +1,6 @@
 package com.backwards.fp.state
 
-import cats.data.State
+import cats.data.{Kleisli, State}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -8,6 +8,32 @@ import org.scalatest.wordspec.AnyWordSpec
   * [[https://functional.works-hub.com/learn/a-simple-way-to-write-parsers-using-the-state-monad-d5863]]
   */
 class StateSpec extends AnyWordSpec with Matchers {
+  "blah" should {
+    import cats.implicits._
+
+    "blah" in {
+      val inc: Int => Int =
+        _ + 1
+
+      val times2: Int => Int =
+        _ * 2
+
+      val r = inc andThen times2
+
+      r(10)
+
+
+      val incEff: Int => Option[Int] =
+        i => (i + 1).some
+
+      val times2Eff: Int => Option[Int] =
+        i => (i * 2).some
+
+      val rEff = Kleisli(incEff) andThen times2Eff
+
+      println(rEff.run(10))
+    }
+  }
   "State " should {
     /*"be simple" in {
       val c = State[String, Char](s => (s.tail, s.head))
