@@ -4,7 +4,7 @@ object Dependencies {
   def apply(): Seq[ModuleID] = Seq(
     scalaReflect, scalaMeta, scalatest, scalaMock, scalacheck, scalacheckShapeless, testcontainers, scalaTestContainers, s3mock,
     log4Cats, scribe, pprint, pureConfig,
-    cats, catsRetry, mouse, simulacrum, refined, monocle, shapeless, meowMtl,
+    cats, catsEffectTesting, catsRetry, mouse, simulacrum, refined, monocle, shapeless, meowMtl,
     http4s, monix, fs2, scalaUri, betterFiles, sttp, awsJava,
     circe, parserCombinators
   ).flatten
@@ -84,6 +84,10 @@ object Dependencies {
       "cats-laws", "cats-testkit"
     ).map(group %% _ % version % "test, it" withSources() withJavadoc())
   }
+
+  lazy val catsEffectTesting: Seq[ModuleID] = Seq(
+    "com.codecommit" %% "cats-effect-testing-scalatest" % "0.5.0" % "test, it"
+  )
 
   lazy val catsRetry: Seq[ModuleID] = Seq(
     "com.github.cb372" %% "cats-retry" % "2.0.0"
@@ -176,7 +180,7 @@ object Dependencies {
   }
 
   lazy val awsJava: Seq[ModuleID] = Seq(
-    "com.amazonaws" % "aws-java-sdk" % "1.11.893"
+    "com.amazonaws" % "aws-java-sdk" % "1.11.930"
   )
 
   lazy val circe: Seq[ModuleID] = {

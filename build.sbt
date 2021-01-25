@@ -12,7 +12,6 @@ lazy val macros = project("macros", file("macros"))
   .settings(
     codeGen := (runMain in Compile).toTask(" com.backwards.macros.LetsGo").value
 
-
     /*Compile / sourceGenerators += Def.task {
       streams.value.log.info("===============> yo")
       /*val file = (Compile / sourceManaged).value / "demo" / "Test.scala"
@@ -39,16 +38,17 @@ def project(id: String, base: File): Project =
     .settings(Defaults.itSettings)
     .settings(
       resolvers ++= Seq(
-        Resolver.sonatypeRepo("releases"),
-        Resolver.sonatypeRepo("snapshots"),
-        "jitpack" at "https://jitpack.io"
+        Resolver sonatypeRepo "releases",
+        Resolver sonatypeRepo "snapshots",
+        "jitpack" at "https://jitpack.io",
+        "Artima Maven Repository" at "https://repo.artima.com/releases"
       ),
       scalaVersion := BuildProperties("scala.version"),
       sbtVersion := BuildProperties("sbt.version"),
       organization := "com.backwards",
       name := id,
       autoStartServer := false,
-      addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.0" cross CrossVersion.full),
+      addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.3" cross CrossVersion.full),
       addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
       libraryDependencies ++= Dependencies(),
       scalacOptions ++= Seq(

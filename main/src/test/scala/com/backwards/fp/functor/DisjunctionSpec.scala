@@ -10,7 +10,7 @@ class DisjunctionSpec extends AnyWordSpec with Matchers {
 
   "Disjunction/Either Functor" should {
     "works with left" in {
-      LeftDisjunction[String, Int]("foo") fmap { x => s"${x}bar" } mustBe LeftDisjunction[String, Int]("foo")
+      LeftDisjunction[String, Int]("foo") fmap { x => s"${x}bar" } mustBe LeftDisjunction[String, String]("foo")
     }
 
     "works with right" in {
