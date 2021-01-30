@@ -6,7 +6,8 @@ import simulacrum._
   def show(a: A): String
 }
 
+/*
 object Show {
   implicit val stringShow: Show[String] =
     str => s"simulacrum string $str"
-}
+}*/
