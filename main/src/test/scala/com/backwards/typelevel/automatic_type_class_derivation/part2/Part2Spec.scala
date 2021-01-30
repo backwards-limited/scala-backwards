@@ -27,36 +27,6 @@ class Part2Spec extends AnyWordSpec with Matchers {
       pprint.pprintln(result)
       result mustBe SimpleArguments(alpha = "a", beta = 1, charlie = true)
     }
-
-    /*"apply explicitly" in {
-      import Parser._
-
-      val parser: Parser[SimpleArguments] =
-        Parser[SimpleArguments](
-          Lazy(
-            genericParser(
-              Generic[SimpleArguments],
-              Lazy(
-                hlistParser(
-                  Lazy(stringParser),
-                  hlistParser(
-                    Lazy(intParser),
-                    hlistParser(
-                      Lazy(boolParser),
-                      hnilParser
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-
-      val result = parser.parse(List("foo", "1", "true"))
-
-      pprint.pprintln(result)
-      result mustBe SimpleArguments(alpha = "foo", beta = 1, charlie = true)
-    }*/
   }
 }
 
