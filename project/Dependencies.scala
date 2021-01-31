@@ -4,7 +4,7 @@ object Dependencies {
   def apply(): Seq[ModuleID] = Seq(
     scalaReflect, scalaMeta, scalatest, scalaMock, scalacheck, scalacheckShapeless, testcontainers, scalaTestContainers, s3mock,
     log4Cats, scribe, pprint, pureConfig,
-    cats, catsEffectTesting, catsRetry, mouse, simulacrum, refined, monocle, shapeless, meowMtl,
+    cats, catsEffectTesting, catsRetry, kittens, catnip, mouse, simulacrum, refined, monocle, shapeless, meowMtl,
     http4s, monix, fs2, scalaUri, betterFiles, sttp, awsJava,
     circe, parserCombinators
   ).flatten
@@ -91,6 +91,14 @@ object Dependencies {
 
   lazy val catsRetry: Seq[ModuleID] = Seq(
     "com.github.cb372" %% "cats-retry" % "2.1.0"
+  )
+
+  lazy val kittens: Seq[ModuleID] = Seq(
+    "org.typelevel" %% "kittens" % "2.2.1"
+  )
+
+  lazy val catnip: Seq[ModuleID] = Seq(
+    "io.scalaland" %% "catnip" % "1.1.2"
   )
 
   lazy val mouse: Seq[ModuleID] = Seq(
