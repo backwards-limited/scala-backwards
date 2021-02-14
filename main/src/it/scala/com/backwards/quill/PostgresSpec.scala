@@ -1,5 +1,6 @@
 package com.backwards.quill
 
+import java.sql.{Connection, Statement}
 import io.getquill.{PostgresAsyncContext, PostgresJdbcContext, SnakeCase}
 import org.postgresql.ds.PGSimpleDataSource
 import org.scalatest.matchers.must.Matchers
@@ -22,12 +23,22 @@ class PostgresSpec extends AnyWordSpec with Matchers with ForAllTestContainer {
   override def afterStart(): Unit = {
     println("===> HERE")
     //container.container.execInContainer("psql -Utest -a test -c 'create table Foo(personId int not null, phone varchar(20) not null, primary key (personId));'")
+
+    //container.container.execInContainer("psql", "postgresql://test:test@$localhost:5432/test", "-c", "create table Foo(personId int not null, phone varchar(20) not null, primary key (personId));")
+
+    val connection: Connection = container.container.createConnection(container.jdbcUrl)
+
+    val statement: Statement = connection.createStatement()
+
+    statement.execute("create table Foo(personId int not null, phone varchar(20) not null, primary key (personId));")
+
+    //container.container.execInContainer("""psql -Utest -a test -c 'create table Foo(personId int not null, phone varchar(20) not null, primary key (personId));'""")
   }
 
   "" should {
     "" in {
       println("===> TEST")
-      container.container.execInContainer("""psql "postgresql://test:test@$localhost:5432/test" -c 'create table Foo(personId int not null, phone varchar(20) not null, primary key (personId));'""")
+      //container.container.execInContainer("""psql "postgresql://test:test@$localhost:5432/test" -c 'create table Foo(personId int not null, phone varchar(20) not null, primary key (personId));'""")
 
       // export PGPASSWORD='test'; psql -d test -U test -c 'create table Foo(personId int not null, phone varchar(20) not null, primary key (personId));'
 
@@ -86,16 +97,3 @@ class PostgresSpec extends AnyWordSpec with Matchers with ForAllTestContainer {
 final case class Contact(personId: Int, phone: String)
 
 final case class Foo(personId: Int, phone: String)
-
-/*
-jdbc:tc:postgresql:9.6.8:///databasename
-
-create table Contact (
-    id identity primary key,
-    personId integer not null,
-    phone varchar(20) not null
-);
-
-create table Foo(personId int not null, phone varchar(20) not null, primary key (personId));
-
- */
