@@ -2,11 +2,11 @@ import sbt._
 
 object Dependencies {
   def apply(): Seq[ModuleID] = Seq(
-    scalaReflect, scalaMeta, scalatest, scalaMock, scalacheck, scalacheckShapeless, testcontainers, scalaTestContainers, s3mock,
+    scalaReflect, scalaMeta, scalatest, scalaMock, scalacheck, scalacheckShapeless, /*testcontainers,*/ scalaTestContainers, s3mock,
     log4Cats, scribe, pprint, pureConfig,
     cats, catsEffectTesting, catsRetry, kittens, catnip, mouse, simulacrum, refined, monocle, shapeless, meowMtl,
-    http4s, monix, fs2, scalaUri, betterFiles, sttp, awsJava,
-    circe, parserCombinators
+    circe, parserCombinators,
+    http4s, monix, fs2, scalaUri, betterFiles, sttp, awsJava, quill, postgresql
   ).flatten
 
   lazy val scalaReflect: Seq[ModuleID] = Seq(
@@ -33,16 +33,16 @@ object Dependencies {
     "com.github.alexarchambault" %% "scalacheck-shapeless_1.14" % "1.2.5" withSources() withJavadoc()
   )
   
-  lazy val testcontainers: Seq[ModuleID] = Seq(
-    "org.testcontainers" % "testcontainers" % "1.15.1" % "test, it" withSources() withJavadoc()
-  )
+  /*lazy val testcontainers: Seq[ModuleID] = Seq(
+    "org.testcontainers" % "testcontainers" % "1.15.2" % "test, it" withSources() withJavadoc()
+  )*/
 
   lazy val scalaTestContainers: Seq[ModuleID] = {
     val group = "com.dimafeng"
     val version = "1.0.0-alpha1"
 
     Seq(
-      "testcontainers-scala-scalatest", "testcontainers-scala-kafka", "testcontainers-scala-mysql"
+      "testcontainers-scala-scalatest", "testcontainers-scala-kafka", "testcontainers-scala-mysql", "testcontainers-scala-postgresql"
     ).map(group %% _ % version % "test, it" withSources() withJavadoc())
   }
 
@@ -142,6 +142,21 @@ object Dependencies {
     ).map(group %% _ % version withSources() withJavadoc())
   }
 
+  lazy val circe: Seq[ModuleID] = {
+    val group = "io.circe"
+    val version = "0.13.0"
+
+    Seq(
+      "circe-core", "circe-generic", "circe-generic-extras", "circe-parser", "circe-refined"
+    ).map(group %% _ % version withSources() withJavadoc()) ++ Seq(
+      "circe-testing", "circe-literal"
+    ).map(group %% _ % version % "test, it" withSources() withJavadoc())
+  }
+
+  lazy val parserCombinators: Seq[ModuleID] = Seq(
+    "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
+  )
+
   lazy val http4s: Seq[ModuleID] = {
     val group = "org.http4s"
     val version = "1.0-234-d1a2b53"
@@ -191,18 +206,16 @@ object Dependencies {
     "com.amazonaws" % "aws-java-sdk" % "1.11.943"
   )
 
-  lazy val circe: Seq[ModuleID] = {
-    val group = "io.circe"
-    val version = "0.13.0"
+  lazy val quill: Seq[ModuleID] = {
+    val group = "io.getquill"
+    val version = "3.6.0"
 
     Seq(
-      "circe-core", "circe-generic", "circe-generic-extras", "circe-parser", "circe-refined"
-    ).map(group %% _ % version withSources() withJavadoc()) ++ Seq(
-      "circe-testing", "circe-literal"
-    ).map(group %% _ % version % "test, it" withSources() withJavadoc())
+      "quill-core", "quill-sql", "quill-jdbc", "quill-codegen-jdbc", "quill-async", "quill-cassandra", "quill-cassandra-monix", "quill-monix", "quill-jdbc-monix", "quill-async-postgres", "quill-codegen"
+    ).map(group %% _ % version withSources() withJavadoc())
   }
 
-  lazy val parserCombinators: Seq[ModuleID] = Seq(
-    "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
+  lazy val postgresql: Seq[ModuleID] = Seq(
+    "org.postgresql" % "postgresql" % "42.2.18"
   )
 }
