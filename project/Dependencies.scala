@@ -6,7 +6,7 @@ object Dependencies {
     log4Cats, scribe, pprint, pureConfig,
     cats, catsEffectTesting, catsRetry, kittens, catnip, mouse, simulacrum, refined, monocle, shapeless, meowMtl,
     circe, parserCombinators,
-    http4s, monix, fs2, scalaUri, betterFiles, sttp, awsJava, quill, postgresql
+    http4s, monix, fs2, scalaUri, betterFiles, sttp, tapir, awsJava, quill, postgresql
   ).flatten
 
   lazy val scalaReflect: Seq[ModuleID] = Seq(
@@ -200,6 +200,17 @@ object Dependencies {
     Seq(
       "core", "circe", "async-http-client-backend-cats"
     ).map(group %% _ % version withSources() withJavadoc())
+  }
+
+  lazy val tapir: Seq[ModuleID] = {
+    val group = "com.softwaremill.sttp.tapir"
+    val version = "0.17.13"
+
+    Seq(
+      "tapir-core", "tapir-cats", "tapir-json-circe", "tapir-sttp-client", "tapir-http4s-server", "tapir-openapi-circe-yaml", "tapir-asyncapi-circe-yaml", "tapir-asyncapi-docs"
+    ).map(group %% _ % version withSources() withJavadoc()) ++ Seq(
+      "tapir-tests", "tapir-server-tests"
+    ).map(group %% _ % version % "test, it" withSources() withJavadoc())
   }
 
   lazy val awsJava: Seq[ModuleID] = Seq(
