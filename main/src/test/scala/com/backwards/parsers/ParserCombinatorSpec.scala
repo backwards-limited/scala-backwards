@@ -7,7 +7,6 @@ import scala.util.parsing.combinator.{JavaTokenParsers, RegexParsers}
 class ParserCombinatorSpec extends AnyWordSpec with Matchers {
   "" should {
     "" in {
-
       object CommentParser extends JavaTokenParsers {
         import scala.language.implicitConversions
 
