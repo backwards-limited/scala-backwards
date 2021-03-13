@@ -197,24 +197,24 @@ object FreeApp extends App {
   /** This is your ADT - specifically, a GADT */
   sealed trait DBFreeAlgebraT[T]
 
-  final case class Create[T](t: T) extends DBFreeAlgebraT[Boolean]
+  final case class Create(user: User) extends DBFreeAlgebraT[Boolean]
 
-  final case class Read[T](id: Long) extends DBFreeAlgebraT[DatabaseError Either T]
+  final case class Read(id: Long) extends DBFreeAlgebraT[DatabaseError Either User]
 
-  final case class Delete[T](id: Long) extends DBFreeAlgebraT[DatabaseError Either Unit]
+  final case class Delete(id: Long) extends DBFreeAlgebraT[DatabaseError Either Unit]
   /********************************************************/
 
   object DBFreeAlgebraT {
     type DBFreeAlgebra[T] = Free[DBFreeAlgebraT, T]
 
     // Smart constructors
-    def create[T](t: T): DBFreeAlgebra[Boolean] =
-      Free.liftF[DBFreeAlgebraT, Boolean](Create(t))
+    def create(user: User): DBFreeAlgebra[Boolean] =
+      Free.liftF[DBFreeAlgebraT, Boolean](Create(user))
 
-    def read[T](id: Long): DBFreeAlgebra[DatabaseError Either T] =
-      Free.liftF[DBFreeAlgebraT, DatabaseError Either T](Read(id))
+    def read(id: Long): DBFreeAlgebra[DatabaseError Either User] =
+      Free.liftF[DBFreeAlgebraT, DatabaseError Either User](Read(id))
 
-    def delete[T](id: Long): DBFreeAlgebra[DatabaseError Either Unit] =
+    def delete(id: Long): DBFreeAlgebra[DatabaseError Either Unit] =
       Free.liftF[DBFreeAlgebraT, DatabaseError Either Unit](Delete(id))
 
     /*
@@ -250,8 +250,7 @@ object FreeApp extends App {
         override def apply[A](fa: DBFreeAlgebraT[A]): Future[A] =
           fa match {
             case Create(user) => // F[A]
-              val castedUser: User = user.asInstanceOf[User]
-              val inserted: Option[User] = users.put(castedUser.id, castedUser)
+              val inserted: Option[User] = users.put(user.id, user)
 
               Future.successful(inserted.isEmpty || inserted.isDefined).asInstanceOf[Future[A]] // F[B]
 
@@ -356,13 +355,13 @@ object FreeWithSecondAlgebraApp extends App {
   /** Step 1 - Wrap your smart constructors in a class with an implicit `InjectK` */
   class DBFreeAlgebraTI[F[_]](implicit I: InjectK[DBFreeAlgebraT, F]) {
     /** Step 2 - instead of calling `.liftF` you call `.inject` */
-    def create[T](t: T): Free[F, Boolean] = // <- All algebras are `Free` now
-      Free.inject[DBFreeAlgebraT, F](Create(t))
+    def create(user: User): Free[F, Boolean] = // <- All algebras are `Free` now
+      Free.inject[DBFreeAlgebraT, F](Create(user))
 
-    def read[T](id: Long): Free[F, DatabaseError Either User] = // <- All algebras are `Free` now
+    def read(id: Long): Free[F, DatabaseError Either User] = // <- All algebras are `Free` now
       Free.inject[DBFreeAlgebraT, F](Read(id))
 
-    def delete[T](id: Long): Free[F, DatabaseError Either Unit] = // <- All algebras are `Free` now
+    def delete(id: Long): Free[F, DatabaseError Either Unit] = // <- All algebras are `Free` now
       Free.inject[DBFreeAlgebraT, F](Delete(id))
   }
 
