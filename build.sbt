@@ -1,5 +1,7 @@
 import sbt._
 
+ThisBuild / evictionErrorLevel := Level.Info
+
 lazy val root = project("scala-backwards", file("."))
   .settings(description := "Scala by Backwards")
   .aggregate(main, macros)
@@ -10,7 +12,7 @@ lazy val codeGen = taskKey[Unit]("Generate my file")
 
 lazy val macros = project("macros", file("macros"))
   .settings(
-    codeGen := (runMain in Compile).toTask(" com.backwards.macros.LetsGo").value
+    codeGen := (Compile / runMain).toTask(" com.backwards.macros.LetsGo").value
 
     /*Compile / sourceGenerators += Def.task {
       streams.value.log.info("===============> yo")
@@ -28,7 +30,7 @@ lazy val macros = project("macros", file("macros"))
 
 lazy val main = project("main", file("main"))
   .dependsOn(macros)
-  .settings(javaOptions in Test ++= Seq("-Dconfig.resource=application.test.conf"))
+  .settings(Test / javaOptions ++= Seq("-Dconfig.resource=application.test.conf"))
 
 def project(id: String, base: File): Project =
   Project(id, base)
@@ -64,7 +66,7 @@ def project(id: String, base: File): Project =
         // "-Ywarn-value-discard"
       ),
       fork := true,
-      publishArtifact in Test := true,
-      publishArtifact in IntegrationTest := true,
-      addArtifact(artifact in (IntegrationTest, packageBin), packageBin in IntegrationTest).settings
+      Test / publishArtifact := true,
+      IntegrationTest / publishArtifact := true,
+      addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings
     )

@@ -4,7 +4,7 @@ object Dependencies {
   def apply(): Seq[ModuleID] = Seq(
     scalaReflect, scalaMeta, scalatest, specs2, scalaMock, scalacheck, scalacheckShapeless, /*testcontainers,*/ scalaTestContainers, s3mock,
     log4Cats, scribe, pprint, pureConfig,
-    cats, catsEffectTesting, catsRetry, kittens, catnip, mouse, simulacrum, refined, monocle, shapeless, meowMtl,
+    cats, catsEffectTesting, catsRetry, kittens, catnip, mouse, simulacrum, refined, monocle, shapeless, meowMtl, chimney,
     circe, parserCombinators,
     http4s, monix, fs2, scalaUri, betterFiles, sttp, tapir, awsJava, quill, postgresql
   ).flatten
@@ -150,6 +150,10 @@ object Dependencies {
       "meow-mtl-core", "meow-mtl-effects", "meow-mtl-monix"
     ).map(group %% _ % version withSources() withJavadoc())
   }
+
+  lazy val chimney: Seq[ModuleID] = Seq(
+    "io.scalaland" %% "chimney" % "0.6.1"
+  )
 
   lazy val circe: Seq[ModuleID] = {
     val group = "io.circe"
