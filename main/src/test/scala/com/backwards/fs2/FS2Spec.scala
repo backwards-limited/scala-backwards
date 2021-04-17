@@ -50,7 +50,7 @@ class FS2Spec extends AnyFreeSpec with Matchers {
         io.file.readAll[IO](Paths.get("src/test/resources/fahrenheit.txt"), blocker, 4096)
           .through(text.utf8Decode)
           .through(text.lines)
-          .filter(s => !s.trim.isEmpty && !s.startsWith("//"))
+          .filter(s => s.trim.nonEmpty && !s.startsWith("//"))
           .map(line => fahrenheitToCelsius(line.toDouble).toString)
           .intersperse("\n")
           .through(text.utf8Encode)
