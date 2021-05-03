@@ -4,6 +4,7 @@ import java.io.{FileReader, Reader}
 import scala.util.Using
 import scala.util.chaining.scalaUtilChainingOps
 import scala.util.parsing.combinator._
+import better.files.Resource
 import cats.Show
 import cats.implicits._
 import org.scalatest.wordspec.AnyWordSpec
@@ -147,11 +148,11 @@ class ParserCombinatorBookSpec extends AnyWordSpec {
       import Json._
 
       val scala.util.Success(result: Json.ParseResult[Any]) =
-        Using(new FileReader("main/src/test/resources/address-book.json"))(parseAll(value, _))
+        Using(new FileReader(Resource.getUrl("address-book.json").getFile))(parseAll(value, _))
 
       println(result)
 
-      println(Using(new FileReader("main/src/test/resources/address-book.json"))(eval))
+      println(Using(new FileReader(Resource.getUrl("address-book.json").getFile))(eval))
     }
 
     """It would be much better to map a JSON object into an internal Scala representation that represents the meaning of the JSON value.
@@ -193,7 +194,7 @@ class ParserCombinatorBookSpec extends AnyWordSpec {
       import Json._
 
       val scala.util.Success(result: Json.ParseResult[Any]) =
-        Using(new FileReader("main/src/test/resources/address-book.json"))(eval)
+        Using(new FileReader(Resource.getUrl("address-book.json").getFile))(eval)
 
       println(result)
 
