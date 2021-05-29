@@ -2,6 +2,7 @@
 cmake-build-*/
 *.iws
 out/
+lib/
 .idea_modules/
 atlassian-ide-plugin.xml
 com_crashlytics_export_strings.xml
