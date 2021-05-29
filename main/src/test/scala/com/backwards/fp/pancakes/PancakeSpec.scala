@@ -1,3 +1,4 @@
+/*
 package com.backwards.fp.pancakes
 
 import io.circe.literal.JsonStringContext
@@ -33,4 +34,4 @@ class PancakeSpec extends AnyWordSpec with Matchers {
       }""" mustBe IngredientReceived(Flour(6)).asJson
     }
   }
-}
+}*/

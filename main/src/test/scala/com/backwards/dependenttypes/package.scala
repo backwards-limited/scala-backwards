@@ -60,7 +60,12 @@ package com.backwards
  * }}}
  *
  * We can then copy the JAR (under <provingground root>/out/mantle/assembly/dest/out.jar) to any other sbt project under <root>/lib (and maybe rename).
- * We'll do that in this project to have <root>/lib/proving-ground.jar (though it's a bit big so won't be in this project's Git repository).
+ * Though for a multi-module project, use a "lib" directory under the required module.
+ * We'll do that in this project to have <root>/main/lib/proving-ground.jar (though it's a bit big so won't be in this project's Git repository).
+ * Plus, we will need the following added to build.sbt:
+ * {{{
+ *  exportJars := true
+ * }}}
  */
 package object dependenttypes {
 
