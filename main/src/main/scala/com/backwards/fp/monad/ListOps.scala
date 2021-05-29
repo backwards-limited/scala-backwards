@@ -13,6 +13,7 @@ object ListOps {
       def go(as: List[A], acc: List[B]): List[B] = (as, acc) match {
         case (Nil, bs) => bs
         case (h +: t, bs) => go(t, bs ++ f(h))
+        case _ => sys.error("Whoops")
       }
 
       go(as, List.empty[B])

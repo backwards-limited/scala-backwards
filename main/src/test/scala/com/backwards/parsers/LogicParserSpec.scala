@@ -222,6 +222,7 @@ object WorkflowLexer extends RegexParsers {
     parse(tokens, code) match {
       case Success(result, next) => Right(result)
       case NoSuccess(msg, next)  => Left(WorkflowLexerError(msg))
+      case _ => sys.error("Whoops")
     }
 }
 
@@ -285,6 +286,7 @@ object WorkflowParser extends Parsers {
     program(reader) match {
       case Success(result, next) => Right(result)
       case NoSuccess(msg, next)  => Left(WorkflowParserError(msg))
+      case _ => sys.error("Whoops")
     }
   }
 }

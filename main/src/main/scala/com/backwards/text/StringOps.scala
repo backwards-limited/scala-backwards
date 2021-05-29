@@ -7,7 +7,7 @@ object StringOps extends StringOps
 
 trait StringOps {
   val randomString: Int => String =
-    stringLength => LazyList.continually(Random.nextPrintableChar) take stringLength mkString
+    stringLength => LazyList.continually(Random.nextPrintableChar()) take stringLength mkString
 
   val separate: String => Seq[String] = { str =>
     val separatorPattern = Seq(

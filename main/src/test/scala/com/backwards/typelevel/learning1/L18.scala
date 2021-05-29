@@ -50,7 +50,7 @@ object L18 extends App {
   }
 
   val result =
-    Build[PersistedDocument].from(Document("hello", 42), 'id ->> 17L :: 'createdBy ->> "user" :: HNil)
+    Build[PersistedDocument].from(Document("hello", 42), Symbol("id") ->> 17L :: Symbol("createdBy") ->> "user" :: HNil)
 
   println(result)
 }

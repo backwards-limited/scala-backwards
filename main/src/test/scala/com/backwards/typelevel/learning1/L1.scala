@@ -26,7 +26,7 @@ object L1 extends App {
     type Result = String
 
     def add(left: Int, right: String): String =
-      left + right
+      s"$left$right"
 
     def multiply(left: Int, right: String): String =
       right * left

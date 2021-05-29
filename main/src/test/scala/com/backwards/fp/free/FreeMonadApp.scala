@@ -103,7 +103,7 @@ object FreeMonadApp extends App {
         ()
 
       case Getline =>
-        val in = StdIn.readLine
+        val in = StdIn.readLine()
         in
     }
   }
@@ -114,7 +114,7 @@ object FreeMonadApp extends App {
         Future successful println(out)
 
       case Getline =>
-        Future successful StdIn.readLine
+        Future successful StdIn.readLine()
     }
   }
 
@@ -125,7 +125,7 @@ object FreeMonadApp extends App {
         ()
 
       case Getline =>
-        val in = StdIn.readLine
+        val in = StdIn.readLine()
         in
     }
   }

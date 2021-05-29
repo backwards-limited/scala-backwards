@@ -27,7 +27,7 @@ class JsonifySpec extends AnyWordSpec with Matchers {
 
         val adtMeadRecord = adtMead.toRecord
 
-        val d1 = adtMeadRecord.renameField('honeyRatio, 'honey_ratio)
+        val d1 = adtMeadRecord.renameField(Symbol("honeyRatio"), Symbol("honey_ratio"))
         val d2 = d1.renameField(Symbol("agingYears"), Symbol("aging_years"))
 
         jGeneric.from(d2)

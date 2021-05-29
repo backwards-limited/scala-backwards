@@ -33,7 +33,7 @@ object ServerLogic extends StrictLogging {
 
         val enqueueFrying = portionIngredients match {
           case None =>
-            Task.now()
+            Task.now((): Unit)
           case Some(pi) =>
             Task(logger.info(s"Frying pancakes: $pi; remaining ingredients: $remainingIngredients")) >> fryingQueue.enqueue1(pi)
         }

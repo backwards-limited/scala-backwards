@@ -141,7 +141,7 @@ class ShapelessSpec extends AnyWordSpec with Matchers {
       case class Foo(bar: String, baz: Boolean)
 
       val labl = LabelledGeneric[Foo]
-      val keys = Keys[labl.Repr].apply
+      val keys = Keys[labl.Repr].apply()
 
       keys mustBe Symbol("bar") :: Symbol("baz") :: HNil
     }

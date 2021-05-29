@@ -20,6 +20,7 @@ object L3 extends App {
     case Inl(_)           => println("Red")
     case Inr(Inl(_))      => println("Yellow")
     case Inr(Inr(Inl(_))) => println("Green")
+    case _ => sys.error("Whoops")
   }
 
   printLight(red)

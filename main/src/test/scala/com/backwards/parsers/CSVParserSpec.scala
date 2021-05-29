@@ -65,6 +65,7 @@ class CSVParserSpec extends AnyWordSpec with Matchers {
       parseAll(file, reader) match {
         case Success(result, next) => result.asRight
         case NoSuccess(msg, next) => msg.asLeft
+        case _ => sys.error("Whoops")
       }
   }
 }

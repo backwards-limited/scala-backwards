@@ -8,7 +8,7 @@ import com.backwards.maths.Eval._
 
 object EvalApp extends IOApp {
   val readLn: IO[String] =
-    IO(readLine)
+    IO(readLine())
 
   val putStrLn: String => IO[Unit] =
     s => IO(println(s))

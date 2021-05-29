@@ -15,7 +15,7 @@ class BetterMonadicForSpec extends AnyWordSpec with Matchers {
         (x, y) <- getCounts
       } yield x + y
 
-      result.unsafeRunSync mustBe 3
+      result.unsafeRunSync() mustBe 3
     }
   }
 }

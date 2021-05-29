@@ -139,8 +139,8 @@ class MonadErrorSpec extends AnyWordSpec with Matchers with ScalaFutures {
         } yield x
       }
 
-      blah[IO]("42").unsafeRunSync mustBe 42
-      an [Exception] must be thrownBy blah[IO]("xx").unsafeRunSync
+      blah[IO]("42").unsafeRunSync() mustBe 42
+      an [Exception] must be thrownBy blah[IO]("xx").unsafeRunSync()
     }
   }
 }

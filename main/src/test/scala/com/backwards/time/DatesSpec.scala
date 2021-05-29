@@ -8,7 +8,7 @@ import org.scalatest.wordspec.AnyWordSpec
 class DatesSpec extends AnyWordSpec with Matchers {
   "" should {
     "" in {
-      def dates(fromDate: LocalDate): Stream[LocalDate] =
+      def dates(fromDate: LocalDate): LazyList[LocalDate] =
         fromDate #:: dates(fromDate plusMonths 1)
 
       val ds = dates(LocalDate.of(2020, 5, 24)).takeWhile(_.isBefore(LocalDate.now)).toList

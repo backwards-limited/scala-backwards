@@ -57,14 +57,14 @@ class ReferentialTransparencySpec extends AnyWordSpec with Matchers {
 
       // Intuitively one might believe the result will be 1.
       // Not so, and this is because of referential transparency
-      program.unsafeRunSync mustBe 0
+      program.unsafeRunSync() mustBe 0
 
       val programProof: IO[Int] = for {
         _ <- Ref.of[IO, Int](0).flatMap(_.update(_ + 1))
         v <- Ref.of[IO, Int](0).flatMap(_.get)
       } yield v
 
-      programProof.unsafeRunSync mustBe 0
+      programProof.unsafeRunSync() mustBe 0
 
       // But how can this be useful? How to have the program act upon the same Ref?
       // ... Pass one in.
@@ -74,7 +74,7 @@ class ReferentialTransparencySpec extends AnyWordSpec with Matchers {
           v <- ref.get
         } yield v
 
-      counter.flatMap(programFinal).unsafeRunSync mustBe 1
+      counter.flatMap(programFinal).unsafeRunSync() mustBe 1
     }
   }
 }

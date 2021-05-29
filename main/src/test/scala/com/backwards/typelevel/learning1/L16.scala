@@ -16,5 +16,5 @@ object L16 extends App {
   val docGen = LabelledGeneric[Document]
 
   println(document.toRepr)
-  println(docGen.from(Symbol("path") ->> "/" :: 'size ->> 42 :: 'readOnly ->> true :: HNil))
+  println(docGen.from(Symbol("path") ->> "/" :: Symbol("size") ->> 42 :: Symbol("readOnly") ->> true :: HNil))
 }

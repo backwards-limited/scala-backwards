@@ -89,11 +89,11 @@ class KleisliTutorialSpec extends AnyWordSpec with Matchers {
       val shipmentReference = "1234"
       val storage1 = new ShipmentStorageImpl1
       val res: IO[Shipment] = OperationService.getShipment(shipmentReference)(storage1)
-      res.unsafeRunSync mustBe Shipment(shipmentReference, "OK")
+      res.unsafeRunSync() mustBe Shipment(shipmentReference, "OK")
 
       val storage2 = new ShipmentStorageImpl2[IO]
       val res2: IO[Shipment] = OperationService.getShipment(shipmentReference).run(storage2)
-      res2.unsafeRunSync mustBe Shipment(shipmentReference, "OK")
+      res2.unsafeRunSync() mustBe Shipment(shipmentReference, "OK")
 
       val storage3 = new ShipmentStorageImpl3
       val res3: Try[Shipment] = OperationService.getShipment(shipmentReference)(storage3)

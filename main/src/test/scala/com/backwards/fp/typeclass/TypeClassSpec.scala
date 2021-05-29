@@ -46,7 +46,7 @@ class TypeClassSpec extends AnyWordSpec with Matchers {
 
       // Random booleans:
       implicit val booleanRandom: Random[Boolean] =
-        createRandom(() => scala.util.Random.nextBoolean)
+        createRandom(() => scala.util.Random.nextBoolean())
 
       for (_ <- 1 to 3) println(random[Int])
       // 0

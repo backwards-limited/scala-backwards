@@ -55,7 +55,7 @@ class MonadTransformerSpec extends AnyWordSpec with Matchers {
         order <- maybeOrder
       } yield (user, order)
 
-      userAndOrder.unsafeRunSync mustBe Option(User() -> Order())
+      userAndOrder.unsafeRunSync() mustBe Option(User() -> Order())
     }
 
     "work with monad transformer, OptionT in this case" in {
@@ -67,7 +67,7 @@ class MonadTransformerSpec extends AnyWordSpec with Matchers {
       } yield (user, order)
 
       // Note the use of .value call because we're actually flatMapping OptionT not IO[Option[A]]
-      userAndOrder.value.unsafeRunSync mustBe Option(User() -> Order())
+      userAndOrder.value.unsafeRunSync() mustBe Option(User() -> Order())
     }
   }
 
@@ -108,7 +108,7 @@ class MonadTransformerSpec extends AnyWordSpec with Matchers {
         order <- EitherT(fetchOrder(user))
       } yield (user, order)
 
-      userAndOrder.value.unsafeRunSync mustBe Right(User() -> Order())
+      userAndOrder.value.unsafeRunSync() mustBe Right(User() -> Order())
     }
 
     "compile by forcing our specific eithers to be more generic" in {
@@ -117,7 +117,7 @@ class MonadTransformerSpec extends AnyWordSpec with Matchers {
         order <- EitherT(fetchOrder(user): IO[ServiceError Either Order])
       } yield (user, order)
 
-      userAndOrder.value.unsafeRunSync mustBe Right(User() -> Order())
+      userAndOrder.value.unsafeRunSync() mustBe Right(User() -> Order())
     }
   }
 }

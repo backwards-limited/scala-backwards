@@ -6,6 +6,7 @@ object ListOps {
       lazy val go: List[A] => List[B] = {
         case Nil => Nil
         case h +: t => f(h) +: go(t)
+        case _ => sys.error("Whoops")
       }
 
       go(fa)

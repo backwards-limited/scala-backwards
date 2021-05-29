@@ -57,6 +57,7 @@ class CSVParsingSpec extends AnyWordSpec with Matchers {
         implicit val hnilParser: LineParser[HNil] = {
           case Nil => Right(HNil)
           case h +: t => Left(List(s"""Expected end of line, got "$h"."""))
+          case _ => sys.error("Whoops")
         }
 
         implicit def hconsParser[H: Parser, T <: HList: LineParser]: LineParser[H :: T] = {
@@ -73,6 +74,9 @@ class CSVParsingSpec extends AnyWordSpec with Matchers {
               case (Right(_), Left(errors)) => Left(errors)
               case (Right(h), Right(t)) => Right(h :: t)
             }
+
+          case _ =>
+            sys.error("Whoops")
         }
 
         implicit def adtParser[Out, R <: HList](

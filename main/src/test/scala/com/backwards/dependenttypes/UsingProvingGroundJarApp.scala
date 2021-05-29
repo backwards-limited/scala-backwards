@@ -10,4 +10,5 @@ object UsingProvingGroundJarApp extends App {
   println(A)
   println(a)
   println(a !: A)
+  println(a.typ)
 }

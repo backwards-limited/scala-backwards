@@ -165,13 +165,13 @@ class FS2Spec extends AnyFreeSpec with Matchers {
           """ in {
             import com.backwards.transform.Transform._
 
-            userIds.translate(`Future ~> IO`).compile.toList.unsafeRunSync mustBe List(1, 2, 3)
+            userIds.translate(`Future ~> IO`).compile.toList.unsafeRunSync() mustBe List(1, 2, 3)
           }
 
           "equivalent" in {
             implicit val contextShift: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
 
-            userNames.evalMap[IO, Int](name => IO fromFuture IO(acquireUserId(name))).compile.toList.unsafeRunSync mustBe List(1, 2, 3)
+            userNames.evalMap[IO, Int](name => IO fromFuture IO(acquireUserId(name))).compile.toList.unsafeRunSync() mustBe List(1, 2, 3)
           }
 
           """
@@ -211,11 +211,11 @@ class FS2Spec extends AnyFreeSpec with Matchers {
 
   "Stream effects" - {
     "will be realised" in {
-      val xs = Stream.eval(IO(Random.nextInt)).compile.toList
-      println(xs.unsafeRunSync)
+      val xs = Stream.eval(IO(Random.nextInt())).compile.toList
+      println(xs.unsafeRunSync())
 
-      val xsRepeat = Stream.repeatEval(IO(Random.nextInt)).take(5).compile.toList
-      println(xsRepeat.unsafeRunSync)
+      val xsRepeat = Stream.repeatEval(IO(Random.nextInt())).take(5).compile.toList
+      println(xsRepeat.unsafeRunSync())
     }
   }
 

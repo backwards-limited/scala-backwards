@@ -50,7 +50,7 @@ class FunctorSpec extends AnyWordSpec with Matchers {
 
       withVat(lineItems) mustBe List(LineItem(10.0 * rate), LineItem(20.0 * rate))
       withVat(Option(LineItem(10.0))) mustBe Option(LineItem(10.0 * rate))
-      withVat(IO(LineItem(10.0))).unsafeRunSync mustBe LineItem(10.0 * rate)
+      withVat(IO(LineItem(10.0))).unsafeRunSync() mustBe LineItem(10.0 * rate)
 
       // But what if we wanted just one "withVat" function that can operate on anything that has "map"?
       // The following does not compile, but it is an illustration of trying to use some top level trait - Functor needs to take a type constructor:
@@ -157,21 +157,21 @@ class FunctorSpec extends AnyWordSpec with Matchers {
       val order: IO[Option[Order]] = fetchOrder(User())
 
       // Ugly nested map
-      order.map(_.map(applyVat)).unsafeRunSync mustBe Option(Order(10.0 * rate))
+      order.map(_.map(applyVat)).unsafeRunSync() mustBe Option(Order(10.0 * rate))
 
       // But of course Cats ncludes Functor implementations for both IO and Option which we can compose.
       import cats.Functor
       import cats.instances.option._
 
       val result: IO[Option[Order]] = Functor[IO].compose[Option].map(order)(applyVat)
-      result.unsafeRunSync mustBe Option(Order(10.0 * rate))
+      result.unsafeRunSync() mustBe Option(Order(10.0 * rate))
 
       // We can cut down the boilerplate by writing our own implicit class which adds a nestedMap method to all nested Functors:
       implicit class RichFunctor[F[_]: Functor, G[_]: Functor, A](underlying: F[G[A]]) {
         def nestedMap[B](op: A => B): F[G[B]] = Functor[F].compose[G].map(underlying)(op)
       }
 
-      order.nestedMap(applyVat).unsafeRunSync mustBe Option(Order(10.0 * rate))
+      order.nestedMap(applyVat).unsafeRunSync() mustBe Option(Order(10.0 * rate))
       // Will work with any Functor combinations
     }
   }

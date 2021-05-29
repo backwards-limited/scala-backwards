@@ -83,7 +83,7 @@ object FreeMonadComposedApp extends App {
         ()
 
       case Getline =>
-        val in = StdIn.readLine
+        val in = StdIn.readLine()
         in
     }
   }

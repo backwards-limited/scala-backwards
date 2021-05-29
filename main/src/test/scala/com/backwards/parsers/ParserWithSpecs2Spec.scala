@@ -70,12 +70,14 @@ object ExprParser extends RegexParsers {
     case op ~ list => list.foldLeft(op) {
       case (x, "+" ~ y) => Add(x, y)
     }
+    case _ => sys.error("Whoops")
   }
 
   lazy val operation2: Parser[Expr] = operand ~ rep("*" ~ operand) ^^ {
     case op ~ list => list.foldLeft(op) {
       case (x, "*" ~ y) => Mul(x, y)
     }
+    case _ => sys.error("Whoops")
   }
 
   lazy val operand: Parser[Expr] = constant | variable
@@ -87,5 +89,6 @@ object ExprParser extends RegexParsers {
   def apply(input: String): Option[Expr] = parseAll(expression, input) match {
     case Success(result, _) => Some(result)
     case NoSuccess(_, _)    => None
+    case _ => sys.error("Whoops")
   }
 }

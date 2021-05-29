@@ -19,6 +19,7 @@ object StackStateDemo extends App {
   def pop: State[S, Int] =
     State[S, Int] {
       case i +: tail => (tail, i)
+      case _ => sys.error("Whoops")
     }
 
   // Build up our program

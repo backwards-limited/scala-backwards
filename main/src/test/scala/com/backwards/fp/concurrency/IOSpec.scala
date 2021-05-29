@@ -18,11 +18,11 @@ class IOSpec extends AnyWordSpec with Matchers {
 
       val jobsSequential = job1.flatMap(one => job2.map(two => (one, two)))
 
-      val fiber = jobsSequential.start.unsafeRunSync
-      fiber.join.unsafeRunSync mustBe (1, 2)
+      val fiber = jobsSequential.start.unsafeRunSync()
+      fiber.join.unsafeRunSync() mustBe (1, 2)
 
       val jobsSequentialAlternative = (job1, job2).tupled
-      jobsSequentialAlternative.start.unsafeRunSync.join.unsafeRunSync mustBe (1, 2)
+      jobsSequentialAlternative.start.unsafeRunSync().join.unsafeRunSync() mustBe (1, 2)
     }
 
     "run concurrently manually" in {
@@ -36,7 +36,7 @@ class IOSpec extends AnyWordSpec with Matchers {
         two <- fiber2.join
       } yield (one, two)
 
-      jobsConcurrent.unsafeRunSync mustBe (1, 2)
+      jobsConcurrent.unsafeRunSync() mustBe (1, 2)
     }
 
     "run concurrently higher level" in {
@@ -45,7 +45,7 @@ class IOSpec extends AnyWordSpec with Matchers {
 
       val jobsConcurrent: IO[(Int, Int)] = (job1, job2).parTupled
 
-      jobsConcurrent.unsafeRunSync mustBe (1, 2)
+      jobsConcurrent.unsafeRunSync() mustBe (1, 2)
     }
   }
 }

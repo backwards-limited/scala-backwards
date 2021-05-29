@@ -256,9 +256,6 @@ class FreeMonad2Spec extends AnyWordSpec with Matchers {
         }
 
       def runProgram[A](program: Free[Action, A]): A = program match {
-        case Free.Pure(a) =>
-          a
-
         case FlatMap(fa: Action[A], fn: (A => Free[Action, A])) =>
           // execute the Action here
           val res = execute(fa)
@@ -266,6 +263,9 @@ class FreeMonad2Spec extends AnyWordSpec with Matchers {
           val newFree = fn(res)
           // execute the next function
           runProgram(newFree)
+
+        case Free.Pure(a) =>
+          a
       }
 
       runProgram(program)

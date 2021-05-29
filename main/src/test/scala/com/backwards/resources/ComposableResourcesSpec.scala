@@ -26,7 +26,7 @@ class ComposableResourcesSpec extends AnyWordSpec with Matchers {
 
       withSource(Source.fromResource("application.dev1.conf")) { source: Source =>
         pprint.pprintln("Using source")
-        val result = source.getLines.mkString(start = "", sep = "\n", end = "")
+        val result = source.getLines().mkString(start = "", sep = "\n", end = "")
         pprint.pprintln(result)
         result
       }
@@ -49,7 +49,7 @@ class ComposableResourcesSpec extends AnyWordSpec with Matchers {
       withResource(Source.fromResource("application.dev1.conf"))(_.close()) { source1 =>
         withResource(Source.fromResource("application.dev2.conf"))(_.close()) { source2 =>
           pprint.pprintln(s"Using source2: ${source2.hashCode}")
-          val result = source2.getLines.mkString(start = "", sep = "\n", end = "")
+          val result = source2.getLines().mkString(start = "", sep = "\n", end = "")
           pprint.pprintln(result)
           result
         }
@@ -84,7 +84,7 @@ class ComposableResourcesSpec extends AnyWordSpec with Matchers {
       Resource.make(Source.fromResource("application.dev1.conf"))(_.close()).use { source1 =>
         Resource.make(Source.fromResource("application.dev2.conf"))(_.close()).use { source2 =>
           pprint.pprintln(s"Using source2: ${source2.hashCode}")
-          val result = source2.getLines.mkString(start = "", sep = "\n", end = "")
+          val result = source2.getLines().mkString(start = "", sep = "\n", end = "")
           pprint.pprintln(result)
           result
         }
@@ -144,7 +144,7 @@ class ComposableResourcesSpec extends AnyWordSpec with Matchers {
 
       resources.use { case (source1, source2) =>
         pprint.pprintln(s"Using source2: ${source2.hashCode}")
-        val result = source2.getLines.mkString(start = "", sep = "\n", end = "")
+        val result = source2.getLines().mkString(start = "", sep = "\n", end = "")
         pprint.pprintln(result)
         result
       }
@@ -169,14 +169,14 @@ class ComposableResourcesSpec extends AnyWordSpec with Matchers {
       def program: IO[Unit] =
         IO(new AwsSdkJavaClient).flatTap(businessLogic).flatMap(client => IO(client.close()))
 
-      program.unsafeRunSync
+      program.unsafeRunSync()
     }
 
     "improve with Bracket" in {
       def program: IO[Unit] =
         IO(new AwsSdkJavaClient).bracket(businessLogic)(client => IO(client.close()))
 
-      program.unsafeRunSync
+      program.unsafeRunSync()
     }
 
     "but Bracket struggles to scale for multiple resources" in {
@@ -190,7 +190,7 @@ class ComposableResourcesSpec extends AnyWordSpec with Matchers {
           )(config => IO(config.close))
         )(awsClient => IO(awsClient.close()))
 
-      program.unsafeRunSync
+      program.unsafeRunSync()
     }
   }
 
@@ -214,7 +214,7 @@ class ComposableResourcesSpec extends AnyWordSpec with Matchers {
           _      <- Resource.liftF(businessLogic(awsClient, config))
         } yield ()
 
-      program.use(_ => IO.unit).unsafeRunSync
+      program.use(_ => IO.unit).unsafeRunSync()
     }
 
     "and then there's applicative compose" in {
@@ -229,7 +229,7 @@ class ComposableResourcesSpec extends AnyWordSpec with Matchers {
 
       (awsClientResourse, configResource).tupled.use { case (awsClient, config) =>
         businessLogic(awsClient, config)
-      } unsafeRunSync
+      }.unsafeRunSync()
     }
   }
 }

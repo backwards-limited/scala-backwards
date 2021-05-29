@@ -3,9 +3,9 @@ package com.backwards.fp.kleisli
 import scala.util.Random
 import cats.data.Kleisli
 import cats.effect.IO
+import cats.syntax.all._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import cats.arrow.Arrow.ops.toAllArrowOps
 
 class KleisliSpec extends AnyWordSpec with Matchers {
   val random: Random.type = scala.util.Random
@@ -24,7 +24,7 @@ class KleisliSpec extends AnyWordSpec with Matchers {
       val combine: Unit => Boolean =
         generate andThen process andThen save
 
-      combine() mustBe true
+      combine(()) mustBe true
     }
 
     "operate on monadic functions" in {
