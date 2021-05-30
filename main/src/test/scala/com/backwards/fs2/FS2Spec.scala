@@ -2,10 +2,13 @@ package com.backwards.fs2
 
 import java.nio.file.Paths
 import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Random
 import cats.effect._
+import cats.effect.unsafe.implicits.global
 import cats.implicits._
 import fs2._
+import fs2.io.file.Files
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -41,20 +44,22 @@ class FS2Spec extends AnyFreeSpec with Matchers {
       val list = Source.fromFile("src/test/resources/fahrenheit.txt").getLines.toList
       java.lang.OutOfMemoryError: Java heap space
     """ in {
-      implicit val contextShift: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
+      // Cats Effect 2 - Upgraded to Cats Effect 3
+      // implicit val contextShift: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
+      import cats.effect.unsafe.implicits.global
 
-      val stream: Stream[IO, Unit] = Stream.resource(Blocker[IO]).flatMap { blocker =>
+      val stream: Stream[IO, Unit] = {
         def fahrenheitToCelsius(f: Double): Double =
           (f - 32.0) * (5.0 / 9.0)
 
-        io.file.readAll[IO](Paths.get("src/test/resources/fahrenheit.txt"), blocker, 4096)
+        Files[IO].readAll(Paths.get("src/test/resources/fahrenheit.txt"), 4096)
           .through(text.utf8Decode)
           .through(text.lines)
           .filter(s => s.trim.nonEmpty && !s.startsWith("//"))
           .map(line => fahrenheitToCelsius(line.toDouble).toString)
           .intersperse("\n")
           .through(text.utf8Encode)
-          .through(io.file.writeAll(Paths.get("src/test/resources/celsius.txt"), blocker))
+          .through(Files[IO].writeAll(Paths.get("src/test/resources/celsius.txt")))
       }
 
       stream.compile.drain.as(ExitCode.Success).unsafeRunSync() mustBe ExitCode.Success
@@ -107,6 +112,8 @@ class FS2Spec extends AnyFreeSpec with Matchers {
       How to turn a Pure Stream into something useful?
       Let's say I want to load user IDs from a DB, and we have a function that given a "user name" will call a database to retrieve the "user ID".
     """ - {
+      import scala.concurrent.ExecutionContext.Implicits.global
+
       // In memory Map representation of a database
       val database = Map("bob" -> 1, "alice" -> 2, "joe" -> 3)
 
@@ -117,7 +124,7 @@ class FS2Spec extends AnyFreeSpec with Matchers {
       def acquireUserId(userName: String)(implicit ec: ExecutionContext): Future[Int] = Future {
         // Pretend we call a database, but we'll just use an in memory Map representation.
         database(userName)
-      }
+      }(ec)
 
       """
         Let's say we have the following Pure Stream and from it we wish to get a Stream of "user IDs".
@@ -164,14 +171,20 @@ class FS2Spec extends AnyFreeSpec with Matchers {
             FS2 is well aware of that and does not let you compile. To fix this we have to use a type called IO that wraps our bad Future.
           """ in {
             import com.backwards.transform.Transform._
+            import cats.effect.unsafe.implicits.global
 
             userIds.translate(`Future ~> IO`).compile.toList.unsafeRunSync() mustBe List(1, 2, 3)
           }
 
           "equivalent" in {
-            implicit val contextShift: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
+            // Cats Effect 2 - Upgraded to Cats Effect 3
+            // implicit val contextShift: ContextShift[IO] = IO.contextShift(ExecutionContext.global)
 
-            userNames.evalMap[IO, Int](name => IO fromFuture IO(acquireUserId(name))).compile.toList.unsafeRunSync() mustBe List(1, 2, 3)
+            import cats.effect.unsafe.implicits.global
+
+            val ec = scala.concurrent.ExecutionContext.global
+
+            userNames.evalMap[IO, Int](name => IO fromFuture IO(acquireUserId(name)(ec))).compile.toList.unsafeRunSync() mustBe List(1, 2, 3)
           }
 
           """
@@ -200,6 +213,8 @@ class FS2Spec extends AnyFreeSpec with Matchers {
 
   """Stream IO""" - {
     """Let's print""" in {
+      import cats.effect.unsafe.implicits.global
+
       val put: Int => IO[Unit] =
         s => IO(println(s))
 
@@ -211,6 +226,8 @@ class FS2Spec extends AnyFreeSpec with Matchers {
 
   "Stream effects" - {
     "will be realised" in {
+      import cats.effect.unsafe.implicits.global
+
       val xs = Stream.eval(IO(Random.nextInt())).compile.toList
       println(xs.unsafeRunSync())
 
@@ -221,6 +238,8 @@ class FS2Spec extends AnyFreeSpec with Matchers {
 
   "Stream with pipes and sinks" - {
     "apply" in {
+      import cats.effect.unsafe.implicits.global
+
       val stream: Stream[IO, String] =
         Stream eval IO.pure("Hello World")
 

@@ -356,13 +356,13 @@ object FreeWithSecondAlgebraApp extends App {
   class DBFreeAlgebraTI[F[_]](implicit I: InjectK[DBFreeAlgebraT, F]) {
     /** Step 2 - instead of calling `.liftF` you call `.inject` */
     def create(user: User): Free[F, Boolean] = // <- All algebras are `Free` now
-      Free.inject[DBFreeAlgebraT, F](Create(user))
+      Free.liftInject(Create(user))
 
     def read(id: Long): Free[F, DatabaseError Either User] = // <- All algebras are `Free` now
-      Free.inject[DBFreeAlgebraT, F](Read(id))
+      Free.liftInject(Read(id))
 
     def delete(id: Long): Free[F, DatabaseError Either Unit] = // <- All algebras are `Free` now
-      Free.inject[DBFreeAlgebraT, F](Delete(id))
+      Free.liftInject(Delete(id))
   }
 
   /** Step 3 - create an implicit instance of your new class */

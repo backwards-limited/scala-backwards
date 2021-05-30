@@ -2,6 +2,7 @@ package com.backwards.fp.referentialtransparency
 
 import scala.io.StdIn
 import cats.effect.IO
+import cats.effect.unsafe.implicits.global
 import cats.implicits._
 
 object ReferentialTransparencyApp extends App {

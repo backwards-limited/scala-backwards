@@ -3,6 +3,7 @@ package com.backwards.fp
 import cats.Monad
 import cats.data.ReaderWriterStateT
 import cats.effect.IO
+import cats.effect.unsafe.implicits.global
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import cats.implicits._
@@ -91,7 +92,7 @@ class ReaderWriterStateSpec extends AnyWordSpec with Matchers with MockFactory {
       def preCacheUsers(userUuids: List[UUID]): ReaderWriterStateT[IO, Environment, Log, Cache[UUID, User], Unit] =
         userUuids match {
           case Nil =>
-            ReaderWriterStateT.pure[IO, Environment, Log, Cache[UUID, User], Unit]()
+            ReaderWriterStateT.pure[IO, Environment, Log, Cache[UUID, User], Unit](())
 
           case currentUserUuid :: rest =>
             for {

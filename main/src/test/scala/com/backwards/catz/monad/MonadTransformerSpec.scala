@@ -2,6 +2,7 @@ package com.backwards.catz.monad
 
 import cats.data.EitherT
 import cats.effect.IO
+import cats.effect.unsafe.implicits.global
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

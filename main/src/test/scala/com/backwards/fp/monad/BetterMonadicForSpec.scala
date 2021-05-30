@@ -1,5 +1,6 @@
 package com.backwards.fp.monad
 
+import cats.effect.unsafe.implicits.global
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

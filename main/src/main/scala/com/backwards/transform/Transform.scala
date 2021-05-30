@@ -2,16 +2,17 @@ package com.backwards.transform
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
-import scala.language.{higherKinds, postfixOps}
-import cats.effect.{ContextShift, IO}
+import scala.language.postfixOps
+import cats.effect.IO
 import cats.{Id, ~>}
 
 /**
   * See [[cats.arrow.FunctionK]]
   */
 trait Transform {
-  implicit val contextShift: ContextShift[IO] =
-    cats.effect.IO.contextShift(scala.concurrent.ExecutionContext.Implicits.global)
+  // Cats Effect 2 - Upgraded to Cats Effect 3
+  /*implicit val contextShift: ContextShift[IO] =
+    cats.effect.IO.contextShift(scala.concurrent.ExecutionContext.Implicits.global)*/
 
   implicit class LiftTo[X[_], A](x: X[A]) {
     def liftTo[Y[_]](implicit transform: X ~> Y): Y[A] = transform(x)

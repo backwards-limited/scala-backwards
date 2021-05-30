@@ -17,6 +17,8 @@ class ContextShiftSpec extends AnyWordSpec with Matchers {
   }
 }
 
+// Cats Effect 2 - Upgraded to Cats Effect 3
+/*
 object ContextShiftApp extends IOApp {
   def run(args: List[String]): IO[ExitCode] = {
     println(s"App: ${Thread.currentThread.getName}")
@@ -28,4 +30,4 @@ object ContextShiftApp extends IOApp {
       contextShift.shift >>
       IO(println(s"I run on the pool that CS represents: ${Thread.currentThread.getName}")).as(ExitCode.Success)
   }
-}
+}*/

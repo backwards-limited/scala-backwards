@@ -43,8 +43,8 @@ class Chap2Spec extends AnyWordSpec with Matchers {
 
       val randomMemoized = memoize(random)
 
-      println(randomMemoized())
-      println(randomMemoized())
+      println(randomMemoized(()))
+      println(randomMemoized(()))
     }
   }
 }

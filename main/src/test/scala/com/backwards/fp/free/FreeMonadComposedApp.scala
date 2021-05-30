@@ -38,9 +38,9 @@ object FreeMonadComposedApp extends App {
   case object Getline extends Interact[String]
 
   class InteractOps[F[_]](implicit I: InjectK[Interact, F]) {
-    def printline(out: String): Free[F, Unit] = Free.inject(Printline(out))
+    def printline(out: String): Free[F, Unit] = Free.liftInject(Printline(out))
 
-    def getline: Free[F, String] = Free.inject(Getline)
+    def getline: Free[F, String] = Free.liftInject(Getline)
 
     def ask(prompt: String): Free[F, String] = printline(prompt) *> getline
   }
@@ -61,11 +61,11 @@ object FreeMonadComposedApp extends App {
   final case class Delete(key: String) extends KVStore[Option[Int]]
 
   class KVStoreOps[F[_]](implicit KV: InjectK[KVStore, F]) {
-    def put(key: String, value: Int): Free[F, Unit] = Free.inject(Put(key, value))
+    def put(key: String, value: Int): Free[F, Unit] = Free.liftInject(Put(key, value))
 
-    def get(key: String): Free[F, Option[Int]] = Free.inject(Get(key))
+    def get(key: String): Free[F, Option[Int]] = Free.liftInject(Get(key))
 
-    def delete(key: String): Free[F, Option[Int]] = Free.inject(Delete(key))
+    def delete(key: String): Free[F, Option[Int]] = Free.liftInject(Delete(key))
   }
 
   object KVStoreOps {

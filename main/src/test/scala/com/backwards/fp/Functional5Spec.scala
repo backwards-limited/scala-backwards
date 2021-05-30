@@ -2,26 +2,23 @@ package com.backwards.fp
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
-import cats.MonadError
-import cats.effect.{ExitCode, IO, IOApp, Sync, Timer}
+import cats.{Monad, MonadError}
+import cats.effect.{Concurrent, Deferred, ExitCode, IO, IOApp, Sync}
 import cats.implicits._
-import io.chrisdavenport.log4cats.Logger
 import io.circe.generic.auto._
 import io.circe.syntax.EncoderOps
 import monix.eval.Task
 import retry.RetryPolicies.{exponentialBackoff, limitRetries}
-import retry.{RetryPolicy, retryingOnAllErrors}
-import sttp.client.asynchttpclient.cats.AsyncHttpClientCatsBackend
-import sttp.client.circe.asJson
-import sttp.client.{NothingT, ResponseError, SttpBackend, UriContext, basicRequest}
-import org.http4s.circe.CirceEntityCodec.circeEntityDecoder
-import org.http4s.{HttpRoutes, Response}
+import retry.{RetryPolicy, Sleep, retryingOnAllErrors}
+import sttp.client3.asynchttpclient.cats.AsyncHttpClientCatsBackend
+import sttp.client3.circe.asJson
+import sttp.client3.{ResponseException, SttpBackend, UriContext, basicRequest}
 import org.http4s.circe.jsonEncoder
 import org.http4s.dsl.Http4sDsl
-import org.http4s.implicits.http4sKleisliResponseSyntaxOptionT
-import org.http4s.server.blaze.BlazeServerBuilder
+import org.http4s.{HttpRoutes, Response}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import org.typelevel.log4cats.Logger
 import com.backwards.fp.{Nothing => _}
 
 /**
@@ -89,7 +86,7 @@ class Functional5Spec extends AnyWordSpec with Matchers {
     final case class SocialProfilesResponse()
 
     object ApiError {
-      def fromResponse(code: Int, e: ResponseError[io.circe.Error]): Throwable = ???
+      def fromResponse(code: Int, e: ResponseException[String, Exception]): Throwable = ???
     }
 
     "define 3 endpoints around interfacing with a Social Profile API with the following interface as a dependency of akka-http routes" in {
@@ -103,7 +100,7 @@ class Functional5Spec extends AnyWordSpec with Matchers {
       Let's say we are using Sttp to make remote calls to the third party API.
       How would the constructors look different between the two approaches for an implementation? In the OOP case, we would have some concrete class (implementing only "authorize" as an example):
       */
-      class LiveAuthService(implicit client: SttpBackend[Future, scala.Nothing, NothingT], ec: ExecutionContext) extends AuthService {
+      class LiveAuthService(implicit backend: SttpBackend[Future, Any], ec: ExecutionContext) extends AuthService {
         def authenticate(req: ValidAuthenticateRequest): Future[AuthenticateResponse] = ???
         def getManageableSocialProfiles(accessToken: AuthAccessToken): Future[SocialProfilesResponse] = ???
 
@@ -121,7 +118,7 @@ class Functional5Spec extends AnyWordSpec with Matchers {
             .body(authorizeBody)
             .post(uri"https://authservice.com")
             .response(asJson[AuthAccessToken])
-            .send()
+            .send(backend)
             .flatMap { response =>
               response.body.fold(
                 error => Future.failed(ApiError.fromResponse(response.code.code, error)),
@@ -139,7 +136,7 @@ class Functional5Spec extends AnyWordSpec with Matchers {
         def getManageableSocialProfiles(accessToken: AuthAccessToken): F[SocialProfilesResponse]
       }
 
-      class LiveAuthService[F[_]: MonadError[*[_], Throwable]](implicit client: SttpBackend[F, scala.Nothing, NothingT]) extends AuthService[F] {
+      class LiveAuthService[F[_]: MonadError[*[_], Throwable]](implicit backend: SttpBackend[F, Any]) extends AuthService[F] {
         def authenticate(req: ValidAuthenticateRequest): F[AuthenticateResponse] = ???
         def getManageableSocialProfiles(accessToken: AuthAccessToken): F[SocialProfilesResponse] = ???
 
@@ -156,7 +153,7 @@ class Functional5Spec extends AnyWordSpec with Matchers {
             .body(authorizeBody)
             .post(uri"https://authservice.com")
             .response(asJson[AuthAccessToken])
-            .send()
+            .send(backend)
             .flatMap { response =>
               response.body.fold(
                 error => ApiError.fromResponse(response.code.code, error).raiseError[F, AuthorizeResponse],
@@ -183,7 +180,11 @@ class Functional5Spec extends AnyWordSpec with Matchers {
       */
 
       // If we were to hook up the Algebra (service) with http4s route:
-      final class AuthRoutes[F[_]: Sync](authService: AuthService[F]) extends Http4sDsl[F] {
+      final class AuthRoutes[F[_]: MonadError[*[_], Throwable]: Concurrent](authService: AuthService[F]) extends Http4sDsl[F] {
+        import io.circe.generic.auto._
+        import org.http4s.circe.CirceEntityDecoder._
+        import org.http4s.circe._
+
         val errorHandler: PartialFunction[Throwable, F[Response[F]]] = {
           case t: Throwable => BadRequest()
         }
@@ -201,8 +202,8 @@ class Functional5Spec extends AnyWordSpec with Matchers {
 
       // We can get an instance of our Algebra as:
       object LiveAuthService {
-        def make[F[_]: Sync](client: SttpBackend[F, scala.Nothing, NothingT]): F[AuthService[F]] = {
-          implicit val sttp: SttpBackend[F, scala.Nothing, NothingT] = client
+        def make[F[_]: Sync](backend: SttpBackend[F, Any]): F[AuthService[F]] = {
+          implicit val sttp: SttpBackend[F, Any] = backend
 
           Sync[F].delay(new LiveAuthService())
         }
@@ -210,33 +211,46 @@ class Functional5Spec extends AnyWordSpec with Matchers {
 
       // and likewise a companion object for AuthRoutes
       object AuthRoutes {
-        def make[F[_]: Sync](authService: AuthService[F]): F[AuthRoutes[F]] =
-          Sync[F].delay(new AuthRoutes[F](authService))
+        def make[F[_]: MonadError[*[_], Throwable]: Concurrent](authService: AuthService[F]): F[AuthRoutes[F]] = {
+          Concurrent[F].pure(new AuthRoutes[F](authService))
+          // Sync[F].delay(new AuthRoutes[F](authService))
+        }
       }
 
       // Then an IOApp
       object App extends IOApp {
         def run(args: List[String]): IO[ExitCode] =
-          AsyncHttpClientCatsBackend.resource[IO]().use { clients =>
+          AsyncHttpClientCatsBackend.resource[IO]().use { backend =>
             for {
-              authService <- LiveAuthService.make[IO](clients)
+              authService <- LiveAuthService.make[IO](backend)
               // programs = AuthProgram.make[IO](services)
               // api <- RoutingModule.make[IO](programs)
               authRoutes <- AuthRoutes.make[IO](authService)
-              _ <- BlazeServerBuilder[IO](scala.concurrent.ExecutionContext.Implicits.global)
+              /*_ <- BlazeServerBuilder[IO](scala.concurrent.ExecutionContext.Implicits.global)
                 .bindHttp()
                 .withHttpApp(authRoutes.routes.orNotFound)
                 .serve
                 .compile
-                .drain
+                .drain*/
             } yield ExitCode.Success
           }
       }
 
       /*
+      def newEmber(cfg: HttpServerConfig, httpApp: HttpApp[F]): Resource[F, Server] =
+        EmberServerBuilder
+          .default[F]
+          .withHost(cfg.host)
+          .withPort(cfg.port)
+          .withHttpApp(httpApp)
+          .build
+          .evalTap(showEmberBanner[F])
+       */
+
+      /*
       Note "programs" - We could "wrap" (think of aspects) to enhance e.g.
       */
-      class AuthProgram[F[_]: Logger: MonadError[*[_], Throwable]: Timer/*: Statsd*/](authService: AuthService[F]/*, eventService: EventService[F]*/) {
+      class AuthProgram[F[_]: Logger: MonadError[*[_], Throwable]: Sleep/*: Statsd*/](authService: AuthService[F]/*, eventService: EventService[F]*/) {
         val retryPolicy: RetryPolicy[F] =
           limitRetries[F](3) |+| exponentialBackoff[F](10 milliseconds)
 

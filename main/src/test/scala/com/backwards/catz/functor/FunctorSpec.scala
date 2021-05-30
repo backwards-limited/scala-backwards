@@ -1,6 +1,7 @@
 package com.backwards.catz.functor
 
 import cats.effect.IO
+import cats.effect.unsafe.implicits.global
 import cats.{Functor, Id}
 import monocle.Lens
 import monocle.macros.GenLens

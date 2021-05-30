@@ -1,9 +1,8 @@
 package com.backwards.fp.referentialtransparency
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import cats.effect.IO
-import cats.effect.concurrent.Ref
+import cats.effect.unsafe.implicits.global
+import cats.effect.{IO, Ref}
 import cats.implicits._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -30,6 +29,8 @@ class ReferentialTransparencySpec extends AnyWordSpec with Matchers {
     }
 
     "not be valid again when substitution will change" in {
+      import scala.concurrent.ExecutionContext.Implicits.global
+
       val expr: Unit = Future(println("Hi"))
       (expr, expr) // <-- print will happen only once
 
@@ -48,6 +49,8 @@ class ReferentialTransparencySpec extends AnyWordSpec with Matchers {
     }
 
     "be more interesting" in {
+      import cats.effect.unsafe.implicits.global
+
       val counter: IO[Ref[IO, Int]] = Ref.of[IO, Int](0)
 
       val program: IO[Int] = for {

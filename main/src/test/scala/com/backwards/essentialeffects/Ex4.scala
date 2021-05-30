@@ -22,7 +22,7 @@ object AsyncCompletable extends IOApp {
         }
 
         fa.handle(handler.asJavaBiFunction)
-        ()
+        IO(None)
       }
     }
 

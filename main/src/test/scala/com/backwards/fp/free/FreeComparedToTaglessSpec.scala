@@ -258,8 +258,8 @@ class FreeComparedToTaglessSpec extends AnyWordSpec with Matchers {
       Note that InjectK is for type constructor types i.e. higher kinded types (a bit like EitherK for higher kinded types).
       */
       class Users[F[_]](implicit i: InjectK[UserRepositoryAlg, F]) {
-        def findUser(id: UUID): Free[F, Option[User]] = Free.inject(FindUser(id))
-        def updateUser(u: User): Free[F, Unit] = Free.inject(UpdateUser(u))
+        def findUser(id: UUID): Free[F, Option[User]] = Free.liftInject(FindUser(id))
+        def updateUser(u: User): Free[F, Unit] = Free.liftInject(UpdateUser(u))
       }
 
       object Users {
@@ -269,7 +269,7 @@ class FreeComparedToTaglessSpec extends AnyWordSpec with Matchers {
 
       class Emails[F[_]](implicit i: InjectK[EmailAlg, F]) {
         def sendEmail(email: String, subject: String, body: String): Free[F, Unit] =
-          Free.inject(SendEmail(email, subject, body))
+          Free.liftInject(SendEmail(email, subject, body))
       }
 
       object Emails {

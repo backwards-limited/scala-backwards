@@ -2,11 +2,11 @@ import sbt._
 
 object Dependencies {
   def apply(): Seq[ModuleID] = Seq(
-    scalaReflect, scalaMeta, scalatest, specs2, scalaMock, scalacheck, scalacheckShapeless, /*testcontainers,*/ scalaTestContainers, s3mock,
+    scalaReflect, scalaMeta, scalatest, scalatestplus, specs2, scalaMock, scalacheck, scalacheckShapeless, /*testcontainers,*/ scalaTestContainers, s3mock,
     log4Cats, scribe, pprint, pureConfig,
-    cats, catsEffectTesting, catsRetry, kittens, catnip, mouse, simulacrum, refined, monocle, shapeless, meowMtl, chimney,
+    cats, catsEffect, catsEffectTesting, catsRetry, kittens, catnip, mouse, simulacrum, refined, monocle, shapeless, meowMtl, chimney,
     circe, parserCombinators,
-    http4s, monix, fs2, scalaUri, betterFiles, sttp, tapir, awsJava, quill, postgresql
+    http4s, monix, fs2, scalaUri, betterFiles, sttp, awsJava, quill, postgresql
   ).flatten
 
   lazy val scalaReflect: Seq[ModuleID] = Seq(
@@ -14,16 +14,20 @@ object Dependencies {
   )
 
   lazy val scalaMeta: Seq[ModuleID] = Seq(
-    "org.scalameta" %% "scalameta" % "4.4.7"
+    "org.scalameta" %% "scalameta" % "4.4.20"
   )
   
   lazy val scalatest: Seq[ModuleID] = Seq(
-    "org.scalatest" %% "scalatest" % "3.2.3" % "test, it" withSources() withJavadoc()
+    "org.scalatest" %% "scalatest" % "3.2.9" % "test, it" withSources() withJavadoc()
+  )
+
+  lazy val scalatestplus: Seq[ModuleID] = Seq(
+    "org.scalatestplus" %% "scalacheck-1-15" % "3.2.9.0" % "test, it" withSources() withJavadoc()
   )
 
   lazy val specs2: Seq[ModuleID] = {
     val group = "org.specs2"
-    val version = "4.10.6"
+    val version = "4.12.0"
 
     Seq(
       "specs2-core", "specs2-scalacheck", "specs2-matcher-extra", "specs2-cats", "specs2-shapeless"
@@ -35,7 +39,7 @@ object Dependencies {
   )
 
   lazy val scalacheck: Seq[ModuleID] = Seq(
-    "org.scalacheck" %% "scalacheck" % "1.15.2" % "test, it" withSources() withJavadoc()
+    "org.scalacheck" %% "scalacheck" % "1.15.4" % "test, it" withSources() withJavadoc()
   )
 
   lazy val scalacheckShapeless: Seq[ModuleID] = Seq(
@@ -60,8 +64,8 @@ object Dependencies {
   )
 
   lazy val log4Cats: Seq[ModuleID] = {
-    val group = "io.chrisdavenport"
-    val version = "1.1.1"
+    val group = "org.typelevel"
+    val version = "2.1.1"
 
     Seq(
       "log4cats-core", "log4cats-slf4j"
@@ -69,23 +73,23 @@ object Dependencies {
   }
 
   lazy val scribe: Seq[ModuleID] = Seq(
-    "com.outr" %% "scribe" % "3.2.4" withSources() withJavadoc()
+    "com.outr" %% "scribe" % "3.5.5" withSources() withJavadoc()
   )
   
   lazy val pureConfig: Seq[ModuleID] = {
     val group = "com.github.pureconfig"
-    val version = "0.14.0"
+    val version = "0.15.0"
 
     Seq("pureconfig").map(group %% _ % version withSources() withJavadoc())
   }
 
   lazy val pprint: Seq[ModuleID] = Seq(
-    "com.lihaoyi" %% "pprint" % "0.6.0"
+    "com.lihaoyi" %% "pprint" % "0.6.6"
   )
 
   lazy val cats: Seq[ModuleID] = {
     val group = "org.typelevel"
-    val version = "2.3.1"
+    val version = "2.6.1"
 
     Seq(
       "cats-core", "cats-effect", "cats-free"
@@ -94,16 +98,25 @@ object Dependencies {
     ).map(group %% _ % version % "test, it" withSources() withJavadoc())
   }
 
+  lazy val catsEffect: Seq[ModuleID] = {
+    val group = "org.typelevel"
+    val version = "3.1.1"
+
+    Seq(
+      "cats-effect"
+    ).map(group %% _ % version withSources() withJavadoc())
+  }
+
   lazy val catsEffectTesting: Seq[ModuleID] = Seq(
-    "com.codecommit" %% "cats-effect-testing-scalatest" % "0.5.0" % "test, it"
+    "com.codecommit" %% "cats-effect-testing-scalatest" % "0.5.4" % "test, it"
   )
 
   lazy val catsRetry: Seq[ModuleID] = Seq(
-    "com.github.cb372" %% "cats-retry" % "2.1.0"
+    "com.github.cb372" %% "cats-retry" % "3.0.0"
   )
 
   lazy val kittens: Seq[ModuleID] = Seq(
-    "org.typelevel" %% "kittens" % "2.2.1"
+    "org.typelevel" %% "kittens" % "2.3.2"
   )
 
   lazy val catnip: Seq[ModuleID] = Seq(
@@ -111,7 +124,7 @@ object Dependencies {
   )
 
   lazy val mouse: Seq[ModuleID] = Seq(
-    "org.typelevel" %% "mouse" % "0.26.2" withSources() withJavadoc()
+    "org.typelevel" %% "mouse" % "1.0.3" withSources() withJavadoc()
   )
 
   lazy val simulacrum: Seq[ModuleID] = Seq(
@@ -120,7 +133,7 @@ object Dependencies {
   
   lazy val refined: Seq[ModuleID] = {
     val group = "eu.timepit"
-    val version = "0.9.20"
+    val version = "0.9.26"
 
     Seq(
       "refined", "refined-pureconfig", "refined-cats"
@@ -139,7 +152,7 @@ object Dependencies {
   }
 
   lazy val shapeless: Seq[ModuleID] = Seq(
-    "com.chuusai" %% "shapeless" % "2.3.3"
+    "com.chuusai" %% "shapeless" % "2.3.7"
   )
 
   lazy val meowMtl: Seq[ModuleID] = {
@@ -157,7 +170,7 @@ object Dependencies {
 
   lazy val circe: Seq[ModuleID] = {
     val group = "io.circe"
-    val version = "0.13.0"
+    val version = "0.14.1"
 
     Seq(
       "circe-core", "circe-generic", "circe-generic-extras", "circe-parser", "circe-refined"
@@ -167,31 +180,34 @@ object Dependencies {
   }
 
   lazy val parserCombinators: Seq[ModuleID] = Seq(
-    "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
+    "org.scala-lang.modules" %% "scala-parser-combinators" % "2.0.0"
   )
 
   lazy val http4s: Seq[ModuleID] = {
     val group = "org.http4s"
-    val version = "1.0-234-d1a2b53"
+    val version = "1.0.0-M23"
 
     Seq(
       "http4s-core", "http4s-dsl", "http4s-circe", "http4s-client", "http4s-blaze-client", "http4s-server", "http4s-blaze-server"
     ).map(group %% _ % version withSources() withJavadoc()) ++ Seq(
       "http4s-testing"
-    ).map(group %% _ % version % "test, it" withSources() withJavadoc())
+    ).map(group %% _ % "1.0.0-M15" % "test, it" withSources() withJavadoc())
   }
 
   lazy val monix: Seq[ModuleID] = {
+    val group = "io.monix"
+    val version = "3.4.0"
+
     Seq(
-      "io.monix" %% "monix" % "3.3.0" withSources() withJavadoc()
-    ) ++ Seq(
+      "monix", "monix-catnap"
+    ).map(group %% _ % version withSources() withJavadoc()) ++ Seq(
       "io.monix" %% "monix-kafka-11" % "1.0.0-RC7" withSources() withJavadoc()
     )
   }
 
   lazy val fs2: Seq[ModuleID] = {
     val group = "co.fs2"
-    val version = "2.5.0"
+    val version = "3.0.4"
 
     Seq(
       "fs2-core", "fs2-io", "fs2-reactive-streams"
@@ -199,7 +215,7 @@ object Dependencies {
   }
 
   lazy val scalaUri: Seq[ModuleID] = Seq(
-    "io.lemonlabs" %% "scala-uri" % "2.3.1" withSources() withJavadoc()
+    "io.lemonlabs" %% "scala-uri" % "3.2.0" withSources() withJavadoc()
   )
   
   lazy val betterFiles: Seq[ModuleID] = Seq(
@@ -207,32 +223,21 @@ object Dependencies {
   )
 
   lazy val sttp: Seq[ModuleID] = {
-    val group = "com.softwaremill.sttp.client"
-    val version = "2.2.9"
+    val group = "com.softwaremill.sttp.client3"
+    val version = "3.3.5"
 
     Seq(
       "core", "circe", "async-http-client-backend-cats"
     ).map(group %% _ % version withSources() withJavadoc())
   }
 
-  lazy val tapir: Seq[ModuleID] = {
-    val group = "com.softwaremill.sttp.tapir"
-    val version = "0.17.13"
-
-    Seq(
-      "tapir-core", "tapir-cats", "tapir-json-circe", "tapir-sttp-client", "tapir-http4s-server", "tapir-openapi-circe-yaml", "tapir-asyncapi-circe-yaml", "tapir-asyncapi-docs"
-    ).map(group %% _ % version withSources() withJavadoc()) ++ Seq(
-      "tapir-tests", "tapir-server-tests"
-    ).map(group %% _ % version % "test, it" withSources() withJavadoc())
-  }
-
   lazy val awsJava: Seq[ModuleID] = Seq(
-    "com.amazonaws" % "aws-java-sdk" % "1.11.943"
+    "com.amazonaws" % "aws-java-sdk" % "1.11.1030"
   )
 
   lazy val quill: Seq[ModuleID] = {
     val group = "io.getquill"
-    val version = "3.6.0"
+    val version = "3.7.1"
 
     Seq(
       "quill-core", "quill-sql", "quill-jdbc", "quill-codegen-jdbc", "quill-async", "quill-cassandra", "quill-cassandra-monix", "quill-monix", "quill-jdbc-monix", "quill-async-postgres", "quill-codegen"
@@ -240,6 +245,6 @@ object Dependencies {
   }
 
   lazy val postgresql: Seq[ModuleID] = Seq(
-    "org.postgresql" % "postgresql" % "42.2.18"
+    "org.postgresql" % "postgresql" % "42.2.20"
   )
 }

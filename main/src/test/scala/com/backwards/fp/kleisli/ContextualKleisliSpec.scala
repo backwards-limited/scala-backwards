@@ -4,6 +4,7 @@ import scala.util.Random
 import cats.arrow.Arrow.ops.toAllArrowOps
 import cats.data.Kleisli
 import cats.effect.IO
+import cats.effect.unsafe.implicits.global
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

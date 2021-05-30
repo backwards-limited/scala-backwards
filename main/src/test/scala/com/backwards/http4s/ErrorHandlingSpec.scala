@@ -1,19 +1,19 @@
 package com.backwards.http4s
 
 import scala.util.control.NonFatal
-import cats.{ApplicativeError, MonadError}
 import cats.data.{Kleisli, OptionT}
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import cats.effect.{IO, Sync}
-import cats.effect.concurrent.Ref
+import cats.effect.unsafe.implicits.global
+import cats.effect.{Concurrent, IO, Ref, Sync}
 import cats.syntax.all._
+import cats.{ApplicativeError, Monad, MonadError}
 import io.circe.generic.auto._
 import io.circe.syntax._
 import org.http4s._
+import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.circe._
-import org.http4s.circe.CirceEntityDecoder._
 import org.http4s.dsl.Http4sDsl
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
  * @see [[https://typelevel.org/blog/2018/08/25/http4s-error-handling-mtl.html]]
@@ -86,7 +86,10 @@ object UserInterpreter {
  * @param userAlgebra UserAlgebra
  * @tparam F Effect has Sync
  */
-class UserRoutesWithoutErrorHandling[F[_]: Sync](userAlgebra: UserAlgebra[F]) extends Http4sDsl[F] {
+class UserRoutesWithoutErrorHandling[F[_]: MonadError[*[_], Throwable]: Concurrent](userAlgebra: UserAlgebra[F]) extends Http4sDsl[F] {
+  import org.http4s.circe.CirceEntityDecoder._
+  import io.circe.generic.auto._
+
   val routes: HttpRoutes[F] = HttpRoutes.of[F] {
     case GET -> Root / "users" / username =>
       userAlgebra.find(username).flatMap {
@@ -183,7 +186,11 @@ class UserRoutesWithoutErrorHandling[F[_]: MonadError[*[_], Throwable]: HttpErro
  * @param userAlgebra UserAlgebra
  * @tparam F Effect has Sync
  */
-class UserRoutesErrorHandlingFirstAttempt[F[_]: Sync](userAlgebra: UserAlgebra[F]) extends Http4sDsl[F] {
+class UserRoutesErrorHandlingFirstAttempt[F[_]: Monad: Concurrent](userAlgebra: UserAlgebra[F]) extends Http4sDsl[F] {
+  import io.circe.generic.auto._
+  import org.http4s.circe.CirceEntityDecoder._
+  import org.http4s.circe._
+
   val routes: HttpRoutes[F] = HttpRoutes.of[F] {
     case GET -> Root / "users" / username =>
       userAlgebra.find(username).flatMap {
@@ -223,10 +230,10 @@ Two of the supported typeclasses are ApplicativeError and MonadError
 as long as the error type is a subtype of Throwable to make it compatible with cats-effect e.g.
 */
 object MtlExample extends App {
+  import scala.util.Random
   import cats.MonadError
   import cats.effect.IO
-  import com.olegpy.meow.hierarchy._ // All you need is this import!
-  import scala.util.Random
+  import com.olegpy.meow.hierarchy._
 
   case class CustomError(msg: String) extends Throwable
 
@@ -262,7 +269,11 @@ object Routes {
     implicitly[Routes[F, E]]
 }
 
-class UserRoutesMTL[F[_]: Sync: Routes[*[_], UserError]](userAlgebra: UserAlgebra[F]) extends Http4sDsl[F] {
+class UserRoutesMTL[F[_]: Monad: Concurrent: Routes[*[_], UserError]](userAlgebra: UserAlgebra[F]) extends Http4sDsl[F] {
+  import io.circe.generic.auto._
+  import org.http4s.circe.CirceEntityDecoder._
+  import org.http4s.circe._
+
   val routes: HttpRoutes[F] = Routes[F, UserError] run HttpRoutes.of[F] {
     case GET -> Root / "users" / username =>
       userAlgebra.find(username).flatMap {

@@ -1,6 +1,7 @@
 package com.backwards.fp.kleisli
 
 import scala.util.Success
+import cats.effect.unsafe.implicits.global
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

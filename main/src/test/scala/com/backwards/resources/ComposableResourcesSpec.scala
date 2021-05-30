@@ -2,6 +2,7 @@ package com.backwards.resources
 
 import scala.io.{BufferedSource, Source}
 import cats.Monad
+import cats.effect.unsafe.implicits.global
 import cats.effect.{IO, Resource}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -211,7 +212,7 @@ class ComposableResourcesSpec extends AnyWordSpec with Matchers {
         for {
           awsClient <- Resource.make(IO(new AwsSdkJavaClient))(r => IO(r.close()))
           config    <- Resource.make(IO(Source.fromResource("application.dev1.conf")))(r => IO(r.close()))
-          _      <- Resource.liftF(businessLogic(awsClient, config))
+          _         <- Resource.eval(businessLogic(awsClient, config))
         } yield ()
 
       program.use(_ => IO.unit).unsafeRunSync()

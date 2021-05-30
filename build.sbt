@@ -1,3 +1,4 @@
+import Dependencies.catsEffect
 import sbt._
 
 ThisBuild / evictionErrorLevel := Level.Info

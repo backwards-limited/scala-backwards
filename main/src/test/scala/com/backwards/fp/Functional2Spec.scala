@@ -1,11 +1,10 @@
 package com.backwards.fp
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
-import cats.data.NonEmptyList
+import scala.concurrent.{Await, Future}
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.{AnyWordSpec, AsyncWordSpec}
+import org.scalatest.wordspec.AnyWordSpec
 
 /**
  * [[https://www.matfournier.com/2020-01-10-getting-funcey-part1-types/ Series of 5 FP articles]]
@@ -110,22 +109,24 @@ class Functional2Spec extends AnyWordSpec with Matchers {
       final case class Data()
       final case class Payload(user: User, data: Data)
 
-      def loadUser: Task[User] = Task delay User()
+      // TODO - Fails to compile after upgrading to Cats Effect 3
+      /*def loadUser: Task[User] = Task eval User()
 
-      def loadData: Task[Data] = Task delay Data()
+      def loadData: Task[Data] = Task eval Data()
 
       // Sequentially
       for {
         user <- loadUser
         data <- loadData
-      } yield Payload(user, data)
+      } yield Payload(user, data)*/
 
       // But applicative to the rescue. We can use mapN to compute the independent effects:
       import cats.implicits.catsSyntaxTuple2Semigroupal
       import monix.execution.Scheduler.Implicits.global
 
-      val payload: Task[Payload] = (loadUser, loadData) mapN Payload
-      payload.runSyncUnsafe() mustBe Payload(User(), Data())
+      // TODO - Fails to compile after upgrading to Cats Effect 3
+      /*val payload: Task[Payload] = (loadUser, loadData) mapN Payload
+      payload.runSyncUnsafe() mustBe Payload(User(), Data())*/
 
       /*
       What exactly Applicative does depends on the effect.

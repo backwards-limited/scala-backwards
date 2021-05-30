@@ -4,9 +4,8 @@ import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 import scala.language.postfixOps
 import scala.util.Try
-import cats.{Monad, MonadError}
+import cats.MonadError
 import cats.data.EitherT
-
 import cats.syntax.either._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
@@ -131,6 +130,7 @@ class MonadErrorSpec extends AnyWordSpec with Matchers with ScalaFutures {
   "MonadError API" should {
     import cats.effect.IO
     import cats.implicits._
+    import cats.effect.unsafe.implicits.global
 
     "" in {
       def blah[F[_]](s: String)(implicit MonadError: MonadError[F, Throwable]): F[Int] = {

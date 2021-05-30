@@ -1,15 +1,15 @@
 package com.backwards.fp.concurrency
 
-import java.util.concurrent.{Executors, TimeUnit}
-import scala.concurrent.{ExecutionContext, Future}
-import cats.effect.{ContextShift, IO}
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.{AnyWordSpec, AsyncWordSpec}
+import cats.effect.IO
+import cats.effect.unsafe.implicits.global
 import cats.implicits._
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class IOSpec extends AnyWordSpec with Matchers {
-  val ec = ExecutionContext.fromExecutor(Executors.newCachedThreadPool())
-  implicit val contextShift: ContextShift[IO] = IO.contextShift(ec)
+  // Cats Effect 2 - Upgraded to Cats Effect 3
+  /*val ec = ExecutionContext.fromExecutor(Executors.newCachedThreadPool())
+  implicit val contextShift: ContextShift[IO] = IO.contextShift(ec)*/
 
   "IO" should {
     "run sequentially" in {
@@ -19,22 +19,23 @@ class IOSpec extends AnyWordSpec with Matchers {
       val jobsSequential = job1.flatMap(one => job2.map(two => (one, two)))
 
       val fiber = jobsSequential.start.unsafeRunSync()
-      fiber.join.unsafeRunSync() mustBe (1, 2)
+      fiber.joinWithNever.unsafeRunSync() mustBe (1, 2)
 
       val jobsSequentialAlternative = (job1, job2).tupled
-      jobsSequentialAlternative.start.unsafeRunSync().join.unsafeRunSync() mustBe (1, 2)
+      jobsSequentialAlternative.start.unsafeRunSync().joinWithNever.unsafeRunSync() mustBe (1, 2)
     }
 
     "run concurrently manually" in {
-      val job1 = IO(1)
-      val job2 = IO(2)
+      val job1: IO[Int] = IO(1)
+      val job2: IO[Int] = IO(2)
 
-      val jobsConcurrent: IO[(Int, Int)] = for {
-        fiber1 <- job1.start
-        fiber2 <- job2.start
-        one <- fiber1.join
-        two <- fiber2.join
-      } yield (one, two)
+      val jobsConcurrent: IO[(Int, Int)] =
+        for {
+          fiber1 <- job1.start
+          fiber2 <- job2.start
+          one <- fiber1.joinWithNever
+          two <- fiber2.joinWithNever
+        } yield (one, two)
 
       jobsConcurrent.unsafeRunSync() mustBe (1, 2)
     }

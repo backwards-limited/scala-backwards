@@ -1,6 +1,8 @@
 package com.backwards.fp
 
 import java.nio.charset.{CharacterCodingException, StandardCharsets}
+import cats.effect.kernel.Temporal
+import cats.effect.unsafe.implicits.global
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -190,7 +192,6 @@ class RetrySpec extends AnyWordSpec with Matchers {
       import scala.concurrent.duration._
       import cats.implicits._
       import cats.{ApplicativeError, MonadError, Defer}
-      import cats.effect.Timer
 
       /** Signaling desired outcomes via Boolean is very confusing, having our own ADT for this is better. */
       sealed trait RetryOutcome
@@ -237,12 +238,12 @@ class RetrySpec extends AnyWordSpec with Matchers {
             f(err, state, state => Defer[F].defer(loop(fa, state)(f)))
           }
 
-        def withBackoff[F[_]: MonadError[*[_], Throwable]: Defer: Timer, A](fa: F[A], config: RetryConfig)(p: Throwable => F[RetryOutcome]): F[A] =
+        def withBackoff[F[_]: MonadError[*[_], Throwable]: Defer: Temporal, A](fa: F[A], config: RetryConfig)(p: Throwable => F[RetryOutcome]): F[A] =
           loop(fa, config) { (error, state, retry) =>
             if (state.canRetry)
               p(error).flatMap {
                 case RetryOutcome.Next =>
-                  Timer[F].sleep(state.delay) *> retry(state.evolve)
+                  Temporal[F].sleep(state.delay) *> retry(state.evolve)
                 case RetryOutcome.Raise =>
                   // Cannot recover from error
                   MonadError[F, Throwable].raiseError(error)
@@ -265,7 +266,7 @@ class RetrySpec extends AnyWordSpec with Matchers {
             backoffFactor = 1.5
           )
 
-          val task = IO.suspend {
+          val task = IO.defer {
             val path = args.headOption.getOrElse(
               throw new IllegalArgumentException("File path expected in main's args")
             )

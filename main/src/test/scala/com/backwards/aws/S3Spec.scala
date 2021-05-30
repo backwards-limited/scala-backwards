@@ -5,6 +5,7 @@ import scala.jdk.CollectionConverters.IteratorHasAsScala
 import scala.language.{implicitConversions, postfixOps}
 import better.files._
 import cats.data.Kleisli
+import cats.effect.unsafe.implicits.global
 import cats.effect.{IO, Resource}
 import cats.implicits._
 import io.findify.s3mock.S3Mock
@@ -255,7 +256,7 @@ class S3Spec extends AnyWordSpec with Matchers {
         for {
           _ <- Resource.make(IO(S3Mock(port = 8001, dir = "/tmp/s3")).flatTap(api => IO(api.start)))(api => IO(api.shutdown))
           s3 <- Resource.make(IO(s3))(s3 => IO(s3.shutdown()))
-          bucket <- Resource.liftF(bucket(s3).run("my-bucket"))
+          bucket <- Resource.eval(bucket(s3).run("my-bucket"))
         } yield bucket
 
       println(program.use(IO.pure).unsafeRunSync())
@@ -275,7 +276,7 @@ class S3Spec extends AnyWordSpec with Matchers {
         for {
           _ <- Resource.make(IO(S3Mock(port = 8001, dir = "/tmp/s3")).flatTap(api => IO(api.start)))(api => IO(api.shutdown))
           s3 <- Resource.make(IO(s3))(s3 => IO(s3.shutdown()))
-          bucket <- Resource.liftF(logic(s3).run("my-bucket"))
+          bucket <- Resource.eval(logic(s3).run("my-bucket"))
         } yield bucket
 
       println(program.use(IO.pure).unsafeRunSync())
@@ -294,7 +295,7 @@ class S3Spec extends AnyWordSpec with Matchers {
         for {
           _ <- Resource.make(IO(S3Mock(port = 8001, dir = "/tmp/s3")).flatTap(api => IO(api.start)))(api => IO(api.shutdown))
           s3 <- Resource.make(IO(s3))(s3 => IO(s3.shutdown()))
-          bucket <- Resource.liftF(logic(s3).run("my-bucket"))
+          bucket <- Resource.eval(logic(s3).run("my-bucket"))
         } yield bucket
 
       println(program.use(IO.pure).attempt.unsafeRunSync())

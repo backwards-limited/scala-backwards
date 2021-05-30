@@ -66,6 +66,12 @@ package com.backwards
  * {{{
  *  exportJars := true
  * }}}
+ *
+ * Proving Ground can also be directly added as a dependency:
+ * {{{
+ *  scalaVersion := "2.13.6"
+ *  libraryDependencies += "io.github.siddhartha-gadgil" %% "provingground-core-jvm" % "0.1.1"
+ * }}}
  */
 package object dependenttypes {
 

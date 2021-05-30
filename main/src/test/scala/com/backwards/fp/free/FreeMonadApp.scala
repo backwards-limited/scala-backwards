@@ -81,9 +81,9 @@ object FreeMonadApp extends App {
    * DSL - Using Free.inject (instead of Free.liftF)
    */
   class InteractOps[F[_]](implicit I: InjectK[Interact, F]) {
-    def printline(out: String): Free[F, Unit] = Free.inject[Interact, F](Printline(out))
+    def printline(out: String): Free[F, Unit] = Free.liftInject(Printline(out))
 
-    def getline: Free[F, String] = Free.inject[Interact, F](Getline)
+    def getline: Free[F, String] = Free.liftInject(Getline)
 
     def ask(prompt: String): Free[F, String] = printline(prompt) *> getline
   }
