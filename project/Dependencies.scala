@@ -2,7 +2,7 @@ import sbt._
 
 object Dependencies {
   def apply(): Seq[ModuleID] = Seq(
-    scalaReflect, scalaMeta, scalatest, scalatestplus, specs2, scalaMock, scalacheck, scalacheckShapeless, /*testcontainers,*/ scalaTestContainers, s3mock,
+    scalaReflect, scalaMeta, scalatest, scalatestplus, specs2, munit, scalaMock, scalacheck, scalacheckShapeless, /*testcontainers,*/ scalaTestContainers, s3mock,
     log4Cats, scribe, pprint, pureConfig,
     cats, catsEffect, catsEffectTesting, catsRetry, kittens, catnip, mouse, simulacrum, refined, monocle, shapeless, meowMtl, chimney,
     circe, parserCombinators,
@@ -33,6 +33,10 @@ object Dependencies {
       "specs2-core", "specs2-scalacheck", "specs2-matcher-extra", "specs2-cats", "specs2-shapeless"
     ).map(group %% _ % version % "test, it" withSources() withJavadoc())
   }
+
+  lazy val munit: Seq[ModuleID] = Seq(
+    "org.scalameta" %% "munit" % "0.7.27" % "test, it" withSources() withJavadoc()
+  )
 
   lazy val scalaMock: Seq[ModuleID] = Seq(
     "org.scalamock" %% "scalamock" % "5.1.0" % "test, it" withSources() withJavadoc()

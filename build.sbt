@@ -1,4 +1,3 @@
-import Dependencies.catsEffect
 import sbt._
 
 ThisBuild / evictionErrorLevel := Level.Info
@@ -63,7 +62,9 @@ def project(id: String, base: File): Project =
         "-language:higherKinds",
         "-language:existentials",
         "-language:postfixOps",
-        "-Ymacro-annotations"
+        "-Ymacro-annotations",
+        "-Yrangepos",
+        "-P:kind-projector:underscore-placeholders" // Can use _ instead of * when defining anonymous type lambdas
         //"-Xfatal-warnings"
         // "-Ywarn-value-discard"
       ),
