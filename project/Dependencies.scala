@@ -104,7 +104,7 @@ object Dependencies {
 
   lazy val catsEffect: Seq[ModuleID] = {
     val group = "org.typelevel"
-    val version = "3.1.1"
+    val version = "3.2.2"
 
     Seq(
       "cats-effect"

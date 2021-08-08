@@ -19,7 +19,8 @@ class FunctorSpec extends AnyWordSpec with Matchers {
   val priceLineItemLens: Lens[LineItem, Double] =
     GenLens[LineItem](_.price)
 
-  val lineItems: List[LineItem] = List(LineItem(10.0), LineItem(20.0))
+  val lineItems: List[LineItem] =
+    List(LineItem(10.0), LineItem(20.0))
 
   "Functor basics" should {
     "list" in {
@@ -40,11 +41,14 @@ class FunctorSpec extends AnyWordSpec with Matchers {
       object Vat {
         val rate = 1.2
 
-        def withVat(orders: List[LineItem]): List[LineItem] = orders.map(priceLineItemLens.modify(_ * rate))
+        def withVat(orders: List[LineItem]): List[LineItem] =
+          orders.map(priceLineItemLens.modify(_ * rate))
 
-        def withVat(maybeOrder: Option[LineItem]): Option[LineItem] = maybeOrder.map(priceLineItemLens.modify(_ * rate))
+        def withVat(maybeOrder: Option[LineItem]): Option[LineItem] =
+          maybeOrder.map(priceLineItemLens.modify(_ * rate))
 
-        def withVat(eventualOrder: IO[LineItem]): IO[LineItem] = eventualOrder.map(priceLineItemLens.modify(_ * rate))
+        def withVat(eventualOrder: IO[LineItem]): IO[LineItem] =
+          eventualOrder.map(priceLineItemLens.modify(_ * rate))
       }
 
       import Vat._
@@ -93,7 +97,8 @@ class FunctorSpec extends AnyWordSpec with Matchers {
       {
         // and we could bring in our own Functor implementation (just keeping out of scope of the above that expects a compilation error):
         implicit val someFunctor: Functor[Some] = new Functor[Some] {
-          def map[A, B](fa: Some[A])(f: A => B): Some[B] = Some(f(fa.get))
+          def map[A, B](fa: Some[A])(f: A => B): Some[B] =
+            Some(f(fa.get))
         }
 
         withVat(Some(LineItem(10.0))) mustBe Option(LineItem(10.0 * rate))
@@ -135,7 +140,8 @@ class FunctorSpec extends AnyWordSpec with Matchers {
       object Vat {
         val rate = 1.2
 
-        def withFunctor[F[_]: Functor, A, B](order: F[A])(op: A => B): F[_] = order.map(op)
+        def withFunctor[F[_]: Functor, A, B](order: F[A])(op: A => B): F[B] =
+          order.map(op)
       }
 
       import Vat._
@@ -151,11 +157,14 @@ class FunctorSpec extends AnyWordSpec with Matchers {
 
       val rate = 1.2
 
-      def fetchOrder(user: User): IO[Option[Order]] = IO(Option(Order(10.0)))
+      def fetchOrder(user: User): IO[Option[Order]] =
+        IO(Option(Order(10.0)))
 
-      def applyVat(order: Order) = order.lens(_.price).modify(_ * rate)
+      def applyVat(order: Order) =
+        order.lens(_.price).modify(_ * rate)
 
-      val order: IO[Option[Order]] = fetchOrder(User())
+      val order: IO[Option[Order]] =
+        fetchOrder(User())
 
       // Ugly nested map
       order.map(_.map(applyVat)).unsafeRunSync() mustBe Option(Order(10.0 * rate))
@@ -164,12 +173,15 @@ class FunctorSpec extends AnyWordSpec with Matchers {
       import cats.Functor
       import cats.instances.option._
 
-      val result: IO[Option[Order]] = Functor[IO].compose[Option].map(order)(applyVat)
+      val result: IO[Option[Order]] =
+        Functor[IO].compose[Option].map(order)(applyVat)
+
       result.unsafeRunSync() mustBe Option(Order(10.0 * rate))
 
       // We can cut down the boilerplate by writing our own implicit class which adds a nestedMap method to all nested Functors:
       implicit class RichFunctor[F[_]: Functor, G[_]: Functor, A](underlying: F[G[A]]) {
-        def nestedMap[B](op: A => B): F[G[B]] = Functor[F].compose[G].map(underlying)(op)
+        def nestedMap[B](op: A => B): F[G[B]] =
+          Functor[F].compose[G].map(underlying)(op)
       }
 
       order.nestedMap(applyVat).unsafeRunSync() mustBe Option(Order(10.0 * rate))
