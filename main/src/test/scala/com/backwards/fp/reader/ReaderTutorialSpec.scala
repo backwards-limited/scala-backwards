@@ -4,7 +4,7 @@ import cats.data.ReaderT
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import cats.implicits._
-import cats.mtl.ApplicativeAsk
+import cats.mtl.Ask
 import cats.{Applicative, Monad}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -140,7 +140,7 @@ class ReaderTutorialSpec extends AnyWordSpec with Matchers {
       // It should be a Monad, because of sequential computation of the provided algebra and ApplicativeAsk for dependency injection.
 
       // Since our dependencies are fixed over Environment, we can introduce a type alias:
-      type EnvironmentAsk[F[_]] = ApplicativeAsk[F, Environment]
+      type EnvironmentAsk[F[_]] = Ask[F, Environment]
 
       class TwitterServiceAlgM[F[_]: EnvironmentAsk: Monad] extends TwitterServiceAlg[F] {
         private val GetTweetsUrl = "https://twitter.com/getTweets"
@@ -182,13 +182,20 @@ class ReaderTutorialSpec extends AnyWordSpec with Matchers {
         } yield shortestTweetAuthor
 
       // And it’s time to decide what our F[_] will be. Assuming that F[_] is IO, ApplicativeAsk can be implemented this way:
-      class EnvironmentIOAsk(env: Environment) extends ApplicativeAsk[IO, Environment] {
+      class EnvironmentIOAsk(env: Environment) extends Ask[IO, Environment] {
+        def applicative: Applicative[IO] =
+          Applicative[IO]
+
+        def ask[E2 >: Environment]: IO[E2] =
+          applicative.pure(env)
+      }
+      /*class EnvironmentIOAsk(env: Environment) extends Ask[IO, Environment] {
         override val applicative: Applicative[IO] = Applicative[IO]
 
         override def ask: IO[Environment] = applicative.pure(env)
 
         override def reader[A](f: Environment => A): IO[A] = ask.map(f)
-      }
+      }*/
 
 
       def getConnectionPool: ConnectionPool = ???

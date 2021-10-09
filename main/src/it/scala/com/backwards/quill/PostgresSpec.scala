@@ -1,3 +1,4 @@
+/*
 package com.backwards.quill
 
 import java.sql.{Connection, Statement}
@@ -11,11 +12,8 @@ import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import org.postgresql.ds.PGSimpleDataSource
 import com.backwards.container.PostgreSQLContainer
 
-/**
- * docker exec -it strange_mayer psql -Utest -a test -c 'select * from contact;'
- *
- * docker exec -it strange_mayer psql -Utest -a test -c 'create table Foo(personId int not null, phone varchar(20) not null, primary key (personId));'
- */
+// docker exec -it strange_mayer psql -Utest -a test -c 'select * from contact;'
+// docker exec -it strange_mayer psql -Utest -a test -c 'create table Foo(personId int not null, phone varchar(20) not null, primary key (personId));'
 class PostgresSpec extends AnyWordSpec with Matchers with ForAllTestContainer {
   override val container: PostgreSQLContainer =
     PostgreSQLContainer()
@@ -96,4 +94,4 @@ class PostgresSpec extends AnyWordSpec with Matchers with ForAllTestContainer {
 
 final case class Contact(personId: Int, phone: String)
 
-final case class Foo(personId: Int, phone: String)
+final case class Foo(personId: Int, phone: String)*/

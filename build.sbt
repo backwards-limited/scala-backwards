@@ -50,7 +50,7 @@ def project(id: String, base: File): Project =
       organization := "com.backwards",
       name := id,
       autoStartServer := false,
-      addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.13.0" cross CrossVersion.full),
+      addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.13.2" cross CrossVersion.full),
       addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
       libraryDependencies ++= Dependencies(),
       exportJars := true,

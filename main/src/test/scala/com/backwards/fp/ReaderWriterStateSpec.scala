@@ -4,11 +4,11 @@ import cats.Monad
 import cats.data.ReaderWriterStateT
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
+import cats.implicits._
+import cats.mtl.{Ask, Stateful, Tell}
+import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import cats.implicits._
-import cats.mtl.{ApplicativeAsk, FunctorTell, MonadState}
-import org.scalamock.scalatest.MockFactory
 
 class ReaderWriterStateSpec extends AnyWordSpec with Matchers with MockFactory {
   "Reader Writer State" should {
@@ -134,9 +134,9 @@ class ReaderWriterStateSpec extends AnyWordSpec with Matchers with MockFactory {
       type UUID = String
       type Log = List[String]
 
-      type Env[F[_]] = ApplicativeAsk[F, Environment] // Dependency injection
-      type Logging[F[_]] = FunctorTell[F, Log] // Logging
-      type State[F[_]] = MonadState[F, Cache[UUID, User]] // State management
+      type Env[F[_]] = Ask[F, Environment] // Dependency injection
+      type Logging[F[_]] = Tell[F, Log] // Logging
+      type State[F[_]] = Stateful[F, Cache[UUID, User]] // State management
 
       // Time to implement getUser(uuid: UUID): F[Option[User]] which will make an http call to find a user and populate cache if case of the user was found:
       class UserService[F[_] : Logging : Env : State : Monad] {
@@ -180,7 +180,6 @@ class ReaderWriterStateSpec extends AnyWordSpec with Matchers with MockFactory {
       object ProgramExample1 {
         import cats.effect.IO
         import cats.implicits._
-        import cats.mtl.implicits._
 
         def program: Unit = {
           val env = Environment(mock[HttpClient], Config(Nil))

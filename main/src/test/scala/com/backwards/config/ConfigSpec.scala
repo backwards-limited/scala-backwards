@@ -8,7 +8,7 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class ConfigSpec extends AnyWordSpec with Matchers {
   def checkConfig(myconfig: MyConfig): Assertion = {
-    myconfig.bootstrap mustBe BootstrapConfig(Seq(Uri.parse("127.0.0.1:9092")))
+    myconfig.bootstrap mustBe BootstrapConfig(Seq(Uri.parse("http://127.0.0.1:9092")))
 
     myconfig.properties("property.1") mustEqual "1"
     myconfig.properties("property.2") mustEqual "true"

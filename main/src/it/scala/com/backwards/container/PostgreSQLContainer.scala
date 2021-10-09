@@ -1,3 +1,4 @@
+/*
 package com.backwards.container
 
 import org.testcontainers.containers.{PostgreSQLContainer => JavaPostgreSQLContainer}
@@ -88,3 +89,4 @@ object PostgreSQLContainer {
     }
   }
 }
+*/

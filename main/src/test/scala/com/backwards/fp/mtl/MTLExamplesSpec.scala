@@ -2,20 +2,20 @@ package com.backwards.fp.mtl
 
 import cats.data.Writer
 import cats.{Applicative, Functor, Monad}
-import cats.mtl.{FunctorRaise, FunctorTell}
+import cats.mtl.{Raise, Tell}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class MTLExamplesSpec extends AnyWordSpec with Matchers {
   "FunctorRaise" should {
-    class Example[M[_]: Applicative: FunctorRaise[*[_], String]] {
+    class Example[M[_]: Applicative: Raise[*[_], String]] {
       def twoDivideBy(den: Double): M[Double] =
-        if (den == 0) FunctorRaise[M, String].raise("Cannot divide by zero")
+        if (den == 0) Raise[M, String].raise("Cannot divide by zero")
         else Applicative[M].pure(2 / den)
     }
 
     "run with Either" in {
-      import cats.mtl.implicits.handleEither
+      import cats.mtl.implicits._
 
       val ex = new Example[String Either *]
 
@@ -40,11 +40,12 @@ class MTLExamplesSpec extends AnyWordSpec with Matchers {
         def ap[A, B](ff: Maybe[A => B])(fa: Maybe[A]): Maybe[B] = ???
       }
 
-      implicit def maybeFunctorRaise[F[_]: Functor]: FunctorRaise[Maybe, String] = new FunctorRaise[Maybe, String] {
-        val functor: Functor[Maybe] = implicitly
+      implicit def maybeFunctorRaise[F[_]: Functor]: Raise[Maybe, String] =
+        new Raise[Maybe, String] {
+          def functor: Functor[Maybe] = implicitly
 
-        def raise[A](e: String): Maybe[A] = Nothing
-      }
+          def raise[E2 <: String, A](e: E2): Maybe[A] = Nothing
+        }
 
       val ex = new Example[Maybe]
 
@@ -54,20 +55,20 @@ class MTLExamplesSpec extends AnyWordSpec with Matchers {
   }
 
   "FunctorTell" should {
-    class Example[M[_]: Monad: FunctorTell[*[_], Vector[String]]] {
+    class Example[M[_]: Monad: Tell[*[_], Vector[String]]] {
       import cats.syntax.all._
 
       def apply(): M[Unit] = {
         for {
           value <- Monad[M].pure("My value")
-          _ <- FunctorTell[M, Vector[String]].tell(Vector("Value found"))
-          _ <- FunctorTell[M, Vector[String]].tell(Vector(value))
+          _ <- Tell[M, Vector[String]].tell(Vector("Value found"))
+          _ <- Tell[M, Vector[String]].tell(Vector(value))
         } yield ()
       }
     }
 
     "run with Writer" in {
-      import cats.mtl.implicits.passWriter
+      import cats.mtl.implicits._
 
       val ex = new Example[Writer[Vector[String], *]]
 
