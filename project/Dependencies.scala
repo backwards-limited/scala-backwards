@@ -14,7 +14,7 @@ object Dependencies {
   )
 
   lazy val scalaMeta: Seq[ModuleID] = Seq(
-    "org.scalameta" %% "scalameta" % "4.4.28"
+    "org.scalameta" %% "scalameta" % "4.4.30"
   )
   
   lazy val scalatest: Seq[ModuleID] = Seq(
@@ -27,7 +27,7 @@ object Dependencies {
 
   lazy val specs2: Seq[ModuleID] = {
     val group = "org.specs2"
-    val version = "4.12.12"
+    val version = "4.13.1"
 
     Seq(
       "specs2-core", "specs2-scalacheck", "specs2-matcher-extra", "specs2-cats", "specs2-shapeless"
@@ -77,12 +77,12 @@ object Dependencies {
   }
 
   lazy val scribe: Seq[ModuleID] = Seq(
-    "com.outr" %% "scribe" % "3.6.0" withSources() withJavadoc()
+    "com.outr" %% "scribe" % "3.6.3" withSources() withJavadoc()
   )
   
   lazy val pureConfig: Seq[ModuleID] = {
     val group = "com.github.pureconfig"
-    val version = "0.17.0"
+    val version = "0.17.1"
 
     Seq("pureconfig").map(group %% _ % version withSources() withJavadoc())
   }
@@ -93,7 +93,7 @@ object Dependencies {
 
   lazy val cats: Seq[ModuleID] = {
     val group = "org.typelevel"
-    val version = "2.6.1"
+    val version = "2.7.0"
 
     Seq(
       "cats-core", "cats-free"
@@ -106,7 +106,7 @@ object Dependencies {
 
   lazy val catsEffect: Seq[ModuleID] = {
     val group = "org.typelevel"
-    val version = "3.2.9"
+    val version = "3.3.0"
 
     Seq(
       "cats-effect"
@@ -130,7 +130,7 @@ object Dependencies {
   )
 
   lazy val mouse: Seq[ModuleID] = Seq(
-    "org.typelevel" %% "mouse" % "1.0.6" withSources() withJavadoc()
+    "org.typelevel" %% "mouse" % "1.0.7" withSources() withJavadoc()
   )
 
   lazy val simulacrum: Seq[ModuleID] = Seq(
@@ -191,7 +191,7 @@ object Dependencies {
 
   lazy val http4s: Seq[ModuleID] = {
     val group = "org.http4s"
-    val version = "1.0.0-M28"
+    val version = "1.0.0-M29"
 
     Seq(
       "http4s-core", "http4s-dsl", "http4s-circe", "http4s-client", "http4s-blaze-client", "http4s-server", "http4s-blaze-server"
@@ -213,7 +213,7 @@ object Dependencies {
 
   lazy val fs2: Seq[ModuleID] = {
     val group = "co.fs2"
-    val version = "3.1.5"
+    val version = "3.2.2"
 
     Seq(
       "fs2-core", "fs2-io", "fs2-reactive-streams"
@@ -230,7 +230,7 @@ object Dependencies {
 
   lazy val sttp: Seq[ModuleID] = {
     val group = "com.softwaremill.sttp.client3"
-    val version = "3.3.15"
+    val version = "3.3.17"
 
     Seq(
       "core", "circe", "async-http-client-backend-cats"
@@ -238,12 +238,12 @@ object Dependencies {
   }
 
   lazy val awsJava: Seq[ModuleID] = Seq(
-    "com.amazonaws" % "aws-java-sdk" % "1.12.84"
+    "com.amazonaws" % "aws-java-sdk" % "1.12.120"
   )
 
   lazy val quill: Seq[ModuleID] = {
     val group = "io.getquill"
-    val version = "3.10.0"
+    val version = "3.11.0"
 
     Seq(
       "quill-core", "quill-sql", "quill-jdbc", "quill-codegen-jdbc", "quill-async", "quill-cassandra", "quill-cassandra-monix", "quill-monix", "quill-jdbc-monix", "quill-async-postgres", "quill-codegen"
@@ -251,6 +251,6 @@ object Dependencies {
   }
 
   lazy val postgresql: Seq[ModuleID] = Seq(
-    "org.postgresql" % "postgresql" % "42.2.24"
+    "org.postgresql" % "postgresql" % "42.3.1"
   )
 }
