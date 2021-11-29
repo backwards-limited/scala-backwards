@@ -72,5 +72,6 @@ def project(id: String, base: File): Project =
       Test / publishArtifact := true,
       IntegrationTest / envVars := Map("TESTCONTAINERS_RYUK_DISABLED" -> "true"),
       IntegrationTest / publishArtifact := true,
-      addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings
+      addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings,
+      releaseUseGlobalVersion := false
     )
