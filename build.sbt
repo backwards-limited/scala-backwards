@@ -3,10 +3,7 @@ import sbt._
 ThisBuild / evictionErrorLevel := Level.Info
 
 lazy val root = project("scala-backwards", file("."))
-  .settings(
-    description := "Scala by Backwards",
-    publishArtifact := false
-  )
+  .settings(description := "Scala by Backwards")
   .aggregate(main, macros)
 
 lazy val codeGen = taskKey[Unit]("Generate my file")
@@ -33,7 +30,10 @@ lazy val macros = project("macros", file("macros"))
 
 lazy val main = project("main", file("main"))
   .dependsOn(macros)
-  .settings(Test / javaOptions ++= Seq("-Dconfig.resource=application.test.conf"))
+  .settings(
+    Test / javaOptions ++= Seq("-Dconfig.resource=application.test.conf"),
+    publishTo := Some("jitpack" at "https://jitpack.io")
+  )
 
 def project(id: String, base: File): Project =
   Project(id, base)
