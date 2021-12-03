@@ -59,7 +59,8 @@ lazy val releaseSettings = Seq(
     commitNextVersion,
     //releaseStepCommand("sonatypeReleaseAll"),
     pushChanges
-  )
+  ),
+  publishTo := Some("jitpack" at "https://jitpack.io")
 )
 
 def project(id: String, base: File): Project =
