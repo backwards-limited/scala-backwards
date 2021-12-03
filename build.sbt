@@ -5,7 +5,10 @@ ThisBuild / evictionErrorLevel := Level.Info
 lazy val root = project("scala-backwards", file("."))
   .settings(
     description := "Scala by Backwards",
-    publishTo := Some("jitpack" at "https://jitpack.io")
+    publishTo := Some("jitpack" at "https://jitpack.io"),
+    Test / publishArtifact := true,
+    IntegrationTest / publishArtifact := true,
+    addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings
   )
   .aggregate(main, macros)
 
