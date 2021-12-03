@@ -40,11 +40,11 @@ lazy val releaseSettings = Seq(
   IntegrationTest / envVars := Map("TESTCONTAINERS_RYUK_DISABLED" -> "true"),
   IntegrationTest / publishArtifact := true,
   //addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings,
-  releaseUseGlobalVersion := false,
-  releaseVersionFile := Def.setting {
+  // releaseUseGlobalVersion := false,
+  /*releaseVersionFile := Def.setting {
     if (name.value == "scala-backwards") file("./version.sbt")
     else file(name.value + "/version.sbt")
-  }.value,
+  }.value,*/
   releaseTagName := s"${if (releaseUseGlobalVersion.value) (ThisBuild / version).value else version.value}",
   releaseTagComment := s"Releasing ${if (releaseUseGlobalVersion.value) (ThisBuild / version).value else version.value}",
   releaseCommitMessage := s"Setting version to ${name.value}-${version.value}",
@@ -52,13 +52,14 @@ lazy val releaseSettings = Seq(
     checkSnapshotDependencies,
     inquireVersions,
     runClean,
+    runTest,
     setReleaseVersion,
     commitReleaseVersion,
     tagRelease,
-    //releaseStepCommandAndRemaining("+publishSigned"),
+    // releaseStepCommandAndRemaining("+publishSigned"),
     setNextVersion,
     commitNextVersion,
-    //releaseStepCommand("sonatypeReleaseAll"),
+    // releaseStepCommand("sonatypeReleaseAll"),
     pushChanges
   ),
   publishTo := Some("jitpack" at "https://jitpack.io")
