@@ -32,13 +32,14 @@ lazy val macros = project("macros", file("macros"))
 lazy val main = project("main", file("main"))
   .dependsOn(macros)
   .settings(Test / javaOptions ++= Seq("-Dconfig.resource=application.test.conf"))
-//.settings(releaseSettings)
+  .settings(releaseSettings)
+  .settings(addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings)
 
 lazy val releaseSettings = Seq(
   Test / publishArtifact := true,
   IntegrationTest / envVars := Map("TESTCONTAINERS_RYUK_DISABLED" -> "true"),
   IntegrationTest / publishArtifact := true,
-  addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings,
+  //addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings,
   releaseUseGlobalVersion := false,
   releaseVersionFile := Def.setting {
     if (name.value == "scala-backwards") file("./version.sbt")
