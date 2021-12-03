@@ -1,4 +1,5 @@
 import sbt._
+import ReleaseTransformations._
 
 ThisBuild / evictionErrorLevel := Level.Info
 
@@ -12,7 +13,6 @@ lazy val codeGen = taskKey[Unit]("Generate my file")
 
 lazy val macros = project("macros", file("macros"))
   .settings(
-    publish / skip := true,
     codeGen := (Compile / runMain).toTask(" com.backwards.macros.LetsGo").value
 
     /*Compile / sourceGenerators += Def.task {
@@ -32,12 +32,35 @@ lazy val macros = project("macros", file("macros"))
 lazy val main = project("main", file("main"))
   .dependsOn(macros)
   .settings(Test / javaOptions ++= Seq("-Dconfig.resource=application.test.conf"))
-  .settings(
-    Test / publishArtifact := true,
-    IntegrationTest / envVars := Map("TESTCONTAINERS_RYUK_DISABLED" -> "true"),
-    IntegrationTest / publishArtifact := true,
-    addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings
+  .settings(releaseSettings)
+
+lazy val releaseSettings = Seq(
+  Test / publishArtifact := true,
+  IntegrationTest / envVars := Map("TESTCONTAINERS_RYUK_DISABLED" -> "true"),
+  IntegrationTest / publishArtifact := true,
+  addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings,
+  releaseUseGlobalVersion := false,
+  releaseVersionFile := Def.setting {
+    if (name.value == "scala-backwards") file("./version.sbt")
+    else file(name.value + "/version.sbt")
+  }.value,
+  releaseTagName := s"${name.value}-v${version.value}" ,
+  releaseTagComment := s"Releasing ${name.value}-${version.value}",
+  releaseCommitMessage := s"Setting version to ${name.value}-${version.value}",
+  releaseProcess := Seq[ReleaseStep](
+    checkSnapshotDependencies,
+    inquireVersions,
+    runClean,
+    setReleaseVersion,
+    commitReleaseVersion,
+    tagRelease,
+    //releaseStepCommandAndRemaining("+publishSigned"),
+    setNextVersion,
+    commitNextVersion,
+    //releaseStepCommand("sonatypeReleaseAll"),
+    pushChanges
   )
+)
 
 def project(id: String, base: File): Project =
   Project(id, base)

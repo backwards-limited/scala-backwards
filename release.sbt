@@ -19,6 +19,7 @@ releaseProcess := Seq[ReleaseStep](
 */
 
 // https://github.com/sbt/sbt-release/issues/184
+/*
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
@@ -31,4 +32,4 @@ releaseProcess := Seq[ReleaseStep](
   setNextVersion,
   commitNextVersion,
   pushChanges
-)
+)*/
