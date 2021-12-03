@@ -5,7 +5,7 @@ ThisBuild / evictionErrorLevel := Level.Info
 lazy val root = project("scala-backwards", file("."))
   .settings(
     description := "Scala by Backwards",
-    publishTo := Some("jitpack" at "https://jitpack.io/backwards-limited/scala-backwards"),
+    publishTo := Some("jitpack" at "https://jitpack.io/backwards-limited"),
     Test / publishArtifact := true,
     IntegrationTest / publishArtifact := true,
     addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings
@@ -18,6 +18,7 @@ lazy val codeGen = taskKey[Unit]("Generate my file")
 
 lazy val macros = project("macros", file("macros"))
   .settings(
+    publish := false,
     codeGen := (Compile / runMain).toTask(" com.backwards.macros.LetsGo").value
 
     /*Compile / sourceGenerators += Def.task {
