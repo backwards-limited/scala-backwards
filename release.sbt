@@ -3,6 +3,7 @@ import ReleaseTransformations._
 // Overridden to not include "v" prefix i.e. default would have been v1.2.0 but instead we get 1.2.0
 releaseTagName := s"${if (releaseUseGlobalVersion.value) (ThisBuild / version).value else version.value}"
 
+/*
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
@@ -14,4 +15,20 @@ releaseProcess := Seq[ReleaseStep](
   setNextVersion,
   commitNextVersion,
   pushChanges                 // ReleaseStep which also checks that an upstream branch is properly configured
+)
+*/
+
+// https://github.com/sbt/sbt-release/issues/184
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,
+  inquireVersions,
+  runClean,
+  runTest,
+  setReleaseVersion,
+  commitReleaseVersion,
+  tagRelease,
+  releaseStepCommandAndRemaining("publish"),
+  setNextVersion,
+  commitNextVersion,
+  pushChanges
 )

@@ -30,10 +30,7 @@ lazy val macros = project("macros", file("macros"))
 
 lazy val main = project("main", file("main"))
   .dependsOn(macros)
-  .settings(
-    Test / javaOptions ++= Seq("-Dconfig.resource=application.test.conf"),
-    publishTo := Some("jitpack" at "https://jitpack.io")
-  )
+  .settings(Test / javaOptions ++= Seq("-Dconfig.resource=application.test.conf"))
 
 def project(id: String, base: File): Project =
   Project(id, base)
