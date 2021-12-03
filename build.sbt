@@ -32,7 +32,7 @@ lazy val macros = project("macros", file("macros"))
 lazy val main = project("main", file("main"))
   .dependsOn(macros)
   .settings(Test / javaOptions ++= Seq("-Dconfig.resource=application.test.conf"))
-  .settings(releaseSettings)
+//.settings(releaseSettings)
 
 lazy val releaseSettings = Seq(
   Test / publishArtifact := true,
@@ -44,8 +44,8 @@ lazy val releaseSettings = Seq(
     if (name.value == "scala-backwards") file("./version.sbt")
     else file(name.value + "/version.sbt")
   }.value,
-  releaseTagName := s"${name.value}-v${version.value}" ,
-  releaseTagComment := s"Releasing ${name.value}-${version.value}",
+  releaseTagName := s"${if (releaseUseGlobalVersion.value) (ThisBuild / version).value else version.value}",
+  releaseTagComment := s"Releasing ${if (releaseUseGlobalVersion.value) (ThisBuild / version).value else version.value}",
   releaseCommitMessage := s"Setting version to ${name.value}-${version.value}",
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
@@ -66,7 +66,7 @@ def project(id: String, base: File): Project =
   Project(id, base)
     .enablePlugins(JavaAppPackaging)
     .configs(IntegrationTest extend Test)
-    .settings(inConfig(IntegrationTest extend Test)(Defaults.testSettings))
+    //.settings(inConfig(IntegrationTest extend Test)(Defaults.testSettings))
     .settings(Defaults.itSettings)
     .settings(
       resolvers ++= Seq(
