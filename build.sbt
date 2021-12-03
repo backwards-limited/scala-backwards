@@ -33,7 +33,7 @@ lazy val main = project("main", file("main"))
   .dependsOn(macros)
   .settings(Test / javaOptions ++= Seq("-Dconfig.resource=application.test.conf"))
   .settings(releaseSettings)
-  .settings(addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings)
+  //.settings(addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings)
 
 lazy val releaseSettings = Seq(
   Test / publishArtifact := true,
@@ -101,9 +101,9 @@ def project(id: String, base: File): Project =
         //"-Xfatal-warnings"
         // "-Ywarn-value-discard"
       ),
-      fork := true/*,
+      fork := true,/*
       Test / publishArtifact := true,
       IntegrationTest / envVars := Map("TESTCONTAINERS_RYUK_DISABLED" -> "true"),
-      IntegrationTest / publishArtifact := true,
-      addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings*/
+      IntegrationTest / publishArtifact := true,*/
+      addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings
     )
