@@ -3,7 +3,10 @@ import sbt._
 ThisBuild / evictionErrorLevel := Level.Info
 
 lazy val root = project("scala-backwards", file("."))
-  .settings(description := "Scala by Backwards")
+  .settings(
+    description := "Scala by Backwards",
+    publishArtifact := false
+  )
   .aggregate(main, macros)
 
 lazy val codeGen = taskKey[Unit]("Generate my file")
