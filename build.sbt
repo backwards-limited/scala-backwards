@@ -3,13 +3,7 @@ import sbt._
 ThisBuild / evictionErrorLevel := Level.Info
 
 lazy val root = project("scala-backwards", file("."))
-  .settings(
-    description := "Scala by Backwards",
-    publishTo := Some("jitpack" at "https://jitpack.io/backwards-limited"),
-    Test / publishArtifact := true,
-    IntegrationTest / publishArtifact := true,
-    addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings
-  )
+  .settings(description := "Scala by Backwards")
   .aggregate(main, macros)
 
 lazy val codeGen = taskKey[Unit]("Generate my file")
@@ -38,6 +32,12 @@ lazy val macros = project("macros", file("macros"))
 lazy val main = project("main", file("main"))
   .dependsOn(macros)
   .settings(Test / javaOptions ++= Seq("-Dconfig.resource=application.test.conf"))
+  .settings(
+    Test / publishArtifact := true,
+    IntegrationTest / envVars := Map("TESTCONTAINERS_RYUK_DISABLED" -> "true"),
+    IntegrationTest / publishArtifact := true,
+    addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings
+  )
 
 def project(id: String, base: File): Project =
   Project(id, base)
@@ -75,9 +75,9 @@ def project(id: String, base: File): Project =
         //"-Xfatal-warnings"
         // "-Ywarn-value-discard"
       ),
-      fork := true,
+      fork := true/*,
       Test / publishArtifact := true,
       IntegrationTest / envVars := Map("TESTCONTAINERS_RYUK_DISABLED" -> "true"),
       IntegrationTest / publishArtifact := true,
-      addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings
+      addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings*/
     )
