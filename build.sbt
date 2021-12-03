@@ -18,7 +18,7 @@ lazy val codeGen = taskKey[Unit]("Generate my file")
 
 lazy val macros = project("macros", file("macros"))
   .settings(
-    publish := false,
+    publish / skip := true,
     codeGen := (Compile / runMain).toTask(" com.backwards.macros.LetsGo").value
 
     /*Compile / sourceGenerators += Def.task {
