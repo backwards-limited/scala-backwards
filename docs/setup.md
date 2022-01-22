@@ -12,7 +12,7 @@ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/
 
 **Scala and Java:**
 
-```bash
+```shell
 $ brew tap adoptopenjdk/openjdk
 
 $ brew search jdk
@@ -21,7 +21,7 @@ $ brew search jdk
 $ brew cask install adoptopenjdk15
 ```
 
-```bash
+```shell
 $ brew install jenv
 $ brew install scala
 $ brew install sbt
@@ -31,7 +31,7 @@ $ brew install sbt
 
 To manage your Java environment, let's use **jenv** (there are other managers out there). We add whatever Java versions we wish to manage:
 
-```bash
+```shell
 $ jenv add /Library/Java/JavaVirtualMachines/adoptopenjdk-15.jdk/Contents/Home/
 openjdk64-15 added
 15 added
@@ -39,7 +39,7 @@ openjdk64-15 added
 
 and then choose one of the managed versions to use with our code:
 
-```bash
+```shell
 $ jenv versions
   system
   1.8.0.202
@@ -52,7 +52,7 @@ $ jenv local 15
 
 ## Optional Installations
 
-```bash
+```shell
 $ brew install curl
 $ brew install httpie
 ```
