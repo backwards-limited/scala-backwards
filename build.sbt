@@ -1,6 +1,7 @@
 import sbt._
 
 ThisBuild / evictionErrorLevel := Level.Info
+ThisBuild / dependencyCheckAssemblyAnalyzerEnabled := Some(false)
 
 lazy val root = project("scala-backwards", file("."))
   .settings(description := "Scala by Backwards")

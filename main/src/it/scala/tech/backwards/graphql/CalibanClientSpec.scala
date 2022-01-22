@@ -40,32 +40,33 @@ class CalibanClientSpec extends AnyWordSpec with Matchers {
     }
 
     "more complex query via Sttp ZIO" in {
+      val trainInStation =
+        TrainInStation.`type` ~
+        TrainInStation.platform ~
+        TrainInStation.trainNumber ~
+        TrainInStation.time ~
+        TrainInStation.stops
+
       val timeTable =
         Station.timetable {
           Timetable.nextDepatures {
-            TrainInStation.`type` ~
-            TrainInStation.platform ~
-            TrainInStation.trainNumber ~
-            TrainInStation.time ~
-            TrainInStation.stops
+            trainInStation
           } ~
-            Timetable.nextArrivals {
-              TrainInStation.`type` ~
-              TrainInStation.platform ~
-              TrainInStation.trainNumber ~
-              TrainInStation.time ~
-              TrainInStation.stops
-            }
-        }
-
-      val query: SelectionBuilder[RootQuery, List[(String, Boolean)]] =
-        Query.search(Some("Berlin Ostbahnhof")) {
-          Searchable.stations {
-            Station.name ~ Station.hasWiFi
+          Timetable.nextArrivals {
+            trainInStation
           }
         }
 
-      val z: ZIO[Any, Throwable, List[(String, Boolean)]] =
+      val query =
+        Query.search(Some("Berlin Ostbahnhof")) {
+          Searchable.stations {
+            Station.name ~
+            Station.hasWiFi ~
+            timeTable
+          }
+        }
+
+      val z =
         AsyncHttpClientZioBackend().flatMap(
           _.send(query.toRequest(uri)).map(_.body).absolve
         )
@@ -73,7 +74,7 @@ class CalibanClientSpec extends AnyWordSpec with Matchers {
       val runtime: zio.Runtime[zio.ZEnv] =
         zio.Runtime.default
 
-      val result: List[(String, Boolean)] =
+      val result =
         runtime.unsafeRun(z)
 
       println(result)
