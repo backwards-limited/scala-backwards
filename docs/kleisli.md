@@ -26,14 +26,14 @@ scribe info s"LOG:\n$logAcc"
 
 Resulting in:
 
-```bash
+```shell
 simple_1 called with true
 simple_2 called with false
 ```
 
 Now pass logs from one function execution to the next as a parameter:
 
-```scala
+```shell
 /**
  * this version uses pure functions but the functions are:
  * - difficult to memoize
@@ -56,7 +56,7 @@ scribe info s"LOG:\n${negate_2_Result._2}"
 
 Resulting in:
 
-```bash
+```shell
 simple_1 called with true
 simple_2 called with false
 ```
@@ -84,7 +84,7 @@ scribe info s"LOG:\n${negate_1_Result._2 + negate_2_Result._2}"
 
 Resulting in:
 
-```bash
+```shell
 simple_1 called with true
 simple_2 called with false
 ```
@@ -97,11 +97,11 @@ Composition is fundamental to functional programming. Having three types `A`, `B
 
 ```scala
 def compose[A, B, C](f: A => B, g: B => C): A => C =
-	(a: A) => {
+  (a: A) => {
   	val b = f(a)
   	val c = g(b)
   	c
-	}
+  }
 ```
 
 We can create our own composing function.
@@ -126,7 +126,7 @@ def compose[A](f: A => (A, String), g: A => (A, String)): A => (A, String) =
   }
 
 def composed: Boolean => (Boolean, String) =
-	compose(simple_1, simple_2)
+  compose(simple_1, simple_2)
 
 scribe info s"Result:\n${composed(true)}"
 ```
@@ -158,13 +158,13 @@ Kleisli is all about composing. Let’s say we have 3 functions we want to compo
 val r = scala.util.Random
 
 val generate: Unit => Int =
-_ => r.nextInt(100)
+  _ => r.nextInt(100)
 
 val process: Int => Int =
-_ * math.Pi toInt
+  _ * math.Pi toInt
 
 val save: Int => Boolean =
-_ => true
+  _ => true
 ```
 
 The simplest approach would be to call it one by one and pass the result from one to the other like so:
@@ -179,7 +179,7 @@ scribe info s"Result is: $saved"
 
 Resulting in:
 
-```bash
+```shell
 Result is: true
 ```
 
@@ -187,64 +187,64 @@ Or, you could just inline those calls like so:
 
 ```scala
 val combine: Unit => Boolean =
-	_ => save(process(generate()))
+  _ => save(process(generate()))
 ```
 
 In Scala we have functions like `compose` and `andThen` for doing just that:
 
 ```scala
 val combine: Unit => Boolean =
-	save compose process compose generate
+  save compose process compose generate
 ```
 
 ```scala
 val combine: Unit => Boolean =
-	generate andThen process andThen save
+  generate andThen process andThen save
 ```
 
 The problem with all the above examples is that we need to match the  inputs of one function with the outputs of another to make this all  work. If some of the outputs will be a wrapper around some type (e.g.  Future or Cats IO) we will get into trouble quickly e.g.
 
 ```scala
 val generate: Unit => IO[Int] =
-	_ => IO.pure(r.nextInt(100))
+  _ => IO.pure(r.nextInt(100))
 
 val process: Int => IO[Double] =
-	num => IO.pure(num * math.Pi)
+  num => IO.pure(num * math.Pi)
 
 val save: Double => IO[Boolean] =
-	_ => IO.pure(true)
+  _ => IO.pure(true)
 ```
 
 Now it’s clear that we cannot just pass return value from `generate` to `process` etc. But we know that IO is a Monad and we can easily flatMap on it:
 
 ```scala
 val combine: Unit => Boolean =
-	_ => {
+  _ => {
   	val combine: Unit => IO[Boolean] =
-  		_ => generate().flatMap { number =>
-    		process(number).flatMap { processed =>
-      		save(processed)
-    		}
-  		}
+      _ => generate().flatMap { number =>
+        process(number).flatMap { processed =>
+        save(processed)
+        }
+      }
 
   	combine().unsafeRunSync()
-	}
+  }
 ```
 
 And using the more readable **for comprehension**:
 
 ```scala
 val combine: Unit => Boolean =
-	_ => {
+  _ => {
   	val combine: Unit => IO[Boolean] =
-  		_ => for {
-    		number <- generate()
-    		processed <- process(number)
-    		result <- save(processed)
-  		} yield result
+    _ => for {
+      number <- generate()
+      processed <- process(number)
+      result <- save(processed)
+    } yield result
 
   	combine().unsafeRunSync()
-	}
+  }
 ```
 
 **With Kleisli we can do something similar but in many cases in more clear and readable way**.
@@ -275,13 +275,12 @@ There is an operator in Cats for working with Kleisli which you can use to get m
 import cats.arrow.Arrow.ops.toAllArrowOps
 
 val combine: Kleisli[IO, Unit, Boolean] =
-	Kleisli(generate) >>> Kleisli(process) >>> Kleisli(save)
+  Kleisli(generate) >>> Kleisli(process) >>> Kleisli(save)
 ```
 
 But if sticking with **andThen**, we only have to wrap the first monadic function:
 
 ```scala
 val combine: Kleisli[IO, Unit, Boolean] =
-	Kleisli(generate) andThen process andThen save
+  Kleisli(generate) andThen process andThen save
 ```
-

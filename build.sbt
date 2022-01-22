@@ -8,11 +8,11 @@ lazy val root = project("scala-backwards", file("."))
 
 lazy val codeGen = taskKey[Unit]("Generate my file")
 
-// codeGen := (runMain in Compile).toTask(" com.backwards.macros.LetsGo").value
+// codeGen := (runMain in Compile).toTask(" tech.backwards.macros.LetsGo").value
 
 lazy val macros = project("macros", file("macros"))
   .settings(
-    codeGen := (Compile / runMain).toTask(" com.backwards.macros.LetsGo").value
+    codeGen := (Compile / runMain).toTask("tech.backwards.macros.LetsGo").value
 
     /*Compile / sourceGenerators += Def.task {
       streams.value.log.info("===============> yo")
@@ -47,7 +47,7 @@ def project(id: String, base: File): Project =
       ),
       scalaVersion := BuildProperties("scala.version"),
       sbtVersion := BuildProperties("sbt.version"),
-      organization := "com.backwards",
+      organization := "tech.backwards",
       name := id,
       autoStartServer := false,
       addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.13.2" cross CrossVersion.full),
