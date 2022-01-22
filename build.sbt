@@ -34,7 +34,7 @@ lazy val main = project("main", file("main"))
 
 def project(id: String, base: File): Project =
   Project(id, base)
-    .enablePlugins(JavaAppPackaging)
+    .enablePlugins(JavaAppPackaging, CalibanPlugin)
     .configs(IntegrationTest extend Test)
     .settings(inConfig(IntegrationTest extend Test)(Defaults.testSettings))
     .settings(Defaults.itSettings)

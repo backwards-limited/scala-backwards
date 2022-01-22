@@ -7,7 +7,7 @@ object Dependencies {
       log4Cats, scribe, pprint, pureConfig,
       cats, catsEffect, catsEffectTesting, catsRetry, kittens, catnip, mouse, simulacrum, refined, monocle, shapeless, meowMtl, chimney,
       circe, parserCombinators,
-      http4s, monix, fs2, scalaUri, betterFiles, sttp, awsJava, quill, postgresql
+      http4s, monix, fs2, scalaUri, betterFiles, sttp, caliban, awsJava, quill, postgresql
     ).flatten
 
   lazy val scalaReflect: Seq[ModuleID] =
@@ -208,7 +208,16 @@ object Dependencies {
     val version = "3.3.17"
 
     List(
-      "core", "circe", "async-http-client-backend-cats"
+      "core", "circe", "async-http-client-backend-cats", "httpclient-backend-zio", "async-http-client-backend-zio"
+    ).map(group %% _ % version withSources() withJavadoc())
+  }
+
+  lazy val caliban: Seq[ModuleID] = {
+    val group = "com.github.ghostdogpr"
+    val version = "1.3.2"
+
+    List(
+      "caliban-client"
     ).map(group %% _ % version withSources() withJavadoc())
   }
 
