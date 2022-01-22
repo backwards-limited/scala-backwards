@@ -10,7 +10,7 @@ import sttp.model.Uri
 import zio.ZIO
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import tech.backwards.graphql.TrainClient.{Query, Searchable, Station}
+import tech.backwards.graphql.TrainClient.{Query, Searchable, Station, Timetable, TrainInStation}
 
 class CalibanClientSpec extends AnyWordSpec with Matchers {
   "Caliban Client to Deutsche Bahn" should {
@@ -18,6 +18,46 @@ class CalibanClientSpec extends AnyWordSpec with Matchers {
       uri"https://api.deutschebahn.com/free1bahnql/v1/graphql"
 
     "query via Sttp ZIO" in {
+      val query: SelectionBuilder[RootQuery, List[(String, Boolean)]] =
+        Query.search(Some("Berlin Ostbahnhof")) {
+          Searchable.stations {
+            Station.name ~ Station.hasWiFi
+          }
+        }
+
+      val z: ZIO[Any, Throwable, List[(String, Boolean)]] =
+        AsyncHttpClientZioBackend().flatMap(
+          _.send(query.toRequest(uri)).map(_.body).absolve
+        )
+
+      val runtime: zio.Runtime[zio.ZEnv] =
+        zio.Runtime.default
+
+      val result: List[(String, Boolean)] =
+        runtime.unsafeRun(z)
+
+      println(result)
+    }
+
+    "more complex query via Sttp ZIO" in {
+      val timeTable =
+        Station.timetable {
+          Timetable.nextDepatures {
+            TrainInStation.`type` ~
+            TrainInStation.platform ~
+            TrainInStation.trainNumber ~
+            TrainInStation.time ~
+            TrainInStation.stops
+          } ~
+            Timetable.nextArrivals {
+              TrainInStation.`type` ~
+              TrainInStation.platform ~
+              TrainInStation.trainNumber ~
+              TrainInStation.time ~
+              TrainInStation.stops
+            }
+        }
+
       val query: SelectionBuilder[RootQuery, List[(String, Boolean)]] =
         Query.search(Some("Berlin Ostbahnhof")) {
           Searchable.stations {
