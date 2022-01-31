@@ -15,5 +15,5 @@ calibanGenClient <schemaPath> <outputPath> <?scalafmtPath>
 
 Run:
 ```shell
-calibanGenClient main/src/it/resources/bahn.graphql main/src/it/scala/com/backwards/graphql/TrainClient.scala
+sbt "calibanGenClient main/src/it/resources/bahn.graphql main/src/it/scala/com/backwards/graphql/TrainClient.scala --splitFiles true"
 ```

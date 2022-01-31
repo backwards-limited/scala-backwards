@@ -84,11 +84,11 @@ class CalibanClientSpec extends AnyWordSpec with Matchers {
       import cats.effect.unsafe.implicits.global
 
       val query: SelectionBuilder[RootQuery, List[(String, Boolean)]] =
-        Query.search(Some("Berlin Ostbahnhof")) {
-          Searchable.stations {
+        Query.search(Some("Berlin Ostbahnhof"))(
+          Searchable.stations(
             Station.name ~ Station.hasWiFi
-          }
-        }
+          )
+        )
 
       val io: IO[Either[CalibanClientError, List[(String, Boolean)]]] =
         AsyncHttpClientCatsBackend[IO]().flatMap(
