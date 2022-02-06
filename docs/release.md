@@ -59,7 +59,7 @@ sbt sonatypeBundleRelease
 ```
 
 View the release at:
-https://s01.oss.sonatype.org/content/repositories/releases/tech/backwards/free-scala_2.13/
+https://s01.oss.sonatype.org/content/repositories/releases/tech/backwards/scala-backwards_2.13/
 
 ## Notes for New Project
 
@@ -67,12 +67,12 @@ To publish a new project to Sonatype, raise a ticket at https://issues.sonatype.
 
 Example of filling in details along with validating your domain i.e. `group ID`:
 
-| Type        | New Project                                    |
-| ----------- | ---------------------------------------------- |
-| Group Id    | tech.backwards                                 |
-| Project URL | https://github.com/davidainslie/free-scala     |
-| SCM url     | https://github.com/davidainslie/free-scala.git |
-| Username    | davidainslie                                   |
+| Type        | New Project                                         |
+| ----------- |-----------------------------------------------------|
+| Group Id    | tech.backwards                                      |
+| Project URL | https://github.com/backward-limited/scala-backwards |
+| SCM url     | https://github.com/backward-limited/scala-backwards.git      |
+| Username    | davidainslie                                        |
 
 To validate your domain:
 
