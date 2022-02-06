@@ -99,8 +99,14 @@ object Dependencies {
     ).map(group %% _ % version withSources() withJavadoc())
   }
 
-  lazy val catsEffectTesting: Seq[ModuleID] =
-    List("com.codecommit" %% "cats-effect-testing-scalatest" % "0.5.4" % "test, it")
+  lazy val catsEffectTesting: Seq[ModuleID] = {
+    val group = "org.typelevel"
+    val version = "1.4.0"
+
+    List(
+      "cats-effect-testing-scalatest"
+    ).map(group %% _ % version % "test, it" withSources() withJavadoc())
+  }
 
   lazy val catsRetry: Seq[ModuleID] =
     List("com.github.cb372" %% "cats-retry" % "3.1.0")

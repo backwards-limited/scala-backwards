@@ -1,8 +1,5 @@
 import sbt._
 
-ThisBuild / evictionErrorLevel := Level.Info
-ThisBuild / dependencyCheckAssemblyAnalyzerEnabled := Some(false)
-
 lazy val root = project("scala-backwards", file("."))
   .settings(description := "Scala by Backwards")
   .aggregate(main, macros)
@@ -36,25 +33,16 @@ lazy val main = project("main", file("main"))
 def project(id: String, base: File): Project =
   Project(id, base)
     .enablePlugins(JavaAppPackaging, CalibanPlugin)
-    .configs(IntegrationTest extend Test)
-    .settings(inConfig(IntegrationTest extend Test)(Defaults.testSettings))
-    .settings(Defaults.itSettings)
     .settings(
-      resolvers ++= Seq(
-        Resolver sonatypeRepo "releases",
-        Resolver sonatypeRepo "snapshots",
-        "jitpack" at "https://jitpack.io",
-        "Artima Maven Repository" at "https://repo.artima.com/releases"
-      ),
       scalaVersion := BuildProperties("scala.version"),
       sbtVersion := BuildProperties("sbt.version"),
       organization := "tech.backwards",
       name := id,
       autoStartServer := false,
+      evictionErrorLevel := Level.Info,
+      versionScheme := Some("early-semver"),
       addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.13.2" cross CrossVersion.full),
       addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
-      libraryDependencies ++= Dependencies(),
-      exportJars := true,
       scalacOptions ++= Seq(
         "-encoding", "utf8",
         "-deprecation",
@@ -69,8 +57,14 @@ def project(id: String, base: File): Project =
         //"-Xfatal-warnings"
         // "-Ywarn-value-discard"
       ),
+      libraryDependencies ++= Dependencies(),
+      dependencyCheckAssemblyAnalyzerEnabled := Some(false),
+      exportJars := true,
       fork := true,
       Test / publishArtifact := true,
       IntegrationTest / publishArtifact := true,
       addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings
     )
+    .configs(IntegrationTest extend Test)
+    .settings(inConfig(IntegrationTest extend Test)(Defaults.testSettings): _*)
+    .settings(Defaults.itSettings: _*)
