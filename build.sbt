@@ -3,6 +3,7 @@ import sbt._
 lazy val root = project("scala-backwards", file("."))
   .settings(description := "Scala by Backwards")
   .aggregate(main, macros)
+  .dependsOn(main)
 
 lazy val codeGen = taskKey[Unit]("Generate my file")
 

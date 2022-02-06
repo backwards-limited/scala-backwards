@@ -12,7 +12,7 @@ import cats.implicits._
  * [[http://blog.leifbattermann.de/2018/03/10/how-to-use-applicatives-for-validation-in-scala-and-save-much-work/#more-1377 How To Use Applicatives For Validation]]
  */
 class ApplicativeForValidationSpec extends AnyWordSpec with Matchers {
-  final case class User(name: String, age: Int, email: String)
+  case class User(name: String, age: Int, email: String)
 
   trait UserValidator[F[_]] {
     def createValidUser(name: String, age: Int, email: String): F[User]

@@ -27,7 +27,7 @@ object DataSource {
     (1 until 10).map(UserId).toList
 
   lazy val recs: IndexedSeq[Rec] =
-    ('a' to 'z').map(c => Rec(c.toString, Random.nextFloat))
+    ('a' to 'z').map(c => Rec(c.toString, Random.nextFloat()))
 
   lazy val recommendations: List[UserRec] =
     users.map(user =>

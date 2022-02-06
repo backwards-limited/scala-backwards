@@ -43,9 +43,9 @@ class SambaSpec extends AnyWordSpec with Matchers {
       }
   }
 
-  final case class Cell[A](a: A) extends D[A]
+  case class Cell[A](a: A) extends D[A]
 
-  final case class Cells[A](ds: List[D[A]]) extends D[A]
+  case class Cells[A](ds: List[D[A]]) extends D[A]
 
   "Document" should {
     "be monadically manipulated within Id" in {

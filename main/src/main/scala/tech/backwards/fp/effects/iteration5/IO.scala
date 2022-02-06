@@ -152,14 +152,11 @@ object Runtime extends Runtime {
             }
           case TIO.Fail(e) => done(Failure(e))
 
-          case TIO.Recover(tio, f: (Any => TIO[Any])) =>
+          case TIO.Recover(tio, f: (Any => TIO[_]) @unchecked) =>
             eval(tio) {
               case Failure(e) => eval(f(e))(done)
               case success => done(success)
             }
-
-          case TIO.EffectAsync(callback) =>
-            callback(done)
 
           case TIO.Fork(tio) =>
             val fiber = new FiberRuntime(tio)

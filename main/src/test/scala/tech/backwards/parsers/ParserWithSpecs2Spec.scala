@@ -69,6 +69,7 @@ object ExprParser extends RegexParsers {
   lazy val operation1: Parser[Expr] = operation2 ~ rep("+" ~ operation2) ^^ {
     case op ~ list => list.foldLeft(op) {
       case (x, "+" ~ y) => Add(x, y)
+      case _ => sys.error("Whoops")
     }
     case _ => sys.error("Whoops")
   }
@@ -76,6 +77,7 @@ object ExprParser extends RegexParsers {
   lazy val operation2: Parser[Expr] = operand ~ rep("*" ~ operand) ^^ {
     case op ~ list => list.foldLeft(op) {
       case (x, "*" ~ y) => Mul(x, y)
+      case _ => sys.error("Whoops")
     }
     case _ => sys.error("Whoops")
   }

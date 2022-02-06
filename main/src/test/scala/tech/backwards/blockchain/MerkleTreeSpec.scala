@@ -22,7 +22,7 @@ class MerkleTreeSpec extends AnyWordSpec with Matchers {
    * @param datum
    * @tparam T
    */
-  final case class Leaf[T](datum: T) extends Node[T] {
+  case class Leaf[T](datum: T) extends Node[T] {
     override val hash: T = ???
   }
 
@@ -32,7 +32,7 @@ class MerkleTreeSpec extends AnyWordSpec with Matchers {
    * @param right
    * @tparam T
    */
-  final case class Branch[T](left: Node[T], right: Option[Node[T]]) extends Node[T] {
+  case class Branch[T](left: Node[T], right: Option[Node[T]]) extends Node[T] {
     override val hash: T = ???
   }
 }

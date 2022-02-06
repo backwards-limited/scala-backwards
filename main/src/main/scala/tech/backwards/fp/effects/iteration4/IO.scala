@@ -112,6 +112,7 @@ object Runtime extends Runtime {
             case Success(res) => eval(fAny(res))(done)
             case Failure(e) => done(Failure(e))
           }
+
         case TIO.Fail(e) => done(Failure(e))
 
         case TIO.Recover(tio, f) =>
@@ -119,9 +120,6 @@ object Runtime extends Runtime {
             case Failure(e) => eval(f(e))(done)
             case success => done(success)
           }
-
-        case TIO.EffectAsync(callback) =>
-          callback(done)
       }
     }
 }

@@ -51,7 +51,7 @@ object ValidatedSpec extends Specification {
       import AirtableDQView._
 
       val Invalid(Chain(error1: String, error2: String)) =
-        AirtableDQViewValidated((assetUniqueIdL.set(None) andThen severityL.set(None))(correctView))
+        AirtableDQViewValidated((assetUniqueIdL.replace(None) andThen severityL.replace(None))(correctView))
 
       error1 must contain("Asset Unique ID")
       error2 must contain("Severity")

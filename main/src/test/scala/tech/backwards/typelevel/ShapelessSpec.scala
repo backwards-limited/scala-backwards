@@ -86,7 +86,7 @@ class ShapelessSpec extends AnyWordSpec with Matchers {
         implicit def caseString = at[String](_.length)
 
         implicit def caseTuple[T, U](implicit st: Case.Aux[T, Int], su: Case.Aux[U, String]) =
-          at[(T, U)] { case (first, second) => size(first) + size(second) }
+          at[(T, U)] { case (first, second) => s"${size(first)}${size(second)}" }
       }
 
       size(23) mustBe 1

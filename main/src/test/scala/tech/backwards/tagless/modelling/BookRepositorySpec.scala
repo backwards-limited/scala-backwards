@@ -1,13 +1,13 @@
 package tech.backwards.tagless.modelling
 
+import scala.util.chaining.scalaUtilChainingOps
 import cats.Id
 import cats.implicits._
 import monocle.macros.GenLens
 import monocle.std.option._
-import tech.backwards.tagless.modelling.{Book, BookId, InMemoryBookRepository}
+import tech.backwards.fp.Function.syntax._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import tech.backwards.fp.Function.syntax._
 
 class BookRepositorySpec extends AnyWordSpec with Matchers {
   val repository = new InMemoryBookRepository
@@ -68,7 +68,7 @@ class BookRepositorySpec extends AnyWordSpec with Matchers {
     val incrementBookId: String => BookId =
       _ + ".2" |> bookId
 
-    val bookIdLens = GenLens[Book](_.id).composePrism(some).modify(_.id |> incrementBookId)
+    val bookIdLens = GenLens[Book](_.id).composePrism(some).modify(_.id pipe incrementBookId)
     val titleLens = GenLens[Book](_.title).modify(_ + " The Sequel")
 
     (bookIdLens compose titleLens)(book)

@@ -188,8 +188,10 @@ class ParserCombinatorBookSpec extends AnyWordSpec {
           "[" ~> repsep(value, ",") <~ "]"
 
         lazy val member: Parser[(String, Any)] =
-          stringLiteral ~ ":" ~ value ^^
-            { case name ~ ":" ~ value => (name, value) }
+          stringLiteral ~ ":" ~ value ^^ {
+            case name ~ ":" ~ value => (name, value)
+            case _ => sys.error("Whoops")
+          }
       }
 
       import Json._

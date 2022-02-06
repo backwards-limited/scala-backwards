@@ -8,7 +8,7 @@ import org.scalatest.wordspec.AnyWordSpec
  * [[http://blog.leifbattermann.de/2018/03/10/how-to-use-applicatives-for-validation-in-scala-and-save-much-work/ How To Use Applicatives For Validation]]
  */
 class ApplicativeSpec extends AnyWordSpec with Matchers {
-  final case class User(name: String, age: Int, email: String)
+  case class User(name: String, age: Int, email: String)
 
   trait UserValidator[F[_]] {
     def createValidUser(name: String, age: Int, email: String): F[User]

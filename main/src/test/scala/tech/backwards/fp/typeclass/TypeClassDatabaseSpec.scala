@@ -7,7 +7,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class TypeClassDatabaseSpec extends AnyWordSpec with Matchers {
-  final case class User(id: Int, name: String)
+  case class User(id: Int, name: String)
 
   "Without type class" should {
     "prove to be inconvenient" in {

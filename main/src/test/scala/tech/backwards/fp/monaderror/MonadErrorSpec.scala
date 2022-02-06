@@ -8,9 +8,9 @@ import org.scalatest.wordspec.AnyWordSpec
 class MonadErrorSpec extends AnyWordSpec with Matchers {
   // Bunch of dummy values to avoid going into specifics that are not relevant:
 
-  final case class Json()
+  case class Json()
 
-  final case class ParseException(str: String) extends Throwable
+  case class ParseException(str: String) extends Throwable
 
   val success: Boolean = true
   val result: Json = Json()

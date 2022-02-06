@@ -1,14 +1,12 @@
 package tech.backwards.fs2
 
-import java.nio.file.Paths
-import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Random
 import cats.effect._
-import cats.effect.unsafe.implicits.global
 import cats.implicits._
 import fs2._
-import fs2.io.file.Files
+import fs2.io.file.{Files, Path}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -52,14 +50,14 @@ class FS2Spec extends AnyFreeSpec with Matchers {
         def fahrenheitToCelsius(f: Double): Double =
           (f - 32.0) * (5.0 / 9.0)
 
-        Files[IO].readAll(Paths.get("src/test/resources/fahrenheit.txt"), 4096)
-          .through(text.utf8Decode)
+        Files[IO].readAll(Path("src/test/resources/fahrenheit.txt"))
+          .through(text.utf8.decode)
           .through(text.lines)
           .filter(s => s.trim.nonEmpty && !s.startsWith("//"))
           .map(line => fahrenheitToCelsius(line.toDouble).toString)
           .intersperse("\n")
-          .through(text.utf8Encode)
-          .through(Files[IO].writeAll(Paths.get("src/test/resources/celsius.txt")))
+          .through(text.utf8.encode)
+          .through(Files[IO].writeAll(Path("src/test/resources/celsius.txt")))
       }
 
       stream.compile.drain.as(ExitCode.Success).unsafeRunSync() mustBe ExitCode.Success
@@ -170,8 +168,8 @@ class FS2Spec extends AnyFreeSpec with Matchers {
             Indeed, Future is eager in Scala: the moment you create one it starts to executes on some thread, you don't have control of the execution and thus it breaks.
             FS2 is well aware of that and does not let you compile. To fix this we have to use a type called IO that wraps our bad Future.
           """ in {
-            import tech.backwards.transform.Transform._
             import cats.effect.unsafe.implicits.global
+            import tech.backwards.transform.Transform._
 
             userIds.translate(`Future ~> IO`).compile.toList.unsafeRunSync() mustBe List(1, 2, 3)
           }

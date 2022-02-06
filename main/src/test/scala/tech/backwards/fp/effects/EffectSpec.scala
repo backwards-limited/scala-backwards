@@ -14,7 +14,7 @@ import org.scalatest.wordspec.AnyWordSpec
  * [[https://www.matfournier.com/2019-07-25-effects/]]
  */
 class EffectSpec extends AnyWordSpec with Matchers with ScalaFutures {
-  final case class User(name: String, id: Long, age: Double)
+  case class User(name: String, id: Long, age: Double)
 
   "Monad" should {
     def doThing[F[_]: Monad](a: F[String], b: F[Long], c: F[Double]): F[User] =

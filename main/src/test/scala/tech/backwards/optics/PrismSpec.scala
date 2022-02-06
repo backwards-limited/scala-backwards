@@ -67,7 +67,7 @@ class PrismSpec extends AnyWordSpec with Matchers {
       val iconL = GenLens[BrandIdentity](_.icon)
 
       val brandCircleRadiusP: POptional[BrandIdentity, BrandIdentity, Double, Double] =
-        iconL composeLens shapeL composePrism circlePrism
+        iconL andThen shapeL andThen circlePrism
 
       val brand = BrandIdentity(Logo("red"), Icon("blue", Circle(5.5)))
 

@@ -8,11 +8,11 @@ import org.scalatest.wordspec.AnyWordSpec
  */
 class JsonifySpec extends AnyWordSpec with Matchers {
   object ADT {
-    final case class Mead(name: String, honeyRatio: Double, agingYears: Double)
+    case class Mead(name: String, honeyRatio: Double, agingYears: Double)
   }
 
   object DTO {
-    final case class Mead(name: String, honey_ratio: Double, aging_years: Double)
+    case class Mead(name: String, honey_ratio: Double, aging_years: Double)
   }
 
   "Conversion" should {

@@ -14,13 +14,13 @@ class VisitorPatternSpec extends AnyWordSpec with Matchers {
     def value: A
   }
 
-  final case class ComplexElement(value: List[Element]) extends Element
+  case class ComplexElement(value: List[Element]) extends Element
 
-  final case class TextElement(value: String) extends SimpleElement[String]
+  case class TextElement(value: String) extends SimpleElement[String]
 
-  final case class NumberElement(value: Double) extends SimpleElement[Double]
+  case class NumberElement(value: Double) extends SimpleElement[Double]
 
-  final case class BooleanElement(value: Boolean) extends SimpleElement[Boolean]
+  case class BooleanElement(value: Boolean) extends SimpleElement[Boolean]
 
   "Validator Pattern (for a tree structure such as XML)" should {
     "apply first iteration with type class" in {
