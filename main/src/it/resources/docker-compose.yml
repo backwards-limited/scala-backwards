@@ -5,7 +5,7 @@ services:
     image: zookeeper:3.4.9
     hostname: zookeeper
     ports:
-      - 2181:2181
+      - "2181:2181"
     environment:
       ZOO_MY_ID: 1
       ZOO_PORT: 2181
@@ -15,7 +15,7 @@ services:
     image: confluentinc/cp-kafka:5.2.1
     hostname: kafka
     ports:
-      - 9092:9092
+      - "9092:9092"
     environment:
       KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka:19092,LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT,LISTENER_DOCKER_EXTERNAL:PLAINTEXT
