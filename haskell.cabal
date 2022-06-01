@@ -1,0 +1,108 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+
+name:           haskell
+version:        0.1.0
+homepage:       https://github.com/davidainslie/scala-backwards#readme
+bug-reports:    https://github.com/davidainslie/scala-backwards/issues
+author:         David Ainslie
+maintainer:     dainslie@gmail.com
+copyright:      Copyright: (c) 2014 Backwards (David Ainslie)
+license:        BSD3
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/davidainslie/scala-backwards
+
+library
+  other-modules:
+      Paths_haskell
+  hs-source-dirs:
+      main/src/main/haskell/bookofmonads
+  default-extensions:
+      MultiParamTypeClasses
+      FunctionalDependencies
+      TypeSynonymInstances
+      FlexibleContexts
+      FlexibleInstances
+      InstanceSigs
+      UndecidableInstances
+      GADTs
+      RankNTypes
+      PolyKinds
+      ScopedTypeVariables
+      DataKinds
+      KindSignatures
+      TypeApplications
+      LambdaCase
+      TypeOperators
+      MonadComprehensions
+      ApplicativeDo
+      DeriveFunctor
+      GeneralizedNewtypeDeriving
+      TypeInType
+      ConstraintKinds
+  build-depends:
+      base >=4.7 && <5
+    , containers
+    , logict
+    , mtl
+    , stm
+    , text
+    , transformers
+    , transformers-base
+    , unliftio
+    , unliftio-core
+  default-language: Haskell2010
+
+test-suite haskell-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Ex02
+      Ex02Spec
+      Paths_haskell
+  hs-source-dirs:
+      main/src/test/haskell/bookofmonads
+  default-extensions:
+      MultiParamTypeClasses
+      FunctionalDependencies
+      TypeSynonymInstances
+      FlexibleContexts
+      FlexibleInstances
+      InstanceSigs
+      UndecidableInstances
+      GADTs
+      RankNTypes
+      PolyKinds
+      ScopedTypeVariables
+      DataKinds
+      KindSignatures
+      TypeApplications
+      LambdaCase
+      TypeOperators
+      MonadComprehensions
+      ApplicativeDo
+      DeriveFunctor
+      GeneralizedNewtypeDeriving
+      TypeInType
+      ConstraintKinds
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , containers
+    , haskell
+    , hspec
+    , logict
+    , mtl
+    , stm
+    , text
+    , transformers
+    , transformers-base
+    , unliftio
+    , unliftio-core
+  default-language: Haskell2010

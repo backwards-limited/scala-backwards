@@ -30,7 +30,7 @@ class CalibanClientSpec extends AnyWordSpec with Matchers {
           _.send(query.toRequest(uri)).map(_.body).absolve
         )
 
-      val runtime: zio.Runtime[zio.ZEnv] =
+      val runtime: zio.Runtime[Any] =
         zio.Runtime.default
 
       val result: List[(String, Boolean)] =
@@ -71,7 +71,7 @@ class CalibanClientSpec extends AnyWordSpec with Matchers {
           _.send(query.toRequest(uri)).map(_.body).absolve
         )
 
-      val runtime: zio.Runtime[zio.ZEnv] =
+      val runtime: zio.Runtime[Any] =
         zio.Runtime.default
 
       val result =

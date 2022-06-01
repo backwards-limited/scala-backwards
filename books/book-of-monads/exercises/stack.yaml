@@ -1,0 +1,6 @@
+extra-deps:
+- haskell-lsp-0.17.0.0@sha256:ddfcc2798f04bcb1ec20fafc02c03faa197322192578e879cef5852aba43ebcb,5264
+- haskell-lsp-types-0.17.0.0@sha256:9078237412d0596a7d09d432389c8fa21d6f3e21ed2ed761b3093a21607d6c28,2941
+packages:
+- .
+resolver: lts-14.12
