@@ -30,11 +30,13 @@ ghci
 -}
 spec :: Spec
 spec = do
-  describe "blah" $ do
-    it "blah blah" $ do
-      print "hi"
-      1 `shouldBe` 1
---  print "hi"
---  print $ show ((MyTuple "1" "2") == (MyTuple "1" "2"))
---  print $ show ((MyTuple 1 2) == (MyTuple 1 2))
---  print $ show ((MyTuple 1 2) == (MyTuple 2 1))
+  describe "Eq" $ do
+    it "compares tuples" $ do
+      print $ show ((MyTuple "1" "2") == (MyTuple "1" "2"))
+      ((MyTuple "1" "2") == (MyTuple "1" "2")) `shouldBe` True
+      
+      print $ show ((MyTuple 1 2) == (MyTuple 1 2))
+      ((MyTuple 1 2) == (MyTuple 1 2)) `shouldBe` True
+      
+      print $ show ((MyTuple 1 2) == (MyTuple 2 1))
+      ((MyTuple 1 2) == (MyTuple 2 1)) `shouldBe` False

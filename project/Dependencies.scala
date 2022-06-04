@@ -31,8 +31,14 @@ object Dependencies {
     ).map(group %% _ % version % "test, it" withSources() withJavadoc())
   }
 
-  lazy val munit: Seq[ModuleID] =
-    List("org.scalameta" %% "munit" % "0.7.29" % "test, it" withSources() withJavadoc())
+  lazy val munit: Seq[ModuleID] = {
+    val group = "org.scalameta"
+    val version = "0.7.29"
+
+    List(
+      "munit", "munit-scalacheck"
+    ).map(group %% _ % version % "test, it" withSources() withJavadoc())
+  }
 
   lazy val scalaMock: Seq[ModuleID] =
     List("org.scalamock" %% "scalamock" % "5.2.0" % "test, it" withSources() withJavadoc())
