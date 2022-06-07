@@ -25,6 +25,76 @@ class Ex11Suite extends FunSuite {
       4
     )
   }
+
+  test("Relabel tree") {
+    import Ex11PlumbingFixture._
+
+    assertEquals(
+      relabel(
+        Node(
+          Leaf("a"),
+          Node(
+            Leaf("b"),
+            Leaf("c")
+          )
+        ),
+        10
+      ),
+      Node(
+        Leaf(10 -> "a"),
+        Node(
+          Leaf(11 -> "b"),
+          Leaf(12 -> "c")
+        )
+      ) -> 13
+    )
+  }
+
+  test("Relabel tree") {
+    import Ex11WithoutPlumbingHalfwayHouseToStateButWithoutTypeAliasFixture._
+
+    assertEquals(
+      relabel(
+        Node(
+          Leaf("a"),
+          Node(
+            Leaf("b"),
+            Leaf("c")
+          )
+        )
+      )(10),
+      Node(
+        Leaf(10 -> "a"),
+        Node(
+          Leaf(11 -> "b"),
+          Leaf(12 -> "c")
+        )
+      ) -> 13
+    )
+  }
+
+  test("Relabel tree") {
+    import Ex11WithoutPlumbingHalfwayHouseToStateWithTypeAliasFixture._
+
+    assertEquals(
+      relabel(
+        Node(
+          Leaf("a"),
+          Node(
+            Leaf("b"),
+            Leaf("c")
+          )
+        )
+      )(10),
+      Node(
+        Leaf(10 -> "a"),
+        Node(
+          Leaf(11 -> "b"),
+          Leaf(12 -> "c")
+        )
+      ) -> 13
+    )
+  }
 }
 
 trait Ex11Fixture {
@@ -91,8 +161,8 @@ object Ex11WithoutPlumbingHalfwayHouseToStateButWithoutTypeAliasFixture extends 
   }
 
   /*
-  implicit class RichWithCounter[Tree[(A, Int)]](f: Int => (Tree[(A, Int)], Int)) {
-    def next[B](g: Tree[(A, Int)] => Int => (Tree[(B, Int)], Int)): Int => (Tree[(B, Int)], Int) =
+  implicit class RichWithCounter[Tree[(Int, A)]](f: Int => (Tree[(Int, A)], Int)) {
+    def next[B](g: Tree[(Int, A)] => Int => (Tree[(Int, B)], Int)): Int => (Tree[(Int, B)], Int) =
       i => {
         val (r, i1) = f(i)
         g(r)(i1)
@@ -103,10 +173,10 @@ object Ex11WithoutPlumbingHalfwayHouseToStateButWithoutTypeAliasFixture extends 
   def pure[A](x: A): Int => (A, Int) =
     i => (x, i)
 
-  def relabel[A](t: Tree[A]): Int => (Tree[(A, Int)], Int) =
+  def relabel[A](t: Tree[A]): Int => (Tree[(Int, A)], Int) =
     t match {
       case Leaf(x) =>
-        i => (Leaf((x, i)), i + 1)
+        i => (Leaf((i, x)), i + 1)
 
       case Node(l, r) =>
         relabel(l) next { ll =>
@@ -131,10 +201,10 @@ object Ex11WithoutPlumbingHalfwayHouseToStateWithTypeAliasFixture extends Ex11Fi
   def pure[A](x: A): WithCounter[A] =
     i => (x, i)
 
-  def relabel[A](t: Tree[A]): WithCounter[Tree[(A, Int)]] =
+  def relabel[A](t: Tree[A]): WithCounter[Tree[(Int, A)]] =
     t match {
       case Leaf(x) =>
-        i => (Leaf((x, i)), i + 1)
+        i => (Leaf((i, x)), i + 1)
 
       case Node(l, r) =>
         relabel(l) next { ll =>
