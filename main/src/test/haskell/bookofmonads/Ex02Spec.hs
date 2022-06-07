@@ -25,8 +25,8 @@ instance (Eq a, Eq b) => Eq (MyTuple a b) where
 
 {-
 ghci
-:load Ex02
-:reload Ex02
+:load Ex02Spec
+:reload Ex02Spec
 -}
 spec :: Spec
 spec = do

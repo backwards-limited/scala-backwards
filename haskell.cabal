@@ -64,6 +64,9 @@ test-suite haskell-test
   main-is: Spec.hs
   other-modules:
       Ex02Spec
+      Ex05Spec
+      Ex11Spec
+      LanguageExtensions
       Paths_haskell
   hs-source-dirs:
       main/src/test/haskell/bookofmonads

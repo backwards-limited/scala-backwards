@@ -59,7 +59,7 @@ trait Ex02Fixture {
 
   object Eq {
     def apply[A: Eq]: Eq[A] =
-      implicitly
+      implicitly // Or more directly: implicitly[Eq[A]]
   }
 
   implicit val eqInt: Eq[Int] =
