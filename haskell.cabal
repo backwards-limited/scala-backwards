@@ -65,6 +65,8 @@ test-suite haskell-test
   other-modules:
       Ex02Spec
       Ex05Spec
+      Ex11aSpec
+      Ex11bSpec
       Ex11Spec
       LanguageExtensions
       Paths_haskell

@@ -7,7 +7,7 @@ import munit._
  */
 class Ex11Suite extends FunSuite {
   test("Count leaves of a Tree") {
-    import Ex11PlumbingFixture._
+    import Ex11Fixture._
 
     assertEquals(
       numberOfLeaves(
@@ -27,7 +27,7 @@ class Ex11Suite extends FunSuite {
   }
 
   test("Relabel tree") {
-    import Ex11PlumbingFixture._
+    import Ex11aFixture._
 
     assertEquals(
       relabel(
@@ -51,7 +51,7 @@ class Ex11Suite extends FunSuite {
   }
 
   test("Relabel tree") {
-    import Ex11WithoutPlumbingHalfwayHouseToStateButWithoutTypeAliasFixture._
+    import Ex11bFixture._
 
     assertEquals(
       relabel(
@@ -74,7 +74,76 @@ class Ex11Suite extends FunSuite {
   }
 
   test("Relabel tree") {
-    import Ex11WithoutPlumbingHalfwayHouseToStateWithTypeAliasFixture._
+    import Ex11cFixture._
+
+    assertEquals(
+      relabel(
+        Node(
+          Leaf("a"),
+          Node(
+            Leaf("b"),
+            Leaf("c")
+          )
+        )
+      )(10),
+      Node(
+        Leaf(10 -> "a"),
+        Node(
+          Leaf(11 -> "b"),
+          Leaf(12 -> "c")
+        )
+      ) -> 13
+    )
+  }
+
+  test("Relabel tree") {
+    import Ex11dFixture._
+
+    assertEquals(
+      relabel(
+        Node(
+          Leaf("a"),
+          Node(
+            Leaf("b"),
+            Leaf("c")
+          )
+        )
+      )(10),
+      Node(
+        Leaf(10 -> "a"),
+        Node(
+          Leaf(11 -> "b"),
+          Leaf(12 -> "c")
+        )
+      ) -> 13
+    )
+  }
+
+  test("Relabel tree") {
+    import Ex11eFixture._
+
+    assertEquals(
+      relabel(
+        Node(
+          Leaf("a"),
+          Node(
+            Leaf("b"),
+            Leaf("c")
+          )
+        )
+      )(10),
+      Node(
+        Leaf(10 -> "a"),
+        Node(
+          Leaf(11 -> "b"),
+          Leaf(12 -> "c")
+        )
+      ) -> 13
+    )
+  }
+
+  test("Relabel tree") {
+    import Ex11fFixture._
 
     assertEquals(
       relabel(
@@ -111,7 +180,9 @@ trait Ex11Fixture {
     }
 }
 
-object Ex11PlumbingFixture extends Ex11Fixture {
+object Ex11Fixture extends Ex11Fixture
+
+object Ex11aFixture extends Ex11Fixture {
   /**
    * Relabel the leaves of the tree left-to-right.
    * Start with a tree t, the result of relabel should contain the same elements,
@@ -134,8 +205,9 @@ object Ex11PlumbingFixture extends Ex11Fixture {
         val (rr, i2) = relabel(r, i1)
         (Node(ll, rr), i2)
     }
+}
 
-  /*
+object Ex11bFixture extends Ex11Fixture {
   def relabel[A](t: Tree[A]): Int => (Tree[(Int, A)], Int) =
     t match {
       case Leaf(x) =>
@@ -148,10 +220,33 @@ object Ex11PlumbingFixture extends Ex11Fixture {
           (Node(ll, rr), i2)
         }
     }
-  */
 }
 
-object Ex11WithoutPlumbingHalfwayHouseToStateButWithoutTypeAliasFixture extends Ex11Fixture {
+object Ex11cFixture extends Ex11Fixture {
+  def next[A, B](f: Int => (A, Int))(g: A => Int => (B, Int)): Int => (B, Int) =
+    i => {
+      val (r, i1) = f(i)
+      g(r)(i1)
+    }
+
+  def pure[A](x: A): Int => (A, Int) =
+    i => (x, i)
+
+  def relabel[A](t: Tree[A]): Int => (Tree[(Int, A)], Int) =
+    t match {
+      case Leaf(x) =>
+        i => (Leaf((i, x)), i + 1)
+
+      case Node(l, r) =>
+        next(relabel(l)) { ll =>
+          next(relabel(r)) { rr =>
+            pure(Node(ll, rr))
+          }
+        }
+    }
+}
+
+object Ex11dFixture extends Ex11Fixture {
   implicit class RichWithCounter[A](f: Int => (A, Int)) {
     def next[B](g: A => Int => (B, Int)): Int => (B, Int) =
       i => {
@@ -159,16 +254,6 @@ object Ex11WithoutPlumbingHalfwayHouseToStateButWithoutTypeAliasFixture extends 
         g(r)(i1)
       }
   }
-
-  /*
-  implicit class RichWithCounter[Tree[(Int, A)]](f: Int => (Tree[(Int, A)], Int)) {
-    def next[B](g: Tree[(Int, A)] => Int => (Tree[(Int, B)], Int)): Int => (Tree[(Int, B)], Int) =
-      i => {
-        val (r, i1) = f(i)
-        g(r)(i1)
-      }
-  }
-  */
 
   def pure[A](x: A): Int => (A, Int) =
     i => (x, i)
@@ -187,7 +272,7 @@ object Ex11WithoutPlumbingHalfwayHouseToStateButWithoutTypeAliasFixture extends 
     }
 }
 
-object Ex11WithoutPlumbingHalfwayHouseToStateWithTypeAliasFixture extends Ex11Fixture {
+object Ex11eFixture extends Ex11Fixture {
   type WithCounter[A] = Int => (A, Int)
 
   implicit class RichWithCounter[A](f: WithCounter[A]) {
@@ -202,6 +287,40 @@ object Ex11WithoutPlumbingHalfwayHouseToStateWithTypeAliasFixture extends Ex11Fi
     i => (x, i)
 
   def relabel[A](t: Tree[A]): WithCounter[Tree[(Int, A)]] =
+    t match {
+      case Leaf(x) =>
+        i => (Leaf((i, x)), i + 1)
+
+      case Node(l, r) =>
+        relabel(l) next { ll =>
+          relabel(r) next { rr =>
+            pure(Node(ll, rr))
+          }
+        }
+    }
+}
+
+/**
+ * We say that State adds a context to a value.
+ * An element of type `State s a` is not a single value but rather a transformation of a given state into a new state and a result value.
+ * We also say that next makes State work in a sequential fashion: the result of one computation is fed to the next computation in the sequence.
+ */
+object Ex11fFixture extends Ex11Fixture {
+  // The following type synonym has two type variables — the first one is the state itself, and the second is the value type:
+  type State[S, A] = S => (A, S)
+
+  implicit class RichWithCounter[A](f: State[Int, A]) {
+    def next[B](g: A => State[Int, B]): State[Int, B] =
+      i => {
+        val (r, i1) = f(i)
+        g(r)(i1)
+      }
+  }
+
+  def pure[A](x: A): State[Int, A] =
+    i => (x, i)
+
+  def relabel[A](t: Tree[A]): State[Int, Tree[(Int, A)]] =
     t match {
       case Leaf(x) =>
         i => (Leaf((i, x)), i + 1)

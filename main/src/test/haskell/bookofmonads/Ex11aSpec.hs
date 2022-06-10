@@ -1,6 +1,6 @@
 -- {-# LANGUAGE NoImplicitPrelude #-}
 
-module Ex11Spec (spec) where
+module Ex11aSpec (spec) where
 
 import Test.Hspec
 
@@ -48,33 +48,36 @@ f `next` g = \i -> let (r, i') = f i in g r i'
 pure' :: a -> WithCounter a
 pure' x = \i -> (x, i)
 
-relabel :: Tree a -> WithCounter (Tree (a, Int))
-relabel (Leaf x) = \i -> (Leaf (x, i), i + 1)
+relabel :: Tree a -> WithCounter (Tree (Int, a))
+relabel (Leaf x) = \i -> (Leaf (i, x), i + 1)
 relabel (Node l r) = relabel l `next` \l' ->
                      relabel r `next` \r' ->
                      pure' (Node l' r')
 
 {-
 ghci
-:load Ex11Spec
-:reload Ex11Spec
+:load Ex11aSpec
+:reload Ex11aSpec
 -}
 spec :: Spec
 spec = do
   describe "Tree" $ do
-    it "count leaves (with let)" $ do
-      let tree = (Leaf "a") in
-        (numberOfLeaves tree) `shouldBe` 1
-
-    it "count leaves (with where)" $ do
-      (numberOfLeaves tree) `shouldBe` 4 where
-        tree =
-          Node
-            (Leaf "a")
-            (Node
-              (Leaf "b")
-              (Node
-                (Leaf "c")
-                (Leaf "d")
-              )
-            )
+    it "relabel leaves" $ do
+      let tree = Node
+                  (Leaf "a")
+                  (Node
+                    (Leaf "b")
+                    (Node
+                      (Leaf "c")
+                      (Leaf "d")
+                    )
+                  ) in
+        (relabel tree 1) `shouldBe` (Node
+                                      (Leaf (1, "a"))
+                                      (Node
+                                        (Leaf (2, "b"))
+                                        (Node
+                                          (Leaf (3, "c"))
+                                          (Leaf (4, "d"))
+                                        )
+                                      ), 5)
