@@ -1,4 +1,4 @@
-package tech.backwards.bookofmonads
+package tech.backwards.bookofmonads.ch0
 
 import scala.annotation.tailrec
 import munit._
@@ -8,7 +8,7 @@ import org.scalacheck.Prop._
  * When using the type class pattern, the declaration of which functionality each type should provide is given in the form of a trait.
  * Such a trait always takes a type parameter, which represents the type we will be working with.
  */
-class Ex02Suite extends FunSuite with Ex02Fixture {
+class Ex2Suite extends FunSuite with Ex2Fixture {
   test("Equality of integers") {
     assertEquals(Eq[Int].eq(5, 5), true)
     assertNotEquals(Eq[Int].notEq(5, 5), true)
@@ -42,7 +42,7 @@ class Ex02Suite extends FunSuite with Ex02Fixture {
   }
 }
 
-class Ex02ScalaCheckSuite extends ScalaCheckSuite with Ex02Fixture {
+class Ex2ScalaCheckSuite extends ScalaCheckSuite with Ex2Fixture {
   property("Equality of integers") {
     forAll { (n: Int) =>
       assertEquals(Eq[Int].eq(n, n), true)
@@ -50,7 +50,7 @@ class Ex02ScalaCheckSuite extends ScalaCheckSuite with Ex02Fixture {
   }
 }
 
-trait Ex02Fixture {
+trait Ex2Fixture {
   trait Eq[A] {
     def eq(x: A, y: A): Boolean
 

@@ -63,11 +63,11 @@ test-suite haskell-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Ex02Spec
-      Ex05Spec
-      Ex11aSpec
-      Ex11bSpec
-      Ex11Spec
+      Ch0.Ex2Spec
+      Ch0.Ex5Spec
+      Ch1.Ex1aSpec
+      Ch1.Ex1bSpec
+      Ch1.Ex1Spec
       LanguageExtensions
       Paths_haskell
   hs-source-dirs:

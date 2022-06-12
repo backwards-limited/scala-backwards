@@ -1,6 +1,6 @@
 -- {-# LANGUAGE NoImplicitPrelude #-}
 
-module Ex11aSpec (spec) where
+module Ch1.Ex1bSpec (spec) where
 
 import Test.Hspec
 
@@ -40,15 +40,15 @@ relabelIncludingPlumbingToCarryState (Node l r) i =
 But, we don't like the above because the function handles both logic (recursive relabelling) and the plumbing (carry the state).
 -}
 
-type WithCounter a = Int -> (a, Int)
+type State s a = s -> (a, s)
 
-next :: WithCounter a -> (a -> WithCounter b) -> WithCounter b
+next :: State s a -> (a -> State s b) -> State s b
 f `next` g = \i -> let (r, i') = f i in g r i'
 
-pure' :: a -> WithCounter a
+pure' :: a -> State s a
 pure' x = \i -> (x, i)
 
-relabel :: Tree a -> WithCounter (Tree (Int, a))
+relabel :: Tree a -> State Int (Tree (Int, a))
 relabel (Leaf x) = \i -> (Leaf (i, x), i + 1)
 relabel (Node l r) = relabel l `next` \l' ->
                      relabel r `next` \r' ->
@@ -56,8 +56,8 @@ relabel (Node l r) = relabel l `next` \l' ->
 
 {-
 ghci
-:load Ex11aSpec
-:reload Ex11aSpec
+:load Ex1bSpec
+:reload Ex1bSpec
 -}
 spec :: Spec
 spec = do

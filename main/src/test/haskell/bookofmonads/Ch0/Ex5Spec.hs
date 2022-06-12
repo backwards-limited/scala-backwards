@@ -1,6 +1,6 @@
 -- {-# LANGUAGE NoImplicitPrelude #-}
 
-module Ex05Spec (spec) where
+module Ch0.Ex5Spec (spec) where
 
 import Test.Hspec
 
@@ -43,8 +43,8 @@ instance Eq (Queue String) where
 
 {-
 ghci
-:load Ex05Spec
-:reload Ex05Spec
+:load Ex5Spec
+:reload Ex5Spec
 -}
 spec :: Spec
 spec = do

@@ -1,6 +1,6 @@
 -- {-# LANGUAGE NoImplicitPrelude #-}
 
-module Ex02Spec (spec) where
+module Ch0.Ex2Spec (spec) where
 
 import Test.Hspec
 
@@ -25,8 +25,8 @@ instance (Eq a, Eq b) => Eq (MyTuple a b) where
 
 {-
 ghci
-:load Ex02Spec
-:reload Ex02Spec
+:load Ex2Spec
+:reload Ex2Spec
 -}
 spec :: Spec
 spec = do

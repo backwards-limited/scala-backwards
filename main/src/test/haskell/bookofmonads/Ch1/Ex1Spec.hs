@@ -1,6 +1,6 @@
 -- {-# LANGUAGE NoImplicitPrelude #-}
 
-module Ex11Spec (spec) where
+module Ch1.Ex1Spec (spec) where
 
 import Test.Hspec
 
@@ -56,8 +56,8 @@ relabel (Node l r) = relabel l `next` \l' ->
 
 {-
 ghci
-:load Ex11Spec
-:reload Ex11Spec
+:load Ex1Spec
+:reload Ex1Spec
 -}
 spec :: Spec
 spec = do

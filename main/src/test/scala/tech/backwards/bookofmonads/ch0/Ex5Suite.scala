@@ -1,4 +1,4 @@
-package tech.backwards.bookofmonads
+package tech.backwards.bookofmonads.ch0
 
 import munit._
 
@@ -7,7 +7,7 @@ import munit._
  *
  * The definition of a "Container" is that of a higher kinded type - it takes a type constructor
  */
-class Ex05Suite extends FunSuite with Ex05Fixture {
+class Ex5Suite extends FunSuite with Ex5Fixture {
   test("Empty List Container") {
     assert(Container[List].empty[Int] == Nil)
   }
@@ -17,7 +17,7 @@ class Ex05Suite extends FunSuite with Ex05Fixture {
   }
 }
 
-trait Ex05Fixture {
+trait Ex5Fixture {
   /**
    * Scala is more explicit than Haskell - If a trait is parametrized by a type constructor, it has to be marked as such.
    * The Haskell version is implicit where we see that "c" is applied to another type "a", which means that "c" must be a type constructor:
