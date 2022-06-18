@@ -74,6 +74,13 @@ map :: (a -> b) -> Maybe a -> Maybe b
 map f Nothing  = Nothing
 map f (Just x) = Just (f x)
 
+singleton :: a -> Maybe a
+singleton = Just
+
+flatten :: Maybe (Maybe a) -> Maybe a
+flatten (Just (Just x)) = Just x
+flatten _               = Nothing
+
 {-
 ghci
 :load Ex4Spec

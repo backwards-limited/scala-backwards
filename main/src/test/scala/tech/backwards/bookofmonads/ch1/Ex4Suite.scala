@@ -109,4 +109,27 @@ class Ex4Suite extends FunSuite {
       Person("Scooby", 6).some
     )
   }
+
+  test("Option singleton") {
+    def singleton[A](a: A): Option[A] =
+      a.some
+
+    assertEquals(
+      singleton(Person("Scooby", 5)),
+      Person("Scooby", 5).some
+    )
+  }
+
+  test("Option flatten") {
+    def flatten[A](o: Option[Option[A]]): Option[A] =
+      o match {
+        case Some(Some(x)) => x.some
+        case _ => None
+      }
+
+    assertEquals(
+      flatten(Person("Scooby", 5).some.some),
+      Person("Scooby", 5).some
+    )
+  }
 }
