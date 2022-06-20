@@ -1,6 +1,7 @@
 -- {-# LANGUAGE NoImplicitPrelude #-}
 
-module Ch1.Ex5Spec (spec) where
+-- Better notation - including rewrite of previous code to use Monad
+module Ch2.Ex1Spec (spec) where
 
 import Prelude hiding (map)
   
@@ -39,8 +40,8 @@ we can say our plain old function (a -> b) and been lifted into the context of t
   
 {-
 ghci
-:load Ex5Spec
-:reload Ex5Spec
+:load Ex1Spec
+:reload Ex1Spec
 -}
 spec :: Spec
 spec = do

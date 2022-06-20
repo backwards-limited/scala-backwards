@@ -6,7 +6,7 @@ import monocle.macros.GenLens
 import munit._
 
 /**
- * Functor
+ * Functor - a short digression
  */
 class Ex5Suite extends FunSuite {
   type Name = String
@@ -17,31 +17,35 @@ class Ex5Suite extends FunSuite {
   val ageL: Lens[Person, Age] =
     GenLens[Person](_.age)
 
-  val validateName: Name => Option[Name] =
-    name => if (name.filter(_.isLetter) == name) name.some else none
+  test("Functor") {
+    trait Functor[F[_]] {
+      def map[A, B](x: F[A])(f: A => B): F[B]
+    }
 
-  val validateAge: Age => Option[Age] =
-    age => if (age > 0 && age < 110) age.some else none
+    implicit object FunctorOption extends Functor[Option] {
+      def map[A, B](x: Option[A])(f: A => B): Option[B] =
+        x match {
+          case Some(x) => f(x).some
+          case _ => none
+        }
+    }
 
-  test("Option with awkward pattern matching") {
-    def validatePerson(name: Name, age: Age): Option[Person] =
-      validateName(name) match {
-        case None =>
-          none
+    assertEquals(
+      FunctorOption.map(Person("Scooby", 5).some)(ageL.modify(_ * 2)),
+      Person("Scooby", 10).some
+    )
 
-        case Some(name) =>
-          validateAge(age) match {
-            case None =>
-              none
+    assertEquals(
+      FunctorOption.map(none[Person])(ageL.modify(_ * 2)),
+      none
+    )
 
-            case Some(age) =>
-              Person(name, age).some
-          }
-      }
+    def fmap[F[_]: Functor, A, B](f: A => B): F[A] => F[B] =
+      implicitly[Functor[F]].map(_)(f)
 
-    assertEquals(validatePerson("Scooby", 5), Person("Scooby", 5).some)
-    assertEquals(validatePerson("Scooby1", 5), none)
-    assertEquals(validatePerson("Scooby", -5), none)
-    assertEquals(validatePerson("Scooby1", -5), none)
+    assertEquals(
+      fmap(ageL.modify(_ * 2)).apply(Person("Scooby", 5).some),
+      Person("Scooby", 10).some
+    )
   }
 }
