@@ -3,7 +3,6 @@
 module Ch1.Ex5Spec (spec) where
 
 import Prelude hiding (map)
-  
 import Test.Hspec
 
 -- Our own simple Lens (to work with ADTs)
