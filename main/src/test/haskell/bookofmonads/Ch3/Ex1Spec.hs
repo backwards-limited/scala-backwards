@@ -17,7 +17,24 @@ lift2 f x y =
     a <- x
     b <- y
     return (f a b)
-                 
+
+simplePlus :: Int -> Int -> Int
+simplePlus = (+)
+
+{-
+After lift2, we could have lift3, lift4.... liftN:
+
+liftN :: Monad m => (a1 -> a2 -> ... -> aN -> r) -> m a1 -> m a2 -> ... -> m aN -> m r
+liftN f x1 x2 ... xN = do
+  a1 <- x1
+  a2 <- x2
+  ...
+  aN <- xN
+  return (f a1 a2 ... aN)
+  
+In the next exercise 1b, we'll code "ap" which saves us have to write map, map2, ... mapN.  
+-}
+
 {-
 ghci
 :load Ex1Spec
@@ -28,3 +45,9 @@ spec = do
   describe "Monad lifting" $ do
     it "is better than Functor lifting" $ do
       Just 2 `plus` Just 3 `shouldBe` Just 5
+      
+    it "is much better than Functor lifting" $ do
+      lift2 simplePlus (Just 2) (Just 3) `shouldBe` Just 5
+      
+    it "and again is much better than Functor lifting" $ do
+      lift2 (+) (Just 2) (Just 3) `shouldBe` Just 5    
