@@ -39,7 +39,9 @@ instance Applicative ZipList where
     ZipList $ zipWith ($) fabs fas -- ZipList (zipWith (\ab a -> ab a) fabs fas)
 
 {-
-A pattern emerges, which will fomulate the "applicative style":
+A pattern emerges, which will fomulate the "applicative style".
+
+Each time we want to use a pure function in a monadic (or applicative) context, we use:
 fmap f x1 `ap` x2 `ap` ... `ap` xN
 
 by introducing symbols we get:

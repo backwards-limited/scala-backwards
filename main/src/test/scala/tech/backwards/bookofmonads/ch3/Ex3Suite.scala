@@ -3,17 +3,17 @@ package tech.backwards.bookofmonads.ch3
 import cats.implicits.{catsSyntaxOptionId, none}
 import munit._
 
-final case class ZipList[A](value: List[A]) extends AnyVal
-
-object ZipList {
-  def apply[A](xs: A*): ZipList[A] =
-    ZipList(xs.toList)
-}
-
 /**
  * Applicatives - ZipList
  */
 class Ex3Suite extends FunSuite {
+  final case class ZipList[A](value: List[A]) // extends AnyVal
+
+  object ZipList {
+    def apply[A](xs: A*): ZipList[A] =
+      ZipList(xs.toList)
+  }
+
   test("Applicative for ZipList") {
     import ApplicativeFixture._
 
@@ -47,7 +47,9 @@ class Ex3Suite extends FunSuite {
   }
 
   /**
-   * A pattern emerges, which will fomulate the "applicative style":
+   * A pattern emerges, which will fomulate the "applicative style".
+   *
+   * Each time we want to use a pure function in a monadic (or applicative) context, we use:
    * fmap f x1 `ap` x2 `ap` ... `ap` xN
    *
    * by introducing symbols we get:
