@@ -14,7 +14,7 @@ object Dependencies {
     List("org.scala-lang" % "scala-reflect" % BuildProperties("scala.version"))
 
   lazy val scalaMeta: Seq[ModuleID] =
-    List("org.scalameta" %% "scalameta" % "4.5.8")
+    List("org.scalameta" %% "scalameta" % "4.5.9")
 
   lazy val scalatest: Seq[ModuleID] =
     List("org.scalatest" %% "scalatest" % "3.2.12" % "test, it" withSources() withJavadoc())
@@ -24,7 +24,7 @@ object Dependencies {
 
   lazy val specs2: Seq[ModuleID] = {
     val group = "org.specs2"
-    val version = "4.15.0"
+    val version = "4.16.1"
 
     List(
       "specs2-core", "specs2-scalacheck", "specs2-matcher-extra", "specs2-cats", "specs2-shapeless"
@@ -63,7 +63,7 @@ object Dependencies {
 
   lazy val log4Cats: Seq[ModuleID] = {
     val group = "org.typelevel"
-    val version = "2.3.1"
+    val version = "2.3.2"
 
     List(
       "log4cats-core", "log4cats-slf4j"
@@ -71,7 +71,7 @@ object Dependencies {
   }
 
   lazy val scribe: Seq[ModuleID] =
-    List("com.outr" %% "scribe" % "3.6.10" withSources() withJavadoc())
+    List("com.outr" %% "scribe" % "3.10.1" withSources() withJavadoc())
 
   lazy val pureConfig: Seq[ModuleID] = {
     val group = "com.github.pureconfig"
@@ -85,7 +85,7 @@ object Dependencies {
 
   lazy val cats: Seq[ModuleID] = {
     val group = "org.typelevel"
-    val version = "2.7.0"
+    val version = "2.8.0"
 
     List(
       "cats-core", "cats-free"
@@ -98,7 +98,7 @@ object Dependencies {
 
   lazy val catsEffect: Seq[ModuleID] = {
     val group = "org.typelevel"
-    val version = "3.3.12"
+    val version = "3.3.13"
 
     List(
       "cats-effect"
@@ -124,14 +124,14 @@ object Dependencies {
     List("io.scalaland" %% "catnip" % "1.1.2")
 
   lazy val mouse: Seq[ModuleID] =
-    List("org.typelevel" %% "mouse" % "1.0.11" withSources() withJavadoc())
+    List("org.typelevel" %% "mouse" % "1.1.0" withSources() withJavadoc())
 
   lazy val simulacrum: Seq[ModuleID] =
     List("org.typelevel" %% "simulacrum" % "1.0.1" withSources() withJavadoc())
 
   lazy val refined: Seq[ModuleID] = {
     val group = "eu.timepit"
-    val version = "0.9.29"
+    val version = "0.10.1"
 
     List(
       "refined", "refined-pureconfig", "refined-cats"
@@ -180,7 +180,7 @@ object Dependencies {
 
   lazy val http4s: Seq[ModuleID] = {
     val group = "org.http4s"
-    val version = "1.0.0-M33"
+    val version = "1.0.0-M34"
 
     List(
       "http4s-core", "http4s-dsl", "http4s-circe", "http4s-client", "http4s-blaze-client", "http4s-server", "http4s-blaze-server"
@@ -202,7 +202,7 @@ object Dependencies {
 
   lazy val fs2: Seq[ModuleID] = {
     val group = "co.fs2"
-    val version = "3.2.4"
+    val version = "3.2.10"
 
     List(
       "fs2-core", "fs2-io", "fs2-reactive-streams"
@@ -234,7 +234,7 @@ object Dependencies {
   }
 
   lazy val awsJava: Seq[ModuleID] =
-    List("com.amazonaws" % "aws-java-sdk" % "1.12.230")
+    List("com.amazonaws" % "aws-java-sdk" % "1.12.257")
 
   lazy val quill: Seq[ModuleID] = {
     val group = "io.getquill"
@@ -244,9 +244,9 @@ object Dependencies {
     ).map(group %% _ % "3.12.0" withSources() withJavadoc()) ++
     List(
       "quill-core", "quill-sql", "quill-jdbc", "quill-codegen-jdbc", "quill-cassandra", "quill-cassandra-monix", "quill-monix", "quill-jdbc-monix", "quill-codegen"
-    ).map(group %% _ % "3.16.5" withSources() withJavadoc())
+    ).map(group %% _ % "4.1.0" withSources() withJavadoc())
   }
 
   lazy val postgresql: Seq[ModuleID] =
-    List("org.postgresql" % "postgresql" % "42.3.6")
+    List("org.postgresql" % "postgresql" % "42.4.0")
 }

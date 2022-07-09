@@ -3,7 +3,7 @@ package tech.backwards.fp
 import java.nio.file.{Files, Path, Paths}
 import scala.io.StdIn
 import cats.effect._
-import cats.implicits.catsSyntaxApplicative
+import cats.implicits.catsSyntaxApplicativeByName
 
 /**
  * [[https://blog.softwaremill.com/a-short-guide-to-blocker-6cd29e145a12 A Short Guide to Blocker]]

@@ -111,6 +111,21 @@ class Ex3Suite extends FunSuite {
     )
   }
 
+  /**
+   * In the realm of pure computation, it never makes sense to execute code if you do not want its return value, since that is the only visible effect coming out of that call.
+   * For monadic or applicative computations, this is not the case, as you might want to execute one of these actions for its side effects alone, completely disregarding the value returned from the action.
+   * Haskell’s standard library provides three, special combinators for that case:
+   * {{{
+   *    (<$) :: Functor     f =>   a -> f b -> f a
+   *
+   *    (<*) :: Applicative f => f a -> f b -> f a
+   *
+   *    (*>) :: Applicative f => f a -> f b -> f b
+   * }}}
+   */
+  test("Applicative goodies") {
+  }
+
   object FunctorFixture {
     trait Functor[F[_]] {
       def map[A, B](x: F[A])(f: A => B): F[B]

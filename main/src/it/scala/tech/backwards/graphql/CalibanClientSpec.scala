@@ -7,7 +7,7 @@ import sttp.client3.UriContext
 import sttp.client3.asynchttpclient.cats.AsyncHttpClientCatsBackend
 import sttp.client3.asynchttpclient.zio.AsyncHttpClientZioBackend
 import sttp.model.Uri
-import zio.ZIO
+import zio.{Exit, Unsafe, ZIO}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import tech.backwards.graphql.TrainClient.{Query, Searchable, Station, Timetable, TrainInStation}
@@ -34,7 +34,9 @@ class CalibanClientSpec extends AnyWordSpec with Matchers {
         zio.Runtime.default
 
       val result: List[(String, Boolean)] =
-        runtime.unsafeRun(z)
+        Unsafe.unsafe(implicit u =>
+          runtime.unsafe.run(z).getOrThrowFiberFailure()
+        )
 
       println(result)
     }
@@ -74,8 +76,10 @@ class CalibanClientSpec extends AnyWordSpec with Matchers {
       val runtime: zio.Runtime[Any] =
         zio.Runtime.default
 
-      val result =
-        runtime.unsafeRun(z)
+      val result: List[(String, Boolean, (List[(String, String, String, String, List[String])], List[(String, String, String, String, List[String])]))] =
+        Unsafe.unsafe(implicit u =>
+          runtime.unsafe.run(z).getOrThrowFiberFailure()
+        )
 
       println(result)
     }
