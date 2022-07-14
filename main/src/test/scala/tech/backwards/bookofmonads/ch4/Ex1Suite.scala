@@ -160,10 +160,67 @@ class Ex1Suite extends CatsEffectSuite {
   }
 
   test("zipWithM") {
+    def sequence[F[_]: Monad, A](xs: List[F[A]]): F[List[A]] =
+      xs match {
+        case Nil =>
+          Monad[F].pure(Nil)
 
+        case x :: xs =>
+          Applicative[F].ap(Functor[F].map(x)(a => a :: (_: List[A])))(sequence(xs))
+      }
+
+    // Haskell:
+    // zipWithM :: Monad m => (a -> b -> m c) -> [a] -> [b] -> m [c]
+    def zipWithM[F[_]: Monad, A, B, C](f: A => B => F[C])(as: List[A])(bs: List[B]): F[List[C]] = {
+      val v: List[(A, B)] =
+        as.zip(bs)
+
+      val z: List[F[C]] =
+        v.map(Function.uncurried(f).tupled)
+
+      sequence(z)
+    }
+
+    val result: IO[List[String]] =
+      zipWithM((a: Int) => (b: String) => IO(b + a))(List(1, 2))(List("x", "y"))
+
+    result assertEquals List("x1", "y2")
+  }
+
+  test("zipWithM - Shorter version") {
+    def sequence[F[_]: Monad, A](xs: List[F[A]]): F[List[A]] =
+      xs match {
+        case Nil =>
+          Monad[F].pure(Nil)
+
+        case x :: xs =>
+          Applicative[F].ap(Functor[F].map(x)(a => a :: (_: List[A])))(sequence(xs))
+      }
+
+    def zipWithM[F[_]: Monad, A, B, C](f: A => B => F[C])(as: List[A])(bs: List[B]): F[List[C]] =
+      sequence(as.zip(bs) map Function.uncurried(f).tupled)
+
+    val result: IO[List[String]] =
+      zipWithM((a: Int) => (b: String) => IO(b + a))(List(1, 2))(List("x", "y"))
+
+    result assertEquals List("x1", "y2")
   }
 
   test("replicateM") {
+    def sequence[F[_]: Monad, A](xs: List[F[A]]): F[List[A]] =
+      xs match {
+        case Nil =>
+          Monad[F].pure(Nil)
 
+        case x :: xs =>
+          Applicative[F].ap(Functor[F].map(x)(a => a :: (_: List[A])))(sequence(xs))
+      }
+
+    // Haskell
+    // replicateM :: Monad m => Int -> m a -> m [a]
+    def replicateM[F[_]: Monad, A](n: Int)(Fa: F[A]): F[List[A]] =
+      sequence(List.fill(n)(Fa))
+
+    replicateM(3)(IO("hi")) assertEquals List("hi", "hi", "hi")
   }
 }
