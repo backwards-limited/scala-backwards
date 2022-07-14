@@ -17,7 +17,7 @@ class CalibanClientSpec extends AnyWordSpec with Matchers {
     val uri: Uri =
       uri"https://api.deutschebahn.com/free1bahnql/v1/graphql"
 
-    "query via Sttp ZIO" in {
+    /*"query via Sttp ZIO" in {
       val query: SelectionBuilder[RootQuery, List[(String, Boolean)]] =
         Query.search(Some("Berlin Ostbahnhof")) {
           Searchable.stations {
@@ -30,18 +30,17 @@ class CalibanClientSpec extends AnyWordSpec with Matchers {
           _.send(query.toRequest(uri)).map(_.body).absolve
         )
 
-      val runtime: zio.Runtime[Any] =
-        zio.Runtime.default
-
       val result: List[(String, Boolean)] =
-        Unsafe.unsafe(implicit u =>
-          runtime.unsafe.run(z).getOrThrowFiberFailure()
-        )
+        Unsafe.unsafe { implicit u =>
+          zio.Runtime.default.unsafe.run(
+            z
+          ).getOrThrowFiberFailure()
+        }
 
       println(result)
-    }
+    }*/
 
-    "more complex query via Sttp ZIO" in {
+    /*"more complex query via Sttp ZIO" in {
       val trainInStation =
         TrainInStation.`type` ~
         TrainInStation.platform ~
@@ -78,11 +77,11 @@ class CalibanClientSpec extends AnyWordSpec with Matchers {
 
       val result: List[(String, Boolean, (List[(String, String, String, String, List[String])], List[(String, String, String, String, List[String])]))] =
         Unsafe.unsafe(implicit u =>
-          runtime.unsafe.run(z).getOrThrowFiberFailure()
+          runtime.unsafe.run(z).getOrThrow()
         )
 
       println(result)
-    }
+    }*/
 
     "query via Sttp IO" in {
       import cats.effect.unsafe.implicits.global

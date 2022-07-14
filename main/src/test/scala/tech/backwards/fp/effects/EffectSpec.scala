@@ -3,9 +3,10 @@ package tech.backwards.fp.effects
 import scala.concurrent.{Future, TimeoutException}
 import cats.data.Validated.{Invalid, Valid}
 import cats.data.{EitherT, NonEmptyList, Reader, Writer}
+import cats.effect.IO
+import cats.effect.unsafe.implicits.global
 import cats.implicits._
 import cats.{Applicative, Id, Monad}
-import monix.eval.Task
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -14,7 +15,7 @@ import org.scalatest.wordspec.AnyWordSpec
  * [[https://www.matfournier.com/2019-07-25-effects/]]
  */
 class EffectSpec extends AnyWordSpec with Matchers with ScalaFutures {
-  case class User(name: String, id: Long, age: Double)
+  final case class User(name: String, id: Long, age: Double)
 
   "Monad" should {
     def doThing[F[_]: Monad](a: F[String], b: F[Long], c: F[Double]): F[User] =
@@ -57,29 +58,20 @@ class EffectSpec extends AnyWordSpec with Matchers with ScalaFutures {
       }
     }
 
-    // TODO - IO
-
-    "Task" in {
-      import monix.execution.Scheduler.Implicits.global
-
+    "IO" in {
       // Good
-      // TODO - Fails to compile and upgrade to Cats Effect 3
-      // doThing(Task("mat"), Task(17828382L), Task(1.3)).runSyncUnsafe() mustBe User("mat", 17828382L, 1.3)
+      doThing(IO("mat"), IO(17828382L), IO(1.3)).unsafeRunSync() mustBe User("mat", 17828382L, 1.3)
 
       // Bad
-      // TODO - Fails to compile and upgrade to Cats Effect 3
-      /*val Left(t) = doThing(Task("mat"), Task.raiseError[Long](new TimeoutException("whoops")), Task(1.3)).attempt.runSyncUnsafe()
-      t mustBe a [TimeoutException]*/
+      val Left(t) = doThing(IO("mat"), IO.raiseError[Long](new TimeoutException("whoops")), IO(1.3)).attempt.unsafeRunSync()
+      t mustBe a [TimeoutException]
     }
 
-    "EitherT - for a Task[Throwable Either A]" in {
-      import monix.execution.Scheduler.Implicits.global
-
-      type TaskOfThrowableOr[A] = EitherT[Task, Throwable, A]
+    "EitherT - for a IO[Throwable Either A]" in {
+      type IOOfThrowableOr[A] = EitherT[IO, Throwable, A]
 
       // Good
-      // TODO - Fails to compile and upgrade to Cats Effect 3
-      // doThing(EitherT(Task("mat".asRight)), EitherT(Task(17828382L.asRight)), EitherT(Task(1.3.asRight))).value.runSyncUnsafe() mustBe User("mat", 17828382L, 1.3).asRight
+      doThing(EitherT(IO("mat".asRight)), EitherT(IO(17828382L.asRight)), EitherT(IO(1.3.asRight))).value.unsafeRunSync() mustBe User("mat", 17828382L, 1.3).asRight
     }
 
     "Reader" in {

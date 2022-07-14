@@ -64,21 +64,6 @@ class ShoppingCartSpec extends AnyFreeSpec with Matchers {
 
     ShoppingCart(List(CatalogItem("Shirt")), Usd(20)) |+| ShoppingCart(List(CatalogItem("Shoes")), Usd(50)) mustBe ShoppingCart(List(CatalogItem("Shirt"), CatalogItem("Shoes")), Usd(70))
   }
-
-  "Good but we seem to be back to some boilerplate - this can be overcome via Catnip" - {
-    // Catnip provides class annotations as an alternative to writing kittens semi-auto derivation code by hand.
-    // The annotations are very simple and clean (@Semi for "semi-auto"):
-    import cats.implicits._
-    import io.scalaland.catnip.Semi
-
-    @Semi(Semigroup) final case class CatalogItem(value: String) // extends AnyVal REMOVED BECAUSE IT IS LOCAL
-
-    @Semi(Semigroup) final case class Usd(value: Double) // extends AnyVal REMOVED BECAUSE IT IS LOCAL
-
-    @Semi(Semigroup) final case class ShoppingCart(items: List[CatalogItem], totalPrice: Usd)
-
-    ShoppingCart(List(CatalogItem("Shirt")), Usd(20)) |+| ShoppingCart(List(CatalogItem("Shoes")), Usd(50)) mustBe ShoppingCart(List(CatalogItem("Shirt"), CatalogItem("Shoes")), Usd(70))
-  }
 }
 
 final case class CatalogItem(value: String) extends AnyVal

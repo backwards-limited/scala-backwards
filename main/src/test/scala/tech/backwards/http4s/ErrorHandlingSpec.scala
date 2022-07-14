@@ -22,9 +22,23 @@ import org.scalatest.wordspec.AnyWordSpec
 class ErrorHandlingSpec extends AnyWordSpec with Matchers {
   "" should {
     "" in {
-      import com.olegpy.meow.hierarchy._
+      // import com.olegpy.meow.hierarchy._
 
-      implicit val userRoutes: UserRoutes[IO] = new UserRoutes[IO]
+      implicit val monadErrorIOUserError: MonadError[IO, UserError] =
+        new MonadError[IO, UserError] {
+          def raiseError[A](e: UserError): IO[A] = ???
+
+          def handleErrorWith[A](fa: IO[A])(f: UserError => IO[A]): IO[A] = ???
+
+          def pure[A](x: A): IO[A] = ???
+
+          def flatMap[A, B](fa: IO[A])(f: A => IO[B]): IO[B] = ???
+
+          def tailRecM[A, B](a: A)(f: A => IO[Either[A, B]]): IO[B] = ???
+        }
+
+      implicit val userRoutes: UserRoutes[IO] =
+        new UserRoutes[IO]
 
       UserInterpreter.create[IO].flatMap { userAlgebra =>
         val routes = new UserRoutesMTL[IO](userAlgebra)
@@ -35,18 +49,23 @@ class ErrorHandlingSpec extends AnyWordSpec with Matchers {
 }
 
 final case class User(username: String, age: Int)
+
 final case class UserUpdateAge(age: Int)
 
 trait UserAlgebra[F[_]] {
   def find(username: String): F[Option[User]]
+
   def save(user: User): F[Unit]
+
   def updateAge(username: String, age: Int): F[Unit]
 }
 
 sealed trait UserError extends Exception
 
 final case class UserAlreadyExists(username: String) extends UserError
+
 final case class UserNotFound(username: String) extends UserError
+
 final case class InvalidUserAge(age: Int) extends UserError
 
 object UserInterpreter {
@@ -233,7 +252,6 @@ object MtlExample extends App {
   import scala.util.Random
   import cats.MonadError
   import cats.effect.IO
-  import com.olegpy.meow.hierarchy._
 
   case class CustomError(msg: String) extends Throwable
 
@@ -251,7 +269,22 @@ object MtlExample extends App {
     case x => IO(x)
   }
 
-  val r: IO[Int] = customHandle(io, IO.pure(123))
+  implicit val monadErrorIOCustomError: MonadError[IO, CustomError] =
+    new MonadError[IO, CustomError] {
+      def raiseError[A](e: CustomError): IO[A] = ???
+
+      def handleErrorWith[A](fa: IO[A])(f: CustomError => IO[A]): IO[A] = ???
+
+      def flatMap[A, B](fa: IO[A])(f: A => IO[B]): IO[B] = ???
+
+      def tailRecM[A, B](a: A)(f: A => IO[Either[A, B]]): IO[B] = ???
+
+      def pure[A](x: A): IO[A] = ???
+    }
+
+  val r: IO[Int] =
+    customHandle(io, IO.pure(123))
+
   println(r.unsafeRunSync())
 }
 

@@ -58,6 +58,9 @@ def project(id: String, base: File): Project =
         // "-Ywarn-value-discard"
       ),
       libraryDependencies ++= Dependencies(),
+      excludeDependencies ++= Seq(
+        ExclusionRule("org.typelevel", "munit-cats-effect-2_2.13")
+      ),
       dependencyCheckAssemblyAnalyzerEnabled := Some(false),
       exportJars := true,
       fork := true,
