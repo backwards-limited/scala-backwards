@@ -136,6 +136,36 @@ ifM :: Monad m => m Bool -> m a -> m a -> m a
 ifM cond true false = do c <- cond
                          if c then true else false
 
+-- Monadic loop, declared in monad-loops, where again there is the version "whileM_"
+whileM :: Monad m => m Bool -> m a -> m [a]
+whileM cond action = do
+  c <- cond
+  if c
+    then (:) <$> action <*> whileM cond action
+    else return []
+
+-- and there is:
+iterateWhile :: Monad m => (a -> Bool) -> m a -> m a
+iterateWhile cond action = do
+  r <- action
+  if cond r
+    then iterateWhile cond action
+    else return r
+
+-- then we have:
+iterateUntilM :: Monad m => (a -> Bool) -> (a -> m a) -> a -> m a
+iterateUntilM cond producer value
+  | cond value = return value
+  | otherwise  = do next <- producer value
+                    iterateUntilM cond producer next
+
+-- and from package "extra" we can end a loop with a "Right" or keep going with a "Left":
+loopM :: Monad m => (a -> m (Either a b)) -> a -> m b
+loopM cond x = do r <- cond x
+                  case r of
+                    Left next -> loopM cond next
+                    Right end -> return end
+
 {-
 ghci
 :load Ex1Spec
