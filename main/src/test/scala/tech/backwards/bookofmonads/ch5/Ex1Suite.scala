@@ -1,10 +1,12 @@
 package tech.backwards.bookofmonads.ch5
 
-import cats.implicits.{catsSyntaxOptionId, none}
+import cats.{Functor, Semigroup}
+import cats.implicits._
 import munit.CatsEffectSuite
 
 /**
  * Monad Laws - What we call laws, mathematicians call theorems.
+ * First, Function laws; Functor laws; and Monoids
  */
 class Ex1Suite extends CatsEffectSuite with FunctionFixture { self =>
   test("Function left identity law") {
@@ -78,9 +80,100 @@ class Ex1Suite extends CatsEffectSuite with FunctionFixture { self =>
   eq -- by definition of (.)
     ((f . g) . h) x
   */
+
+  test("Functor law: fmap id `eq` id") {
+    assertEquals(
+      fmap[Option, Int, Int](identity[Int] _).apply(1.some),
+      identity(1.some)
+    )
+  }
+
+  test("Functor law: fmap (f . g) `eq` fmap f . fmap g") {
+    val f: Boolean => String =
+      _.toString
+
+    val g: Int => Boolean =
+      _ == 0
+
+    assertEquals(
+      fmap[Option, Int, String](f `.` g).apply(1.some),
+      (fmap[Option, Boolean, String](f) `.` fmap[Option, Int, Boolean](g))(1.some)
+    )
+
+    assertEquals(
+      fmap(1.some)(f `.` g),
+      (fmap[Option, Boolean, String](f) `.` fmap[Option, Int, Boolean](g))(1.some)
+    )
+  }
+  /*
+  Another way to state these laws is that a functor must preserve the structure of the container it maps over untouched.
+  It should only be able to affect whatever information is encoded inside of that container.
+  As "id" returns its input as it is, the fact that mapping "id" over any structure keeps the whole structure the same.
+  Since "fmap id" equals "id" — tells us that "fmap" itself only has the power to modify the elements inside a container and not the container itself.
+  */
+
+  /*
+  The functor laws guarantee that only elements are affected by a functorial operation.
+  If we want the first law to hold, every constructor in the data type must be mapped to the exact same constructor by fmap.
+  The second law tells us that if we apply two functions in a row, it does not matter whether we apply both at once over the elements or we traverse the structure twice.
+  */
+
+  /*
+  Monoid:
+
+  class Monoid m where
+    mempty  :: m
+    mappend :: m -> m -> m
+
+  trait Monoid[A] {
+    def empty: A
+    def combine(x: A, y: A): A
+  }
+  */
+  test("Monoid left and right identity: e combine x = x = x combine e (where e is empty)") {
+  }
+
+  test("Monoid associativity: (x combine y) combine z = x combine (y combine z)") {
+  }
+
+  test("Left biased Option Monoid") {
+    def semigroupOptionLeft[A]: Semigroup[Option[A]] =
+      (x: Option[A], y: Option[A]) => if (x.isEmpty) y else x
+
+    assertEquals(
+      semigroupOptionLeft[Int].combine(None, 1.some),
+      1.some
+    )
+
+    assertEquals(
+      semigroupOptionLeft[Int].combine(2.some, 1.some),
+      2.some
+    )
+  }
+
+  test("Right biased Option Monoid") {
+    def semigroupOptionRight[A]: Semigroup[Option[A]] =
+      (x: Option[A], y: Option[A]) => if (y.isEmpty) x else y
+
+    assertEquals(
+      semigroupOptionRight[Int].combine(None, 1.some),
+      1.some
+    )
+
+    assertEquals(
+      semigroupOptionRight[Int].combine(2.some, 1.some),
+      1.some
+    )
+  }
 }
 
 trait FunctionFixture { self =>
+  def fmap[F[_]: Functor, A, B](f: A => B): F[A] => F[B] =
+    _.map(f)
+
+  def fmap[F[_]: Functor, A, B](Fa: F[A])(f: A => B): F[B] =
+    Fa.map(f)
+
   // Instead of using function def identity[A](x: A): A = x, we'll define our own:
   def id[A](a: A): A = a
 

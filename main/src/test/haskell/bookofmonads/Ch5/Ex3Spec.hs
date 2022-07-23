@@ -1,8 +1,7 @@
 -- {-# LANGUAGE NoImplicitPrelude #-}
 
 -- Monad Laws - What we call laws, mathematicians call theorems.
--- First, Function laws; Functor laws; and Monoids
-module Ch5.Ex1Spec (spec) where
+module Ch5.Ex3Spec (spec) where
 
 import Control.Monad.Cont hiding (mapM, sequence, when)
 import Prelude hiding (mapM, sequence)
@@ -10,11 +9,11 @@ import Test.Hspec
 
 {-
 ghci
-:load Ex1Spec
-:reload Ex1Spec
+:load Ex3Spec
+:reload Ex3Spec
 -}
 spec :: Spec
 spec = do
-  describe "Functor" $ do
+  describe "Monad" $ do
     it "map" $ do
       map (+1) [1, 2, 3] `shouldBe` [2, 3, 4]
