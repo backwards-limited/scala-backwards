@@ -3,11 +3,11 @@ import sbt._
 object Dependencies {
   def apply(): Seq[ModuleID] =
     List(
-      scalaReflect, scalaMeta, scalatest, scalatestplus, specs2, munit, munitCatsEffect, scalaMock, scalacheck, scalacheckShapeless, scalatestContainers, s3mock,
+      scalaReflect, scalaMeta, scalatest, scalatestplus, specs2, munit, munitCatsEffect, scalaMock, scalacheck, scalacheckShapeless, scalatestContainers, s3mock, magnolify,
       log4Cats, scribe, pprint, pureConfig,
       cats, catsEffect, catsEffectTesting, catsRetry, kittens, mouse, simulacrum, refined, monocle, shapeless, /*meowMtl,*/ chimney,
-      circe, parserCombinators,
-      http4s, fs2, scalaUri, betterFiles, sttp, caliban, awsJava, quill, postgresql
+      parserCombinators, http4s, fs2, scalaUri, betterFiles, sttp, caliban, awsJava, quill, postgresql,
+      circe, playJson
     ).flatten
 
   lazy val scalaReflect: Seq[ModuleID] =
@@ -37,7 +37,9 @@ object Dependencies {
 
     List(
       "munit", "munit-scalacheck"
-    ).map(group %% _ % version % "test, it" withSources() withJavadoc() exclude("org.typelevel", "munit-cats-effect-2_2.13") exclude("org.typelevel", "munit-cats-effect-2"))
+    ).map(group %% _ % version % "test, it" withSources() withJavadoc() exclude("org.typelevel", "munit-cats-effect-2_2.13") exclude("org.typelevel", "munit-cats-effect-2")) ++ List(
+      "org.typelevel" %% "discipline-munit" % "1.0.9" % "test, it"
+    )
   }
 
   lazy val munitCatsEffect: Seq[ModuleID] =
@@ -63,6 +65,9 @@ object Dependencies {
 
   lazy val s3mock: Seq[ModuleID] =
     List("io.findify" %% "s3mock" % "0.2.6" % "test, it")
+
+  lazy val magnolify: Seq[ModuleID] =
+    List("com.spotify" %% "magnolify-scalacheck" % "0.5.0" % "test, it")
 
   lazy val log4Cats: Seq[ModuleID] = {
     val group = "org.typelevel"
@@ -164,17 +169,6 @@ object Dependencies {
   lazy val chimney: Seq[ModuleID] =
     List("io.scalaland" %% "chimney" % "0.6.1")
 
-  lazy val circe: Seq[ModuleID] = {
-    val group = "io.circe"
-    val version = "0.14.2"
-
-    List(
-      "circe-core", "circe-generic", "circe-generic-extras", "circe-parser", "circe-refined"
-    ).map(group %% _ % version withSources() withJavadoc()) ++ List(
-      "circe-testing", "circe-literal"
-    ).map(group %% _ % version % "test, it" withSources() withJavadoc())
-  }
-
   lazy val parserCombinators: Seq[ModuleID] =
     List("org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1")
 
@@ -238,4 +232,18 @@ object Dependencies {
 
   lazy val postgresql: Seq[ModuleID] =
     List("org.postgresql" % "postgresql" % "42.4.0")
+
+  lazy val circe: Seq[ModuleID] = {
+    val group = "io.circe"
+    val version = "0.14.2"
+
+    List(
+      "circe-core", "circe-generic", "circe-generic-extras", "circe-parser", "circe-refined"
+    ).map(group %% _ % version withSources() withJavadoc()) ++ List(
+      "circe-testing", "circe-literal"
+    ).map(group %% _ % version % "test, it" withSources() withJavadoc())
+  }
+
+  lazy val playJson: Seq[ModuleID] =
+    List("com.typesafe.play" %% "play-json" % "2.10.0-RC6")
 }
