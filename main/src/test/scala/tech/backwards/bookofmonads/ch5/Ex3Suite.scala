@@ -1,43 +1,64 @@
 package tech.backwards.bookofmonads.ch5
 
-import cats.{Functor, Semigroup}
 import cats.implicits._
-import munit.CatsEffectSuite
+import cats.{Applicative, Monad}
+import munit.FunSuite
 
 /**
  * Monad Laws - What we call laws, mathematicians call theorems.
+ *
+ * In these tests we simplify polymorphic monadic functions (f and g).
+ * Ideally we would have something like the following, but usage would make the tests less readable:
+ * {{{
+ *   def f[F[_]: Applicative, A, B]: A => F[B]
+ * }}}
  */
-class Ex1Suite extends CatsEffectSuite with FunctionFixture { self =>
-  test("Function left identity law") {
-    val id: String => String =
-      self.id[String]
+class Ex3Suite extends FunSuite {
+  test("Left identity") {
+    val a = 1
 
-    val f: Int => String =
-      _.toString
+    def unit[A](a: A): Option[A] =
+      Monad[Option].pure(a)
+
+    def f[A]: A => Option[A] =
+      Applicative[Option] pure
 
     assertEquals(
-      (id `.` f)(20),
-      f(20)
+      unit(a) >>= f,
+      f(a)
     )
   }
-}
 
-trait FunctionFixture { self =>
-  def fmap[F[_]: Functor, A, B](f: A => B): F[A] => F[B] =
-    _.map(f)
+  test("Right identity") {
+    val a = 1
 
-  def fmap[F[_]: Functor, A, B](Fa: F[A])(f: A => B): F[B] =
-    Fa.map(f)
+    def unit[A](a: A): Option[A] =
+      Monad[Option].pure(a)
 
-  // Instead of using function def identity[A](x: A): A = x, we'll define our own:
-  def id[A](a: A): A = a
+    def f[A]: A => Option[A] =
+      Applicative[Option] pure
 
-  // Compose - Haskell uses "." so we'll do the same... kind of:
-  def `.`[A, B, C]: (B => C) => (A => B) => A => C =
-    f => g => a => f(g(a))
+    assertEquals(
+      f(a) >>= unit,
+      f(a)
+    )
+  }
 
-  implicit class FunctionSyntax[B, C](f: B => C) {
-    def `.`[A](g: A => B): A => C =
-      (self `.` f)(g)
+  test("Associativity") {
+    val a = 1
+
+    def unit[A](a: A): Option[A] =
+      Monad[Option].pure(a)
+
+    def f[A]: A => Option[A] =
+      Applicative[Option] pure
+
+    def g[A]: A => Option[A] =
+      Applicative[Option] pure
+
+    assertEquals(
+      unit(a) >>= f >>= g,
+      unit(a) >>= (x => f(x) >>= g)
+    )
   }
 }
