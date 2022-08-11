@@ -540,3 +540,30 @@ object CoinFlipAppUsingStateTApp extends IOApp.Simple {
         StateT.liftF(IO.unit)
     }
 }
+
+object CombineIOWithStateGivingStateTApp extends IOApp.Simple {
+  final case class SumState(value: Int)
+
+  val putStrAsStateT: String => StateT[IO, SumState, Unit] =
+    ???
+
+  val getLineAsStateT: StateT[IO, SumState, String] =
+    ???
+
+  val toInt: String => Int =
+    ???
+
+  val doSumWithStateT: Int => StateT[IO, SumState, Unit] =
+    ???
+
+  def liftIoIntoStateT[A]: IO[A] => StateT[IO, SumState, A] =
+    ???
+
+  def sumLoop: StateT[IO, SumState, Unit] =
+    putStrAsStateT("\ngive me an int, or 'q' to quit: ") >> getLineAsStateT flatMap {
+      case "q"   => liftIoIntoStateT(IO.unit)
+      case input => liftIoIntoStateT(IO(toInt(input))).flatMap(doSumWithStateT) >> sumLoop
+    }
+
+  def run: IO[Unit] = ???
+}
