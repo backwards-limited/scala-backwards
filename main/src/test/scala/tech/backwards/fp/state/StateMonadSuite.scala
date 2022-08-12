@@ -355,7 +355,7 @@ object CustomStateProgressingToStateMonadVersion1 extends IOApp.Simple {
 object CustomStateProgressingToStateMonadVersion2 extends IOApp.Simple {
   final case class State[S, A](run: S => (S, A)) {
     def flatMap[B](g: A => State[S, B]): State[S, B] =
-      State { (s0: S) =>
+      State { s0: S =>
         val (s1, a) = run(s0)
         g(a).run(s1)
       }
@@ -371,7 +371,7 @@ object CustomStateProgressingToStateMonadVersion2 extends IOApp.Simple {
   final case class S(i: Int)
 
   def action(i: Int): State[S, Int] =
-    State { (s: S) =>
+    State { s: S =>
       (S(s.i + i), s.i + i)
     }
 
@@ -386,7 +386,7 @@ object CustomStateProgressingToStateMonadVersion2 extends IOApp.Simple {
     action(20) =
 
     res0 =
-      State { (s: S) =>
+      State { s: S =>
         (S(s.i + 20), s.i + 20)
       }
 
@@ -395,28 +395,28 @@ object CustomStateProgressingToStateMonadVersion2 extends IOApp.Simple {
     res1 =
       g: A => action(15)
       and
-      State { (s0: S) =>
+      State { s0: S =>
         val (s1, a) = run(s0) // This run belongs to res0
         g(a).run(s1)
       }
 
     run(s0) to give:
 
-    State { (s0: S) =>
+    State { s0: S =>
       val (s1, a) = (S(s0.i + 20), s0.i + 20)
       g(a).run(s1)
     }
 
     Finally run(S(0))
 
-    State { (s0 = S(0) =>
+    State { s0 = S(0) =>
       val (s1, a) = (S(s0.i + 20), s0.i + 20)
       g(a).run(s1)
     }
 
     becomes
 
-    State { (s0 = S(0) =>
+    State { s0 = S(0) =>
       val (S(20), 20) = (S(0 + 20), 0 + 20)
       g(20).run(S(20))
     }
@@ -452,7 +452,7 @@ object CustomStateProgressingToStateMonadVersion2 extends IOApp.Simple {
 object ExampleImplementationOfStateTApp extends IOApp.Simple {
   case class StateT[M[_]: Monad, S, A](run: S => M[(S, A)]) {
     def flatMap[B](g: A => StateT[M, S, B]): StateT[M, S, B] =
-      StateT { (s0: S) =>
+      StateT { s0: S =>
         Monad[M].flatMap(run(s0)) {
           case (s1, a) => g(a).run(s1)
         }
@@ -544,26 +544,41 @@ object CoinFlipAppUsingStateTApp extends IOApp.Simple {
 object CombineIOWithStateGivingStateTApp extends IOApp.Simple {
   final case class SumState(value: Int)
 
+  val sumStateValueL: Lens[SumState, Int] =
+    GenLens[SumState](_.value)
+
+  val putStr: String => IO[Unit] =
+    IO.print
+
+  val getLine: IO[String] =
+    IO.readLine
+
   val putStrAsStateT: String => StateT[IO, SumState, Unit] =
-    ???
+    s => liftIOintoStateT(putStr(s))
 
   val getLineAsStateT: StateT[IO, SumState, String] =
-    ???
+    liftIOintoStateT(getLine)
 
   val toInt: String => Int =
-    ???
+    _.toIntOption getOrElse 0
 
-  val doSumWithStateT: Int => StateT[IO, SumState, Unit] =
-    ???
-
-  def liftIoIntoStateT[A]: IO[A] => StateT[IO, SumState, A] =
-    ???
-
-  def sumLoop: StateT[IO, SumState, Unit] =
-    putStrAsStateT("\ngive me an int, or 'q' to quit: ") >> getLineAsStateT flatMap {
-      case "q"   => liftIoIntoStateT(IO.unit)
-      case input => liftIoIntoStateT(IO(toInt(input))).flatMap(doSumWithStateT) >> sumLoop
+  val doSumWithStateT: Int => StateT[IO, SumState, Int] =
+    i => StateT { s: SumState =>
+      IO.println(s"Previous sum = ${s.value}") >>
+      IO.println(s"New input = $i") >>
+      IO(sumStateValueL.modify(_ + i)(s), i).flatTap { case (s, _) => IO.println(s"New sum = ${s.value}") }
     }
 
-  def run: IO[Unit] = ???
+  def liftIOintoStateT[A]: IO[A] => StateT[IO, SumState, A] =
+    StateT.liftF
+
+  def sum: StateT[IO, SumState, Unit] =
+    putStrAsStateT("\nGive me an int, or 'q' to quit: ") >> getLineAsStateT flatMap {
+      case "q"   => liftIOintoStateT(IO.unit)
+      case input => liftIOintoStateT(IO(toInt(input))).flatMap(doSumWithStateT) >> sum
+    }
+
+  def run: IO[Unit] =
+    // sum.runS(SumState(0)) >>= IO.println
+    sum.run(SumState(0)) >>= IO.println
 }
