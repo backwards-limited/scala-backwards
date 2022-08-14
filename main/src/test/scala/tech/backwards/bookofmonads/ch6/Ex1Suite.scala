@@ -119,6 +119,14 @@ class Ex1Suite extends FunSuite {
           }
       }
 
+    implicit class StateSyntax[S, A](state: State[S, A]) {
+      def map[B](f: A => B): State[S, B] =
+        functorState.map(state)(f)
+
+      def flatMap[B](f: A => State[S, B]): State[S, B] =
+        monadState.flatMap(state)(f)
+    }
+
     /*
     DO NOT DO THE FOLLOWING
 
@@ -155,7 +163,7 @@ class Ex1Suite extends FunSuite {
     def modify[S]: (S => S) => State[S, Unit] =
       f => monadState.flatMap(get[S])(s => put[S](f(s)))
 
-    // Now we have 2 options to define "nextValue" by reusing our "interface:
+    // Now we have 2 options to define "nextValue" by reusing our "interface":
     val nextValue1: State[Int, Int] =
       monadState.flatMap(get[Int])(s => functorState[Int].map(put[Int](s + 1))(_ => s))
 
@@ -163,11 +171,49 @@ class Ex1Suite extends FunSuite {
     println(s1)
     println(a1)
 
+    val nextValueSyntax1: State[Int, Int] =
+      get[Int].flatMap(s =>
+        put[Int](s + 1).map(_ => s)
+      )
+
+    val (sSyntax1, aSyntax1) = nextValueSyntax1.run(5)
+    println(sSyntax1)
+    println(aSyntax1)
+
+    val nextValueSyntaxForComprehension1: State[Int, Int] =
+      for {
+        s <- get[Int]
+        _ <- put[Int](s + 1)
+      } yield s
+
+    val (sSyntaxForComprehension1, aSyntaxForComprehension1) = nextValueSyntaxForComprehension1.run(5)
+    println(sSyntaxForComprehension1)
+    println(aSyntaxForComprehension1)
+
     val nextValue2: State[Int, Int] =
       monadState.flatMap(get[Int])(s => functorState[Int].map(modify[Int](_ + 1))(_ => s))
 
     val (s2, a2) = nextValue2.run(5)
     println(s2)
     println(a2)
+
+    val nextValueSyntax2: State[Int, Int] =
+      get[Int].flatMap(s =>
+        modify[Int](_ + 1).map(_ => s)
+      )
+
+    val (sSyntax2, aSyntax2) = nextValueSyntax2.run(5)
+    println(sSyntax2)
+    println(aSyntax2)
+
+    val nextValueSyntaxForComprehension2: State[Int, Int] =
+      for {
+        s <- get[Int]
+        _ <- modify[Int](_ + 1)
+      } yield s
+
+    val (sSyntaxForComprehension2, aSyntaxForComprehension2) = nextValueSyntaxForComprehension2.run(5)
+    println(sSyntaxForComprehension2)
+    println(aSyntaxForComprehension2)
   }
 }
