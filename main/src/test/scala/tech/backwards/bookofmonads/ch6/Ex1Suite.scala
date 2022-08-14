@@ -1,7 +1,7 @@
 package tech.backwards.bookofmonads.ch6
 
 import cats.implicits.{catsSyntaxFlatMapOps, catsSyntaxOptionId, none}
-import cats.{Applicative, Functor, Monad}
+import cats.{Functor, Monad}
 import munit.FunSuite
 
 /**
@@ -12,8 +12,8 @@ import munit.FunSuite
  */
 class Ex1Suite extends FunSuite {
   /**
-   * A value of `State s a` should be understood as a computation that produces values of type a while modifying an internalstateoftypes.
-   * In fact,we can see `State s a` as the encoding of functions from an initial state to their return values, paired with the new state:
+   * A value of `State s a` should be understood as a computation that produces values of type `a` while modifying an internal state of types.
+   * In fact, we can see `State s a` as the encoding of functions from an initial state to their return values, paired with the new state:
    * {{{
    *   type State s a = s -> (a, s)
    * }}}
@@ -70,14 +70,14 @@ class Ex1Suite extends FunSuite {
       }
 
     val states: State[Int, String] =
-      monadState.flatMap(s3)(str3 =>
+      monadState.flatMap(s1)(str1 =>
         monadState.flatMap(s2)(str2 =>
-          monadState.map(s1)(str1 =>
-            // str1 = [S1: 7]
+          monadState.map(s3)(str3 =>
+            // str1 = [S1: 5]
             // str2 = [S2:  [S1: 6] ]
-            // str3 = [S3:  [S2:  [S1: 5] ] ]
+            // str3 = [S3:  [S2:  [S1: 7] ] ]
             str1 + str2 + str3
-            // [S1: 7]  [S2:  [S1: 6] ]  [S3:  [S2:  [S1: 5] ] ]
+            // [S1: 5]  [S2:  [S1: 6] ]  [S3:  [S2:  [S1: 7] ] ]
           )
         )
       )

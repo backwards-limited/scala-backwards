@@ -582,3 +582,59 @@ object CombineIOWithStateGivingStateTApp extends IOApp.Simple {
     // sum.runS(SumState(0)) >>= IO.println
     sum.run(SumState(0)) >>= IO.println
 }
+
+/**
+ * [[https://edward-huang.com/scala/functional-programming/monad/programming/2020/08/16/how-to-create-a-random-number-generator-function-without-side-effects/ How to create a random number generator function without side effects]]
+ */
+object RandomNumberGeneratorImperativeApp extends IOApp.Simple {
+  def run: IO[Unit] =
+    IO(new Random).flatMap(random =>
+      IO(random.nextInt).flatMap(IO.println) >> IO(random.nextInt /* This produces another new value */).flatMap(IO.println)
+    )
+}
+
+object RandomNumberGeneratorFunctionalApp extends IOApp.Simple {
+  final case class Random(seed: Int) {
+    def nextInt: (Int, Random) = {
+      val rng: util.Random =
+        new scala.util.Random(seed)
+
+      val res: Int =
+        rng.nextInt
+
+      val nextRandom: Random =
+        Random(seed + 1)
+
+      (res, nextRandom)
+    }
+  }
+
+  def run: IO[Unit] =
+    for {
+      random                        <- IO(Random(1))
+      (newValue, nextRandom)        = random.nextInt
+      (newValue1, nextRandom1)      = nextRandom.nextInt
+      _ = println(s"New value = $newValue, New value1 = $newValue1")
+      (sameValue1, sameNextRandom1) = nextRandom.nextInt
+      _ = println(s"New value1 = $newValue1, Same value1 = $sameValue1")
+    } yield ()
+
+  /*
+  Any time you see a class that has an internal state like this:
+
+  class Foo {
+    private var map: FooState = ???
+    def put: Bar
+    def write: Int
+  }
+
+  Translate to giving back the new state e.g.
+
+  final case class FooState()
+
+  final case class Foo(s: FooState) {
+    def put: (Bar, Foo)
+    def get: (Int, Foo)
+  }
+  */
+}
