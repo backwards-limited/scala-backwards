@@ -5,7 +5,7 @@ import cats.{Functor, Monad}
 import munit.FunSuite
 
 /**
- * Pure Reader-Writer-State Monads.
+ * State Monad
  *
  * Reader and Writer provide just one part of a stateful interface, obtaining or saving a value, respectively.
  * Another common characteristic among these three monads is that they are built from simple, functional building blocks: functions and tuples.
@@ -215,5 +215,19 @@ class Ex1Suite extends FunSuite {
     val (sSyntaxForComprehension2, aSyntaxForComprehension2) = nextValueSyntaxForComprehension2.run(5)
     println(sSyntaxForComprehension2)
     println(aSyntaxForComprehension2)
+
+    /*
+    Starting the computation:
+    As well as using "run" with an initial state, we can "eval" just the value and "exec" just the state:
+    */
+    def eval[S, A](state: State[S, A]): S => A =
+      state.run.andThen(_._2)
+
+    println(eval(nextValue1)(10))
+
+    def exec[S, A](state: State[S, A]): S => S =
+      state.run.andThen(_._1)
+
+    println(exec(nextValue1)(10))
   }
 }

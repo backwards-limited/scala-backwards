@@ -1,6 +1,6 @@
 -- {-# LANGUAGE NoImplicitPrelude #-}
 
--- Pure Reader-Writer-State Monads
+-- State Monad
 module Ch6.Ex1Spec (spec) where
 
 import Control.Monad.Cont hiding (mapM, sequence, when)
@@ -53,6 +53,16 @@ modify :: (s -> s) -> State s ()
 modify f = do
   s <- get
   put $ f s
+
+-- Starting the computation: i.e. run with an initial state where runState isn't really needed as we already have "run":
+runState  :: State s a -> s -> (a, s)
+runState c = run c
+
+eval :: State s a -> s -> a
+eval c = fst . run c -- Keep only the value
+
+exec :: State s a -> s -> s
+exec c = snd . run c  -- Keep only the final state
 
 {-
 ghci

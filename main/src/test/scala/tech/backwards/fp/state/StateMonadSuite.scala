@@ -48,7 +48,8 @@ class StateMonadSuite extends FunSuite {
     // When it's the computer's go (as my playing opponent) it will use the State to determine a list of OffensivePlay e.g.
     final case class OffensivePlay()
 
-    def determinePossiblePlays(s: GameState): List[OffensivePlay] = ???
+    def determinePossiblePlays(s: GameState): List[OffensivePlay] =
+      Nil // Not implemented
 
     val possiblePlays: List[OffensivePlay] =
       determinePossiblePlays(state2)
