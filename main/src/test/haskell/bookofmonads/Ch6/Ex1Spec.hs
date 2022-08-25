@@ -7,18 +7,22 @@ import Control.Monad.Cont hiding (mapM, sequence, when)
 import Prelude hiding (mapM, sequence)
 import Test.Hspec
 
-newtype State s a = State { run :: s -> (a, s) }
+newtype State s a = State { runState :: s -> (a, s) }
+{-
+where runState is just the accessor for the new type with the signature:
+runState :: State s a -> a -> (a, s)
+-}
 
 instance Functor (State s) where
-  fmap f (State run) = State (\s -> let (a, s') = run s in (f a, s'))
+  fmap f (State runState) = State (\s -> let (a, s') = runState s in (f a, s'))
 
 instance Applicative (State s) where
   pure a = State $ \s -> (a, s)
 
-  (<*>) (State runf) (State run) =
+  (<*>) (State runStatef) (State runState) =
     State $ \s ->
-      let (f, s') = runf s
-          (a, s'') = run s'
+      let (f, s') = runStatef s
+          (a, s'') = runState s'
       in (f a, s'')
 
 instance Monad (State s) where
@@ -27,7 +31,7 @@ instance Monad (State s) where
   (>>=) (State r) amb =
     State $ \s ->
       let (a, s') = r s
-      in ($ s') . run . amb $ a
+      in ($ s') . runState . amb $ a
 
 {-
 DO NOT DO THE FOLLOWING
@@ -54,15 +58,11 @@ modify f = do
   s <- get
   put $ f s
 
--- Starting the computation: i.e. run with an initial state where runState isn't really needed as we already have "run":
-runState  :: State s a -> s -> (a, s)
-runState c = run c
-
 eval :: State s a -> s -> a
-eval c = fst . run c -- Keep only the value
+eval c = fst . runState c -- Keep only the value
 
 exec :: State s a -> s -> s
-exec c = snd . run c  -- Keep only the final state
+exec c = snd . runState c  -- Keep only the final state
 
 {-
 ghci

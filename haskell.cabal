@@ -84,6 +84,8 @@ test-suite haskell-test
       Ch5.Ex3Spec
       Ch6.Ex1Spec
       Ch6.Ex2Spec
+      Ch6.Ex3Spec
+      Ch6.Ex4Spec
       LanguageExtensions
       Paths_haskell
   hs-source-dirs:
