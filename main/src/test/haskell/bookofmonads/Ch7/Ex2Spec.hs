@@ -80,6 +80,19 @@ validateAge s = do
   return n
 
 {-
+Guard example for a Pythagorean triple:
+The bind construct of the list monad works like a conjunction: a value has to satisfy all the conditions in the do to make an appearance in the result list.
+Find all the triples of numbers from a list such that the sum of the squares of the first two equal the square of the third one.
+-}
+pyts :: [Integer] -> [(Integer, Integer, Integer)]
+pyts ns = do
+  x <- ns
+  y <- ns
+  z <- ns
+  guard (x * x + y * y == z * z)
+  return (x, y, z)
+
+{-
 ghci
 :load Ex2Spec
 :reload Ex2Spec
