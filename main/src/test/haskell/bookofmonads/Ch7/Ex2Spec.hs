@@ -92,6 +92,20 @@ pyts ns = do
   guard (x * x + y * y == z * z)
   return (x, y, z)
 
+class Monad m => MonadError e m | m -> e where
+  throwError :: e -> m a
+  catchError :: m a -> (e -> m a) -> m a
+
+instance MonadError e (Either e) where
+  throwError = Left
+  catchError (Left e) f = f e
+  catchError a _ = a
+
+instance MonadError () Maybe where
+  throwError _ = Nothing
+  catchError Nothing f = f ()
+  catchError j _ = j
+
 {-
 ghci
 :load Ex2Spec
