@@ -66,7 +66,8 @@ def project(id: String, base: File): Project =
       fork := true,
       Test / publishArtifact := true,
       IntegrationTest / publishArtifact := true,
-      addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings
+      addArtifact(IntegrationTest / packageBin / artifact, IntegrationTest / packageBin).settings,
+      testFrameworks += new TestFramework("weaver.framework.CatsEffect")
     )
     .configs(IntegrationTest extend Test)
     .settings(inConfig(IntegrationTest extend Test)(Defaults.testSettings): _*)

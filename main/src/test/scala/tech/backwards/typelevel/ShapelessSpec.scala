@@ -23,7 +23,7 @@ class ShapelessSpec extends AnyWordSpec with Matchers {
       val hlist: Int :: String :: HNil =
         26 :: "Harry" :: HNil
 
-      case class Person(name:String, age:Int)
+      case class Person(name: String, age: Int)
 
       val gen = Generic[Person]
 

@@ -3,7 +3,7 @@ import sbt._
 object Dependencies {
   def apply(): Seq[ModuleID] =
     List(
-      scalaReflect, scalaMeta, scalatest, scalatestplus, specs2, munit, munitCatsEffect, scalaMock, scalacheck, scalacheckShapeless, scalatestContainers, s3mock, magnolify,
+      scalaReflect, scalaMeta, scalatest, scalatestplus, specs2, munit, munitCatsEffect, weaver, scalaMock, scalacheck, scalacheckShapeless, scalatestContainers, s3mock, magnolify,
       log4Cats, scribe, pprint, pureConfig,
       cats, catsEffect, catsEffectTesting, catsRetry, kittens, mouse, simulacrum, refined, monocle, shapeless, /*meowMtl,*/ chimney,
       parserCombinators, http4s, fs2, scalaUri, betterFiles, sttp, caliban, awsJava, quill, postgresql,
@@ -44,6 +44,9 @@ object Dependencies {
 
   lazy val munitCatsEffect: Seq[ModuleID] =
     List("org.typelevel" %% "munit-cats-effect-3" % "1.0.7" % "test, it" force() withSources() withJavadoc())
+
+  lazy val weaver: Seq[ModuleID] =
+    List("com.disneystreaming" %% "weaver-cats" % "0.8.0" % "test, it" withSources() withJavadoc())
 
   lazy val scalaMock: Seq[ModuleID] =
     List("org.scalamock" %% "scalamock" % "5.2.0" % "test, it" withSources() withJavadoc())

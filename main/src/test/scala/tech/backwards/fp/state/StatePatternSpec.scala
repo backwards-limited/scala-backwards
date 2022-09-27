@@ -13,12 +13,12 @@ class StatePatternSpec extends FunSuite {
   test("zipWithIndex version 1") {
     def zipWithIndex[A](xs: List[A]): List[(A, Int)] = {
       val state: IndexedStateT[Eval, Int, Int, List[(A, Int)]] =
-        xs.traverse { a =>
+        xs.traverse(a =>
           for {
             index <- State.get[Int]
             _ <- State.set[Int](index + 1)
           } yield (a, index)
-        }
+        )
 
       state.runA(0).value
     }
@@ -216,7 +216,154 @@ class StatePatternSpec extends FunSuite {
     assert(willReach(List(Up, Up, Up, Down), (0, 0))(0, 2))
   }
 
-  test("post order calculator") {
+  /**
+   * Implement a post-order calculator e.g.
+   * {{{
+   *  1 2 + 3 *   // see 1, push onto stack
+   *  2 + 3 *     // see 2, push onto stack
+   *  + 3 *       // see +, pop 1 and 2 off of stack,
+   *  // push (1 + 2) = 3 in their place
+   *  3 3 *       // see 3, push onto stack
+   *  3 *         // see 3, push onto stack
+   *  *           // see *, pop 3 and 3 off of stack,
+   *  // push (3 * 3) = 9 in their place
+   * }}}
+   */
+  test("post order calculator version 1") {
+    def execute(f: (Int, Int) => Int): List[Int] => Int = {
+      case a :: b :: Nil => f(a, b)
+      case Nil => sys.error("fail!")
+    }
 
+    def transform(token: String)(xs: List[Int]): List[Int] =
+      token match {
+        case "+" => execute(_ + _)(xs) :: Nil
+        case "-" => execute(_ - _)(xs) :: Nil
+        case "/" => execute(_ / _)(xs) :: Nil
+        case "*" => execute(_ * _)(xs) :: Nil
+        case n => n.toInt :: xs
+      }
+
+    def eval(xs: List[String]): Int = {
+      val state = for {
+        _ <- xs.traverse(token =>
+          State.modify[List[Int]](transform(token))
+        )
+        stack <- State.get[List[Int]]
+      } yield stack.head
+
+      state.runA(Nil).value
+    }
+
+    assertEquals(
+      eval(List("1", "2", "+", "3", "*")),
+      9
+    )
+  }
+
+  test("post order calculator version 2") {
+    def execute(f: (Int, Int) => Int): List[Int] => Int = {
+      case a :: b :: Nil => f(a, b)
+      case Nil => sys.error("fail!")
+    }
+
+    def transform(token: String)(xs: List[Int]): List[Int] =
+      token match {
+        case "+" => execute(_ + _)(xs) :: Nil
+        case "-" => execute(_ - _)(xs) :: Nil
+        case "/" => execute(_ / _)(xs) :: Nil
+        case "*" => execute(_ * _)(xs) :: Nil
+        case n => n.toInt :: xs
+      }
+
+    def eval(xs: List[String]): Int = {
+      val state: State[List[Int], List[Int]] =
+        xs.traverse(token =>
+          State.modify[List[Int]](transform(token))
+        ).get
+
+      state.runA(Nil).value.head
+    }
+
+    assertEquals(
+      eval(List("1", "2", "+", "3", "*")),
+      9
+    )
+  }
+
+  test("post order calculator version 3") {
+    def execute(f: (Int, Int) => Int): List[Int] => Int = {
+      case a :: b :: Nil => f(a, b)
+      case Nil => sys.error("fail!")
+    }
+
+    def transform(token: String)(xs: List[Int]): List[Int] =
+      token match {
+        case "+" => execute(_ + _)(xs) :: Nil
+        case "-" => execute(_ - _)(xs) :: Nil
+        case "/" => execute(_ / _)(xs) :: Nil
+        case "*" => execute(_ * _)(xs) :: Nil
+        case n => n.toInt :: xs
+      }
+
+    def eval(xs: List[String]): Int = {
+      val state: State[List[Int], List[Unit]] =
+        xs.traverse(token =>
+          State.modify[List[Int]](transform(token))
+        )
+
+      state.runS(Nil).value.head
+    }
+
+    assertEquals(
+      eval(List("1", "2", "+", "3", "*")),
+      9
+    )
+  }
+
+  test("typical pattern version 1") {
+    def mapAccum[A, B, S](xs: List[A], initialState: S)(f: (S, A) => (S, B)): (S, List[B]) =
+      xs.traverse(a =>
+        for {
+          s <- State.get[S]
+          (s2, b) = f(s, a)
+          _ <- State.set[S](s2)
+        } yield b
+      ).run(initialState).value
+
+    val (state: String, result: List[Boolean]) =
+      mapAccum(List(1, 2, 3), "start:")((s, a) => s + s" $a" -> (a % 2 == 0))
+
+    assertEquals(
+      state,
+      "start: 1 2 3"
+    )
+
+    assertEquals(
+      result,
+      List(false, true, false)
+    )
+  }
+
+  test("typical pattern version 2") {
+    def mapAccum[A, B, S](xs: List[A], initialState: S)(f: (S, A) => (S, B)): (S, List[B]) =
+      xs.traverse(a =>
+        State.get[S].flatMap(s =>
+          State[S, B](_ => f(s, a))
+        )
+      ).run(initialState).value
+
+    val (state: String, result: List[Boolean]) =
+      mapAccum(List(1, 2, 3), "start:")((s, a) => s + s" $a" -> (a % 2 == 0))
+
+    assertEquals(
+      state,
+      "start: 1 2 3"
+    )
+
+    assertEquals(
+      result,
+      List(false, true, false)
+    )
   }
 }
