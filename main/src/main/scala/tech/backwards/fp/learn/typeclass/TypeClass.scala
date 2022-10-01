@@ -11,7 +11,7 @@ object TypeClass extends TypeClassImplicits {
     TypeClass[A].foo(a)
 
   object syntax {
-    implicit class TypeClassOps[A: TypeClass](a: A) {
+    implicit class TypeClassSyntax[A: TypeClass](a: A) {
       lazy val foo: String =
         TypeClass[A].foo(a)
     }
