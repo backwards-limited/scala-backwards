@@ -11,9 +11,8 @@ object debug {
   implicit class DebugHelper[A](ioa: IO[A]) {
     /** Print to the console the value of the effect along with the thread it was computed on. */
     def debug: IO[A] =
-      ioa.flatTap { a =>
-        val tn = Thread.currentThread.getName
-        IO(println(s"[${Colorize.reversed(tn)}] $a"))
-      }
+      ioa.flatTap(a =>
+        IO(println(s"[${Colorize reversed Thread.currentThread.getName}] $a"))
+      )
   }
 }

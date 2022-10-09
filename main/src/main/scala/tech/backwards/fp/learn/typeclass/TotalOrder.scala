@@ -6,7 +6,7 @@ trait TotalOrder[A] {
   def less(x: A, y: A): Boolean
 }
 
-object TotalOrder extends TotalOrderImplicits {
+object TotalOrder extends TotalOrderImplicits { self =>
   def apply[A: TotalOrder]: TotalOrder[A] = implicitly
 
   def less[A: TotalOrder](x: A, y: A): Boolean =
@@ -15,7 +15,7 @@ object TotalOrder extends TotalOrderImplicits {
   object syntax {
     implicit class TotalOrderSyntax[A: TotalOrder](x: A) {
       lazy val less: A => Boolean =
-        TotalOrder[A].less(x, _)
+        self.less(x, _)
     }
   }
 }
@@ -31,6 +31,6 @@ trait TotalOrderImplicits {
 
   implicit def totalOrderList[A: TotalOrder]: TotalOrder[List[A]] =
     _.zip(_).foldM(false) { case (outcome, (x, y)) =>
-      if (x less y) none else outcome.some
+      Option.unless(x less y)(outcome)
     } getOrElse true
 }

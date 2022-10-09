@@ -6,7 +6,7 @@ object Dependencies {
       scalaReflect, scalaMeta, scalatest, scalatestplus, specs2, munit, munitCatsEffect, weaver, scalaMock, scalacheck, scalacheckShapeless, scalatestContainers, s3mock, magnolify,
       log4Cats, scribe, pprint, pureConfig,
       cats, catsEffect, catsEffectTesting, catsRetry, kittens, mouse, simulacrum, refined, monocle, shapeless, /*meowMtl,*/ chimney,
-      parserCombinators, http4s, fs2, scalaUri, betterFiles, sttp, caliban, awsJava, quill, postgresql,
+      scalaParallelCollections, parserCombinators, http4s, fs2, scalaUri, betterFiles, sttp, caliban, awsJava, quill, postgresql,
       circe, playJson
     ).flatten
 
@@ -171,6 +171,9 @@ object Dependencies {
 
   lazy val chimney: Seq[ModuleID] =
     List("io.scalaland" %% "chimney" % "0.6.2")
+
+  lazy val scalaParallelCollections: Seq[ModuleID] =
+    List("org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4")
 
   lazy val parserCombinators: Seq[ModuleID] =
     List("org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1")

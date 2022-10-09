@@ -4,7 +4,7 @@ trait TypeClass[A] {
   def foo(a: A): String
 }
 
-object TypeClass extends TypeClassImplicits {
+object TypeClass extends TypeClassImplicits { self =>
   def apply[A: TypeClass]: TypeClass[A] = implicitly
 
   def foo[A: TypeClass](a: A): String =
@@ -13,7 +13,7 @@ object TypeClass extends TypeClassImplicits {
   object syntax {
     implicit class TypeClassSyntax[A: TypeClass](a: A) {
       lazy val foo: String =
-        TypeClass[A].foo(a)
+        self.foo(a)
     }
   }
 }
