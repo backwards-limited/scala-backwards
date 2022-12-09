@@ -9,7 +9,7 @@ import tech.backwards.essentialeffects.debug._
 
 object TickingClock extends IOApp {
   val tickingClock: IO[Unit] =
-    IO(println(LocalTime.now().truncatedTo(ChronoUnit.SECONDS))).debug >> IO.sleep(1 second) >> tickingClock
+    IO(println(LocalTime.now().truncatedTo(ChronoUnit.SECONDS))).log >> IO.sleep(1 second) >> tickingClock
 
   def run(args: List[String]): IO[ExitCode] =
     tickingClock.as(ExitCode.Success)

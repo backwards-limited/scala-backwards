@@ -7,7 +7,7 @@ import scala.jdk.FunctionConverters._
 
 object AsyncCompletable extends IOApp {
   def run(args: List[String]): IO[ExitCode] =
-    effect.debug.as(ExitCode.Success)
+    effect.log.as(ExitCode.Success)
 
   val effect: IO[String] =
     fromCF(IO(cf()))

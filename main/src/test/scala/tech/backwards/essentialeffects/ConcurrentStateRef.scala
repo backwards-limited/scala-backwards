@@ -15,7 +15,7 @@ object ConcurrentStateRef extends IOApp {
   def tickingClock(ticks: Ref[IO, Long]): IO[Unit] =
     for {
       _ <- IO.sleep(1.second)
-      _ <- IO(System.currentTimeMillis).debug
+      _ <- IO(System.currentTimeMillis).log
       _ <- ticks.update(_ + 1)
       _ <- tickingClock(ticks)
     } yield ()
@@ -24,7 +24,7 @@ object ConcurrentStateRef extends IOApp {
     for {
       _ <- IO.sleep(5.seconds)
       ticksCheckpoint <- ticks.get
-      _ <- IO(s"TICKS: $ticksCheckpoint").debug.void
+      _ <- IO(s"TICKS: $ticksCheckpoint").log.void
       _ <- printTicks(ticks)
     } yield ()
 }

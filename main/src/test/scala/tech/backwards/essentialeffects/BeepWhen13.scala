@@ -19,13 +19,13 @@ object BeepWhen13 extends IOApp {
     for {
       // Calling get will block the current effect until is13 has a value. (Fortunately the thread is released)
       _ <- is13.get
-      _ <- IO("BEEP!").debug
+      _ <- IO("BEEP!").log
     } yield ()
 
   def tickingClock(ticks: Ref[IO, Long], is13: Deferred[IO, Unit]): IO[Unit] =
     for {
       _ <- IO.sleep(1.second)
-      _ <- IO(System.currentTimeMillis).debug
+      _ <- IO(System.currentTimeMillis).log
       count <- ticks.updateAndGet(_ + 1)
       // tickingClock is responsible for evaluating the condition we’re interested in.
       // If ticks has value 13, it calls complete to provide a value to the Deferred, unblocking any waiting effects.
@@ -47,14 +47,14 @@ object BeepWhen13WithoutUsingDeferred extends IOApp {
   def beepWhen13(ticks: Ref[IO, Long]): IO[Unit] =
     for {
       t <- ticks.get
-      _ <- if (t >= 13) IO("BEEP!").debug
+      _ <- if (t >= 13) IO("BEEP!").log
       else IO.sleep(1.seconds) *> beepWhen13(ticks)
     } yield ()
 
   def tickingClock(ticks: Ref[IO, Long]): IO[Unit] =
     for {
       _ <- IO.sleep(1.second)
-      _ <- IO(System.currentTimeMillis).debug
+      _ <- IO(System.currentTimeMillis).log
       count <- ticks.updateAndGet(_ + 1)
       _ <- tickingClock(ticks)
     } yield ()
