@@ -10,7 +10,7 @@ object Eq extends EqImplicits { self =>
   def apply[A: Eq]: Eq[A] = implicitly
 
   def eq[A: Eq](x: A, y: A): Boolean =
-    Eq[A].eq(x, y)
+    apply[A].eq(x, y)
 
   object syntax {
     implicit class EqSyntax[A: Eq](x: A) {
@@ -23,7 +23,7 @@ object Eq extends EqImplicits { self =>
   }
 }
 
-trait EqImplicits {
+sealed trait EqImplicits {
   import tech.backwards.fp.learn.typeclass.Eq.syntax._
 
   implicit val eqInt: Eq[Int] =
@@ -32,6 +32,8 @@ trait EqImplicits {
   implicit val eqString: Eq[String] =
     _ == _
 
+  /*
+  Obvious version - Recursion to short circuit
   implicit def eqList[A: Eq]: Eq[List[A]] = {
     lazy val eq: (List[A], List[A]) => Boolean = {
       case (Nil, Nil) => true
@@ -40,5 +42,12 @@ trait EqImplicits {
     }
 
     eq(_, _)
-  }
+  }*/
+
+  // Alternative version - foldM to short circuit
+  implicit def eqList[A: Eq]: Eq[List[A]] =
+    (xs, ys) =>
+      (xs.length == ys.length) && xs.zip(ys).foldM(true) { case (outcome, (x, y)) =>
+        Option.when(x ==== y)(outcome)
+      }.getOrElse(false)
 }

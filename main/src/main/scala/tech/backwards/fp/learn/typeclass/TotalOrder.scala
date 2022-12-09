@@ -10,7 +10,7 @@ object TotalOrder extends TotalOrderImplicits { self =>
   def apply[A: TotalOrder]: TotalOrder[A] = implicitly
 
   def less[A: TotalOrder](x: A, y: A): Boolean =
-    TotalOrder[A].less(x, y)
+    apply[A].less(x, y)
 
   object syntax {
     implicit class TotalOrderSyntax[A: TotalOrder](x: A) {
@@ -20,7 +20,7 @@ object TotalOrder extends TotalOrderImplicits { self =>
   }
 }
 
-trait TotalOrderImplicits {
+sealed trait TotalOrderImplicits {
   import tech.backwards.fp.learn.typeclass.TotalOrder.syntax._
 
   implicit val totalOrderInt: TotalOrder[Int] =

@@ -6,21 +6,21 @@ trait Show[A] {
   def show(x: A): String
 }
 
-object Show extends ShowImplicits {
+object Show extends ShowImplicits { self =>
   def apply[A: Show]: Show[A] = implicitly
 
   def show[A: Show](x: A): String =
-    Show[A].show(x)
+    apply[A].show(x)
 
   object syntax {
     implicit class ShowSyntax[A: Show](x: A) {
       lazy val show: String =
-        Show[A].show(x)
+        self.show(x)
     }
   }
 }
 
-trait ShowImplicits {
+sealed trait ShowImplicits {
   import tech.backwards.fp.learn.typeclass.Show.syntax._
 
   implicit val showInt: Show[Int] =

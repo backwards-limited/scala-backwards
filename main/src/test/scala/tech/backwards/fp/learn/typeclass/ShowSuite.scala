@@ -10,10 +10,7 @@ class ShowSuite extends ScalaCheckSuite {
 
   property("Show Int")(
     forAll((x: Int) =>
-      assertEquals(
-        Show.show(x),
-        s"$x"
-      )
+      assertEquals(Show.show(x), s"$x")
     )
   )
 
@@ -21,19 +18,13 @@ class ShowSuite extends ScalaCheckSuite {
     import tech.backwards.fp.learn.typeclass.Show.syntax._
 
     forAll((x: Int) =>
-      assertEquals(
-        x.show,
-        s"$x"
-      )
+      assertEquals(x.show, s"$x")
     )
   }
 
   property("Show Double")(
     forAll((x: Double) =>
-      assertEquals(
-        Show.show(x),
-        s"$x"
-      )
+      assertEquals(Show.show(x), s"$x")
     )
   )
 
@@ -41,10 +32,7 @@ class ShowSuite extends ScalaCheckSuite {
     import tech.backwards.fp.learn.typeclass.Show.syntax._
 
     forAll((x: Double) =>
-      assertEquals(
-        x.show,
-        s"$x"
-      )
+      assertEquals(x.show, s"$x")
     )
   }
 
