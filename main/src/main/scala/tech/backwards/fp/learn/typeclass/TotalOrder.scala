@@ -14,7 +14,7 @@ object TotalOrder extends TotalOrderImplicits { self =>
 
   object syntax {
     implicit class TotalOrderSyntax[A: TotalOrder](x: A) {
-      lazy val less: A => Boolean =
+      val less: A => Boolean =
         self.less(x, _)
     }
   }
