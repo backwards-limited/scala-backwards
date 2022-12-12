@@ -7,7 +7,8 @@ trait Eq[A] {
 }
 
 object Eq extends EqImplicits { self =>
-  def apply[A: Eq]: Eq[A] = implicitly
+  def apply[A: Eq]: Eq[A] =
+    implicitly
 
   def eq[A: Eq](x: A, y: A): Boolean =
     apply[A].eq(x, y)

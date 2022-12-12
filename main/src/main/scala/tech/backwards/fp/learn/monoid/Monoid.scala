@@ -7,7 +7,8 @@ trait Monoid[A] {
 }
 
 object Monoid extends MonoidImplicits {
-  def apply[A: Monoid]: Monoid[A] = implicitly
+  def apply[A: Monoid]: Monoid[A] =
+    implicitly
 
   object syntax {
     implicit class MonoidSyntax[A: Monoid](x: A) {
@@ -34,5 +35,14 @@ sealed trait MonoidImplicits {
 
       def mappend(x: Product, y: Product): Product =
         Product(x.value * y.value)
+    }
+
+  implicit def monoidList[A]: Monoid[List[A]] =
+    new Monoid[List[A]] {
+      lazy val mzero: List[A] =
+        Nil
+
+      def mappend(xs: List[A], ys: List[A]): List[A] =
+        xs ++ ys
     }
 }

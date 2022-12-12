@@ -125,4 +125,63 @@ class MonoidSuite extends ScalaCheckSuite {
       Product(30)
     )
   }
+
+  property("List mzero")(
+    assertEquals(Monoid[List[Int]].mzero, Nil)
+  )
+
+  property("List mappend")(
+    assertEquals(
+      Monoid[List[Int]].mappend(List(1, 2, 3), List(4, 5, 6)),
+      List(1, 2, 3, 4, 5, 6)
+    )
+  )
+
+  property("List mappend syntax") {
+    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+
+    assertEquals(
+      List(1, 2, 3) |+| List(4, 5, 6),
+      List(1, 2, 3, 4, 5, 6)
+    )
+  }
+
+  property("List arbitrary mappend syntax") {
+    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+
+    forAll((xs: List[Int], ys: List[Int]) =>
+      assertEquals(
+        xs |+| ys,
+        xs ++ ys
+      )
+    )
+  }
+
+  property("List mappend syntax - obey identity") {
+    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+
+    assertEquals(
+      List(1, 2, 3) |+| Monoid[List[Int]].mzero,
+      List(1, 2, 3)
+    )
+
+    assertEquals(
+      Monoid[List[Int]].mzero |+| List(1, 2, 3),
+      List(1, 2, 3)
+    )
+  }
+
+  property("List mappend syntax - obey associativity") {
+    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+
+    assertEquals(
+      (List(1, 2, 3) |+| List(4, 5, 6)) |+| List(7, 8, 9),
+      List(1, 2, 3, 4, 5, 6, 7, 8, 9)
+    )
+
+    assertEquals(
+      List(1, 2, 3) |+| (List(4, 5, 6) |+| List(7, 8, 9)),
+      List(1, 2, 3, 4, 5, 6, 7, 8, 9)
+    )
+  }
 }

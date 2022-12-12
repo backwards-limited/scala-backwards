@@ -5,7 +5,8 @@ trait TypeClass[A] {
 }
 
 object TypeClass extends TypeClassImplicits { self =>
-  def apply[A: TypeClass]: TypeClass[A] = implicitly
+  def apply[A: TypeClass]: TypeClass[A] =
+    implicitly
 
   def foo[A: TypeClass](a: A): String =
     apply[A].foo(a)

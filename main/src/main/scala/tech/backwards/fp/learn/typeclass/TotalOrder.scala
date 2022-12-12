@@ -7,7 +7,8 @@ trait TotalOrder[A] {
 }
 
 object TotalOrder extends TotalOrderImplicits { self =>
-  def apply[A: TotalOrder]: TotalOrder[A] = implicitly
+  def apply[A: TotalOrder]: TotalOrder[A] =
+    implicitly
 
   def less[A: TotalOrder](x: A, y: A): Boolean =
     apply[A].less(x, y)

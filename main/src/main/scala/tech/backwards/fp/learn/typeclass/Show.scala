@@ -7,7 +7,8 @@ trait Show[A] {
 }
 
 object Show extends ShowImplicits { self =>
-  def apply[A: Show]: Show[A] = implicitly
+  def apply[A: Show]: Show[A] =
+    implicitly
 
   def show[A: Show](x: A): String =
     apply[A].show(x)
