@@ -20,7 +20,7 @@ object Monoid extends MonoidImplicits {
 sealed trait MonoidImplicits {
   implicit val monoidSum: Monoid[Sum] =
     new Monoid[Sum] {
-      def mzero: Sum =
+      lazy val mzero: Sum =
         Sum(0)
 
       def mappend(x: Sum, y: Sum): Sum =
@@ -29,7 +29,7 @@ sealed trait MonoidImplicits {
 
   implicit val monoidProduct: Monoid[Product] =
     new Monoid[Product] {
-      def mzero: Product =
+      lazy val mzero: Product =
         Product(1)
 
       def mappend(x: Product, y: Product): Product =

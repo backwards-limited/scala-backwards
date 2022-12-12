@@ -28,6 +28,17 @@ class MonoidSuite extends ScalaCheckSuite {
     )
   }
 
+  property("Sum arbitrary mappend syntax") {
+    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+
+    forAll((x: Int, y: Int) =>
+      assertEquals(
+        Sum(x) |+| Sum(y),
+        Sum(x + y)
+      )
+    )
+  }
+
   property("Sum mappend syntax - obey identity") {
     import tech.backwards.fp.learn.monoid.Monoid.syntax._
 
@@ -73,6 +84,17 @@ class MonoidSuite extends ScalaCheckSuite {
     assertEquals(
       Product(1) |+| Product(2),
       Product(2)
+    )
+  }
+
+  property("Product arbitrary mappend syntax") {
+    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+
+    forAll((x: Int, y: Int) =>
+      assertEquals(
+        Product(x) |+| Product(y),
+        Product(x * y)
+      )
     )
   }
 
