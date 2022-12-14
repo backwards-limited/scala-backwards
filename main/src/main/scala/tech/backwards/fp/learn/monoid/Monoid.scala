@@ -19,6 +19,8 @@ object Monoid extends MonoidImplicits {
 }
 
 sealed trait MonoidImplicits {
+  import tech.backwards.fp.learn.monoid.Monoid.syntax._
+
   implicit val monoidSum: Monoid[Sum] =
     new Monoid[Sum] {
       lazy val mzero: Sum =
@@ -44,5 +46,17 @@ sealed trait MonoidImplicits {
 
       def mappend(xs: List[A], ys: List[A]): List[A] =
         xs ++ ys
+    }
+
+  implicit def monoidPair[A: Monoid, B: Monoid]: Monoid[Pair[A, B]] =
+    new Monoid[Pair[A, B]] {
+      lazy val mzero: Pair[A, B] =
+        Pair(Monoid[A].mzero, Monoid[B].mzero)
+
+      def mappend(x: Pair[A, B], y: Pair[A, B]): Pair[A, B] =
+        (x, y) match {
+          case (Pair(xA, xB), Pair(yA, yB)) =>
+            Pair(xA |+| yA, xB |+| yB)
+        }
     }
 }
