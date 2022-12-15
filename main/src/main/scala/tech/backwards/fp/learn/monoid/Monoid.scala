@@ -13,7 +13,7 @@ object Monoid extends MonoidImplicits {
   object syntax {
     implicit class MonoidSyntax[A: Monoid](x: A) {
       val |+| : A => A =
-        Monoid[A].mappend(x, _)
+        apply[A].mappend(x, _)
     }
   }
 }

@@ -2,7 +2,7 @@ package tech.backwards.fp.learn.monoid
 
 import munit.ScalaCheckSuite
 import org.scalacheck.Prop._
-import org.scalacheck.Test
+import org.scalacheck.{Arbitrary, Gen, Test}
 
 class MonoidSuite extends ScalaCheckSuite {
   override def scalaCheckTestParameters: Test.Parameters =
@@ -205,6 +205,26 @@ class MonoidSuite extends ScalaCheckSuite {
     assertEquals(
       Pair(Sum(3), Product(3)) |+| Pair(Sum(5), Product(6)),
       Pair(Sum(3 + 5), Product(3 * 6))
+    )
+  }
+
+  property("Pair arbitrary mappend syntax") {
+    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+
+    implicit val arbitraryPair: Arbitrary[Pair[Sum, Product]] =
+      Arbitrary(
+        Gen.posNum[Int].map(Sum).flatMap(sum =>
+          Gen.posNum[Int].map(Product).map(product =>
+            Pair(sum, product)
+          )
+        )
+      )
+
+    forAll((pair1: Pair[Sum, Product], pair2: Pair[Sum, Product]) =>
+      assertEquals(
+        pair1 |+| pair2,
+        Pair(Sum(pair1.a.value + pair2.a.value), Product(pair1.b.value * pair2.b.value))
+      )
     )
   }
 
