@@ -2,29 +2,48 @@ package tech.backwards.fp.learn.functor
 
 import munit.ScalaCheckSuite
 import org.scalacheck.Prop._
-import org.scalacheck.{Arbitrary, Test}
+import org.scalacheck.Test
 
 class FunctorSuite extends ScalaCheckSuite {
   override def scalaCheckTestParameters: Test.Parameters =
     super.scalaCheckTestParameters.withMinSuccessfulTests(100).withMaxDiscardRatio(10)
 
-  property("Functor of Id")(
+  property("Functor fmap of Id")(
     assertEquals(
       Functor[Id].fmap(Id(1))(_ + 1),
       Id(2)
     )
   )
 
-  property("Functor of Id syntax") {
+  property("Functor fmap of Id syntax") {
     import tech.backwards.fp.learn.functor.Functor.syntax._
 
     assertEquals(
       Id(1).fmap(_ + 1),
       Id(2)
     )
+
+    assertEquals(
+      Id(1) `<$>` (_ + 1),
+      Id(2)
+    )
   }
 
-  property("Functor of arbitrary Id syntax") {
+  property("Functor fmap of function for Id syntax") {
+    import tech.backwards.fp.learn.functor.Functor.syntax._
+
+    assertEquals(
+      { x: Int => x + 1 } fmap Id(1),
+      Id(2)
+    )
+
+    assertEquals(
+      { x: Int => x + 1 } `<$>` Id(1),
+      Id(2)
+    )
+  }
+
+  property("Functor fmap of arbitrary Id syntax") {
     import tech.backwards.fp.learn.functor.Functor.syntax._
 
     forAll((x: Int) =>
@@ -35,7 +54,7 @@ class FunctorSuite extends ScalaCheckSuite {
     )
   }
 
-  property("Functor of Id syntax - obey identity") {
+  property("Functor fmap of Id syntax - obey identity") {
     import tech.backwards.fp.learn.functor.Functor.syntax._
 
     assertEquals(
@@ -44,7 +63,7 @@ class FunctorSuite extends ScalaCheckSuite {
     )
   }
 
-  property("Functor of Id syntax - obey composition") {
+  property("Functor fmap of Id syntax - obey composition") {
     import tech.backwards.fp.learn.functor.Functor.syntax._
 
     val f: Int => Int =
