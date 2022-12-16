@@ -2,7 +2,7 @@ package tech.backwards.fp.learn.functor
 
 sealed trait Maybe[+A]
 
-final case class Just[A](value: A) extends AnyVal
+final case class Just[A](value: A) extends Maybe[A]
 
 object Just {
   implicit val functorJust: Functor[Just] =
@@ -12,17 +12,17 @@ object Just {
     }
 }
 
-final case class Nothing[A]()
+final case class Nothing[A]() extends Maybe[A]
 
 object Nothing {
+  def apply[A]: Nothing[A] =
+    new Nothing[A]()
+
   implicit val functorNothing: Functor[Nothing] =
     new Functor[Nothing] {
       def fmap[A, B](fa: Nothing[A])(f: A => B): Nothing[B] =
         apply[B]
     }
-
-  def apply[A]: Nothing[A] =
-    new Nothing[A]()
 }
 
 object Maybe {

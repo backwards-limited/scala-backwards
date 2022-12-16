@@ -18,8 +18,8 @@ object MaybeOps {
   implicit val maybeFunctor: Functor[Maybe] =
     new Functor[Maybe] {
       def fmap[A, B](fa: Maybe[A])(f: A => B): Maybe[B] = fa match {
-        case j@Just(_) => justFunctor.fmap(j)(f)
-        case n@Nothing() => nothingFunctor.fmap(n)(f)
+        case j @ Just(_) => justFunctor.fmap(j)(f)
+        case n @ Nothing() => nothingFunctor.fmap(n)(f)
       }
     }
 
