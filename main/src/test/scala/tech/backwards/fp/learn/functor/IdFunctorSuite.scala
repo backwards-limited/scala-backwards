@@ -4,7 +4,7 @@ import munit.ScalaCheckSuite
 import org.scalacheck.Prop._
 import org.scalacheck.Test
 
-class FunctorSuite extends ScalaCheckSuite {
+class IdFunctorSuite extends ScalaCheckSuite {
   override def scalaCheckTestParameters: Test.Parameters =
     super.scalaCheckTestParameters.withMinSuccessfulTests(100).withMaxDiscardRatio(10)
 
@@ -30,7 +30,7 @@ class FunctorSuite extends ScalaCheckSuite {
   }
 
   property("Functor fmap of function for Id syntax") {
-    import tech.backwards.fp.learn.functor.Functor.syntax._
+    import tech.backwards.fp.learn.functor.Functor.syntax.function._
 
     assertEquals(
       { x: Int => x + 1 } fmap Id(1),

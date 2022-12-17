@@ -17,20 +17,22 @@ object Functor extends FunctorImplicits {
         fmap(f)
     }
 
-    implicit class FunctionSyntax[A, B](f: A => B) {
-      def fmap[F[_]: Functor](fa: F[A]): F[B] =
-        apply[F].fmap(fa)(f)
+    object function {
+      implicit class FunctorSyntax[A, B](f: A => B) {
+        def fmap[F[_]: Functor](fa: F[A]): F[B] =
+          apply[F].fmap(fa)(f)
 
-      def `<$>`[F[_]: Functor](fa: F[A]): F[B] =
-        fmap(fa)
+        def `<$>`[F[_]: Functor](fa: F[A]): F[B] =
+          fmap(fa)
+      }
     }
   }
 }
 
 sealed trait FunctorImplicits {
-  implicit val functorId: Functor[Id] =
-    new Functor[Id] {
-      def fmap[A, B](fa: Id[A])(f: A => B): Id[B] =
-        Id(f(fa.value))
+  implicit val functorList: Functor[List] =
+    new Functor[List] {
+      def fmap[A, B](fa: List[A])(f: A => B): List[B] =
+        fa map f
     }
 }
