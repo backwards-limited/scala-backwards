@@ -8,12 +8,7 @@ object Console {
   object syntax {
     import scala.Console._
 
-    implicit class Foo[A: Show](a: A) extends ConsoleSyntax(a.show) {
-      def debug(x: String => String = identity): A =
-        scala.Console.println(x(s)).pipe(_ => a)
-    }
-
-    implicit class ConsoleSyntax(val s: String) {
+    implicit class ConsoleSyntax(s: String) {
       val color: String => String => String =
         s => color => s"$color$s$RESET"
 
@@ -67,6 +62,11 @@ object Console {
 
       val whiteBg: String =
         text(WHITE_B)
+    }
+
+    implicit class ConsoleSyntax2[A: Show](a: A) {
+      def debug(modify: String => String = identity): A =
+        scala.Console.println(modify(a.show)).pipe(_ => a)
     }
   }
 }
