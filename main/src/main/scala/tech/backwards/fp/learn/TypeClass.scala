@@ -1,4 +1,4 @@
-package tech.backwards.fp.learn.typeclass
+package tech.backwards.fp.learn
 
 trait TypeClass[A] {
   def foo(a: A): String

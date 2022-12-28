@@ -1,3 +1,3 @@
-package tech.backwards.fp.learn.monoid
+package tech.backwards.fp.learn
 
 final case class Sum(value: Int) extends AnyVal

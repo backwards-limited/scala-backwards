@@ -1,4 +1,4 @@
-package tech.backwards.fp.learn.monoid
+package tech.backwards.fp.learn
 
 import munit.ScalaCheckSuite
 import org.scalacheck.Prop._
@@ -20,7 +20,7 @@ class MonoidSuite extends ScalaCheckSuite {
   )
 
   property("Sum mappend syntax") {
-    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+    import tech.backwards.fp.learn.Monoid.syntax._
 
     assertEquals(
       Sum(1) |+| Sum(2),
@@ -29,7 +29,7 @@ class MonoidSuite extends ScalaCheckSuite {
   }
 
   property("Sum arbitrary mappend syntax") {
-    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+    import tech.backwards.fp.learn.Monoid.syntax._
 
     forAll((x: Int, y: Int) =>
       assertEquals(
@@ -40,7 +40,7 @@ class MonoidSuite extends ScalaCheckSuite {
   }
 
   property("Sum mappend syntax - obey identity") {
-    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+    import tech.backwards.fp.learn.Monoid.syntax._
 
     assertEquals(
       Sum(1) |+| Monoid[Sum].mzero,
@@ -54,7 +54,7 @@ class MonoidSuite extends ScalaCheckSuite {
   }
 
   property("Sum mappend syntax - obey associativity") {
-    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+    import tech.backwards.fp.learn.Monoid.syntax._
 
     assertEquals(
       Sum(1) |+| Sum(2) |+| Sum(3),
@@ -79,7 +79,7 @@ class MonoidSuite extends ScalaCheckSuite {
   )
 
   property("Product mappend syntax") {
-    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+    import tech.backwards.fp.learn.Monoid.syntax._
 
     assertEquals(
       Product(1) |+| Product(2),
@@ -88,7 +88,7 @@ class MonoidSuite extends ScalaCheckSuite {
   }
 
   property("Product arbitrary mappend syntax") {
-    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+    import tech.backwards.fp.learn.Monoid.syntax._
 
     forAll((x: Int, y: Int) =>
       assertEquals(
@@ -99,7 +99,7 @@ class MonoidSuite extends ScalaCheckSuite {
   }
 
   property("Product mappend syntax - obey identity") {
-    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+    import tech.backwards.fp.learn.Monoid.syntax._
 
     assertEquals(
       Product(5) |+| Monoid[Product].mzero,
@@ -113,7 +113,7 @@ class MonoidSuite extends ScalaCheckSuite {
   }
 
   property("Product mappend syntax - obey associativity") {
-    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+    import tech.backwards.fp.learn.Monoid.syntax._
 
     assertEquals(
       Product(5) |+| Product(2) |+| Product(3),
@@ -138,7 +138,7 @@ class MonoidSuite extends ScalaCheckSuite {
   )
 
   property("List mappend syntax") {
-    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+    import tech.backwards.fp.learn.Monoid.syntax._
 
     assertEquals(
       List(1, 2, 3) |+| List(4, 5, 6),
@@ -147,7 +147,7 @@ class MonoidSuite extends ScalaCheckSuite {
   }
 
   property("List arbitrary mappend syntax") {
-    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+    import tech.backwards.fp.learn.Monoid.syntax._
 
     forAll((xs: List[Int], ys: List[Int]) =>
       assertEquals(
@@ -158,7 +158,7 @@ class MonoidSuite extends ScalaCheckSuite {
   }
 
   property("List mappend syntax - obey identity") {
-    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+    import tech.backwards.fp.learn.Monoid.syntax._
 
     assertEquals(
       List(1, 2, 3) |+| Monoid[List[Int]].mzero,
@@ -172,7 +172,7 @@ class MonoidSuite extends ScalaCheckSuite {
   }
 
   property("List mappend syntax - obey associativity") {
-    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+    import tech.backwards.fp.learn.Monoid.syntax._
 
     assertEquals(
       (List(1, 2, 3) |+| List(4, 5, 6)) |+| List(7, 8, 9),
@@ -200,7 +200,7 @@ class MonoidSuite extends ScalaCheckSuite {
   )
 
   property("Pair mappend syntax") {
-    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+    import tech.backwards.fp.learn.Monoid.syntax._
 
     assertEquals(
       Pair(Sum(3), Product(3)) |+| Pair(Sum(5), Product(6)),
@@ -209,7 +209,7 @@ class MonoidSuite extends ScalaCheckSuite {
   }
 
   property("Pair arbitrary mappend syntax") {
-    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+    import tech.backwards.fp.learn.Monoid.syntax._
 
     implicit val arbitraryPair: Arbitrary[Pair[Sum, Product]] =
       Arbitrary(
@@ -229,7 +229,7 @@ class MonoidSuite extends ScalaCheckSuite {
   }
 
   property("Pair mappend syntax on nested structure") {
-    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+    import tech.backwards.fp.learn.Monoid.syntax._
 
     assertEquals(
       Pair(Pair(Sum(1),  Product(2)),  Pair(List(3, 33, 333),    Sum(4))) |+|
@@ -240,7 +240,7 @@ class MonoidSuite extends ScalaCheckSuite {
   }
 
   property("Pair mappend syntax - obey identity") {
-    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+    import tech.backwards.fp.learn.Monoid.syntax._
 
     assertEquals(
       Pair(Sum(10), Product(20)) |+| Monoid[Pair[Sum, Product]].mzero,
@@ -259,7 +259,7 @@ class MonoidSuite extends ScalaCheckSuite {
   }
 
   property("Pair mappend syntax - obey associativity") {
-    import tech.backwards.fp.learn.monoid.Monoid.syntax._
+    import tech.backwards.fp.learn.Monoid.syntax._
 
     val a: Pair[Pair[Sum, Product], Pair[List[Int], Sum]] =
       Pair(

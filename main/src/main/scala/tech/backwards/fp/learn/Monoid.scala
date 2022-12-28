@@ -1,4 +1,4 @@
-package tech.backwards.fp.learn.monoid
+package tech.backwards.fp.learn
 
 trait Monoid[A] {
   def mzero: A
@@ -19,7 +19,7 @@ object Monoid extends MonoidImplicits {
 }
 
 sealed trait MonoidImplicits {
-  import tech.backwards.fp.learn.monoid.Monoid.syntax._
+  import tech.backwards.fp.learn.Monoid.syntax._
 
   implicit val monoidSum: Monoid[Sum] =
     new Monoid[Sum] {

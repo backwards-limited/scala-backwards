@@ -1,4 +1,4 @@
-package tech.backwards.fp.learn.typeclass
+package tech.backwards.fp.learn
 
 import munit.ScalaCheckSuite
 import org.scalacheck.Prop._
@@ -15,7 +15,7 @@ class ShowSuite extends ScalaCheckSuite {
   )
 
   property("Show Int with syntax") {
-    import tech.backwards.fp.learn.typeclass.Show.syntax._
+    import tech.backwards.fp.learn.Show.syntax._
 
     forAll((x: Int) =>
       assertEquals(x.show, s"$x")
@@ -29,7 +29,7 @@ class ShowSuite extends ScalaCheckSuite {
   )
 
   property("Show Double with syntax") {
-    import tech.backwards.fp.learn.typeclass.Show.syntax._
+    import tech.backwards.fp.learn.Show.syntax._
 
     forAll((x: Double) =>
       assertEquals(x.show, s"$x")
@@ -46,7 +46,7 @@ class ShowSuite extends ScalaCheckSuite {
   )
 
   property("Show List of Int with syntax") {
-    import tech.backwards.fp.learn.typeclass.Show.syntax._
+    import tech.backwards.fp.learn.Show.syntax._
 
     forAll((xs: List[Int]) =>
       assertEquals(

@@ -1,4 +1,4 @@
-package tech.backwards.fp.learn.typeclass
+package tech.backwards.fp.learn
 
 import cats.implicits._
 
@@ -22,7 +22,7 @@ object Show extends ShowImplicits { self =>
 }
 
 sealed trait ShowImplicits {
-  import tech.backwards.fp.learn.typeclass.Show.syntax._
+  import tech.backwards.fp.learn.Show.syntax._
 
   implicit val showInt: Show[Int] =
     _.toString

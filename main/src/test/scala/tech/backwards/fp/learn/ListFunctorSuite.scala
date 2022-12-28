@@ -1,4 +1,4 @@
-package tech.backwards.fp.learn.functor
+package tech.backwards.fp.learn
 
 import munit.ScalaCheckSuite
 import org.scalacheck.Prop._
@@ -16,7 +16,7 @@ class ListFunctorSuite extends ScalaCheckSuite {
   )
 
   property("List Functor fmap syntax") {
-    import tech.backwards.fp.learn.functor.Functor.syntax._
+    import tech.backwards.fp.learn.Functor.syntax._
 
     assertEquals(
       List(1, 2, 3).fmap(_ + 1),
@@ -38,7 +38,7 @@ class ListFunctorSuite extends ScalaCheckSuite {
   // Functor[Int => Int].fmap
 
   property("List Functor fmap of function syntax") {
-    import tech.backwards.fp.learn.functor.Functor.syntax.function._
+    import tech.backwards.fp.learn.Functor.syntax.function._
 
     assertEquals(
       { x: Int => x + 1 } fmap List(1, 2, 3),
@@ -52,7 +52,7 @@ class ListFunctorSuite extends ScalaCheckSuite {
   }
 
   property("List Functor fmap of arbitrary syntax") {
-    import tech.backwards.fp.learn.functor.Functor.syntax._
+    import tech.backwards.fp.learn.Functor.syntax._
 
     forAll((xs: List[Int]) =>
       assertEquals(
@@ -63,7 +63,7 @@ class ListFunctorSuite extends ScalaCheckSuite {
   }
 
   property("List Functor fmap - obey identity") {
-    import tech.backwards.fp.learn.functor.Functor.syntax._
+    import tech.backwards.fp.learn.Functor.syntax._
 
     assertEquals(
       List(1, 2, 3) fmap identity,
@@ -72,7 +72,7 @@ class ListFunctorSuite extends ScalaCheckSuite {
   }
 
   property("List Functor fmap syntax - obey composition") {
-    import tech.backwards.fp.learn.functor.Functor.syntax._
+    import tech.backwards.fp.learn.Functor.syntax._
 
     val f: Int => Int =
       _ + 2

@@ -1,4 +1,4 @@
-package tech.backwards.fp.learn.typeclass
+package tech.backwards.fp.learn
 
 import cats.implicits._
 
@@ -22,7 +22,7 @@ object TotalOrder extends TotalOrderImplicits { self =>
 }
 
 sealed trait TotalOrderImplicits {
-  import tech.backwards.fp.learn.typeclass.TotalOrder.syntax._
+  import tech.backwards.fp.learn.TotalOrder.syntax._
 
   implicit val totalOrderInt: TotalOrder[Int] =
     _ < _

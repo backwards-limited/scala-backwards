@@ -1,4 +1,4 @@
-package tech.backwards.fp.learn.functor
+package tech.backwards.fp.learn
 
 final case class State[S, A](run: S => (S, A)) {
   def exec(s: S): S =

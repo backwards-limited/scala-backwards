@@ -1,4 +1,4 @@
-package tech.backwards.fp.learn.functor
+package tech.backwards.fp.learn
 
 sealed trait Disjunction[+L, +R]
 

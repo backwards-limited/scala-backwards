@@ -1,4 +1,4 @@
-package tech.backwards.fp.learn.typeclass
+package tech.backwards.fp.learn
 
 import cats.implicits._
 
@@ -25,7 +25,7 @@ object Eq extends EqImplicits { self =>
 }
 
 sealed trait EqImplicits {
-  import tech.backwards.fp.learn.typeclass.Eq.syntax._
+  import tech.backwards.fp.learn.Eq.syntax._
 
   implicit val eqInt: Eq[Int] =
     _ == _

@@ -1,4 +1,4 @@
-package tech.backwards.fp.learn.functor
+package tech.backwards.fp.learn
 
 final case class Writer[W, A](run: () => (W, A))
 

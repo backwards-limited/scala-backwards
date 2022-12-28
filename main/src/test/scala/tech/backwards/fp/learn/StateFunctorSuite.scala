@@ -1,4 +1,4 @@
-package tech.backwards.fp.learn.functor
+package tech.backwards.fp.learn
 
 import munit.ScalaCheckSuite
 import tech.backwards.io.Console.syntax.{ConsoleSyntax, ConsoleSyntax2}
@@ -52,7 +52,7 @@ class StateFunctorSuite extends ScalaCheckSuite {
   )
 
   property("State Functor fmap syntax") {
-    import tech.backwards.fp.learn.functor.Functor.syntax._
+    import tech.backwards.fp.learn.Functor.syntax._
 
     assertEquals(
       State((s: String) => s"$s statified" -> 10).fmap(_ + 1).run("state"),
@@ -66,7 +66,7 @@ class StateFunctorSuite extends ScalaCheckSuite {
   }
 
   property("State Functor fmap of arbitrary syntax") {
-    import tech.backwards.fp.learn.functor.Functor.syntax._
+    import tech.backwards.fp.learn.Functor.syntax._
 
     forAll((x: Int) =>
       assertEquals(
@@ -77,7 +77,7 @@ class StateFunctorSuite extends ScalaCheckSuite {
   }
 
   property("State Functor fmap syntax - obey identity") {
-    import tech.backwards.fp.learn.functor.Functor.syntax._
+    import tech.backwards.fp.learn.Functor.syntax._
 
     assertEquals(
       State((s: String) => s"$s statified" -> 10) `<$>` identity run "state",
@@ -86,7 +86,7 @@ class StateFunctorSuite extends ScalaCheckSuite {
   }
 
   property("State Functor fmap syntax - obey composition") {
-    import tech.backwards.fp.learn.functor.Functor.syntax._
+    import tech.backwards.fp.learn.Functor.syntax._
 
     val f: Int => Int =
       _ + 2

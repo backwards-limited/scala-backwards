@@ -1,4 +1,4 @@
-package tech.backwards.fp.learn.typeclass
+package tech.backwards.fp.learn
 
 import munit.ScalaCheckSuite
 import org.scalacheck.Prop._
@@ -15,7 +15,7 @@ class TypeClassSuite extends ScalaCheckSuite {
   )
 
   property("Int instance of TypeClass with syntax") {
-    import tech.backwards.fp.learn.typeclass.TypeClass.syntax._
+    import tech.backwards.fp.learn.TypeClass.syntax._
 
     forAll((i: Int) =>
       assertEquals(i.foo, s"Int: $i")
@@ -29,7 +29,7 @@ class TypeClassSuite extends ScalaCheckSuite {
   )
 
   property("String instance of TypeClass with syntax") {
-    import tech.backwards.fp.learn.typeclass.TypeClass.syntax._
+    import tech.backwards.fp.learn.TypeClass.syntax._
 
     forAll((s: String) =>
       assertEquals(s.foo, s"String: $s")
