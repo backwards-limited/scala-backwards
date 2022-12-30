@@ -81,12 +81,40 @@ class MaybeMonadSuite extends ScalaCheckSuite {
     )
   }
 
+  property("Maybe Just for comprehension syntax") {
+    import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Monad.syntax._
+
+    assertEquals(
+      for {
+        x <- Just(5)
+        y <- Just(1)
+        z <- Just(1)
+      } yield x + y + z,
+      Just(7)
+    )
+  }
+
   property("Maybe Nothing Monad flatMap and then map syntax") {
     import tech.backwards.fp.learn.Functor.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
 
     assertEquals(
       Just(5).flatMap(_ => Nothing[Int]).fmap(_ + 1),
+      Nothing[Int]
+    )
+  }
+
+  property("Maybe Nothing for comprehension syntax") {
+    import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Monad.syntax._
+
+    assertEquals(
+      for {
+        x <- Just(5)
+        y <- Nothing[Int]
+        z <- Just(1)
+      } yield x + y + z,
       Nothing[Int]
     )
   }

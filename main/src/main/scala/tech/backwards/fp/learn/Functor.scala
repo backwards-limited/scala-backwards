@@ -13,6 +13,9 @@ object Functor extends FunctorImplicits {
       def fmap[B](f: A => B): F[B] =
         apply[F].fmap(fa)(f)
 
+      def map[B](f: A => B): F[B] =
+        fmap(f)
+
       def `<$>`[B](f: A => B): F[B] =
         fmap(f)
     }
@@ -21,6 +24,9 @@ object Functor extends FunctorImplicits {
       implicit class FunctorSyntax[A, B](f: A => B) {
         def fmap[F[_]: Functor](fa: F[A]): F[B] =
           apply[F].fmap(fa)(f)
+
+        def map[F[_]: Functor](fa: F[A]): F[B] =
+          fmap(fa)
 
         def `<$>`[F[_]: Functor](fa: F[A]): F[B] =
           fmap(fa)

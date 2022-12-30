@@ -11,7 +11,7 @@ object Monad {
     implicitly
 
   object syntax extends LowerLevelImplicits {
-    implicit class Syntax[A](a: A) {
+    implicit class MonadSyntax[A](a: A) {
       def pure[F[_]: Monad]: F[A] =
         apply[F].pure(a)
     }
