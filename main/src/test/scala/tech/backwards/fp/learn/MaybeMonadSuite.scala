@@ -1,0 +1,118 @@
+package tech.backwards.fp.learn
+
+import munit.ScalaCheckSuite
+import org.scalacheck.Prop._
+import org.scalacheck.Test
+
+class MaybeMonadSuite extends ScalaCheckSuite {
+  override def scalaCheckTestParameters: Test.Parameters =
+    super.scalaCheckTestParameters.withMinSuccessfulTests(100).withMaxDiscardRatio(10)
+
+  property("Maybe Monad pure")(
+    assertEquals(
+      Monad[Maybe].pure(5),
+      Just(5)
+    )
+  )
+
+  property("Maybe Just Monad flatMap") {
+    assertEquals(
+      Monad[Maybe].flatMap(Just(5))(x => Just(x + 1)),
+      Just(6)
+    )
+
+    import tech.backwards.fp.Function.syntax._
+
+    assertEquals(
+      Monad[Maybe].flatMap(Just(5))(_ + 1 |> Just.apply),
+      Just(6)
+    )
+  }
+
+  property("Maybe Just Monad flatMap syntax") {
+    import tech.backwards.fp.learn.Monad.syntax._
+
+    assertEquals(
+      Just(5).flatMap(x => Just(x + 1)),
+      Just(6)
+    )
+  }
+
+  property("Maybe Just Monad pure and flatMap syntax") {
+    import tech.backwards.fp.Function.syntax._
+    import tech.backwards.fp.learn.Maybe._
+    import tech.backwards.fp.learn.Monad.syntax._
+
+    assertEquals(
+      5.pure.flatMap(x => Just(x + 1)),
+      6.pure
+    )
+
+    assertEquals(
+      5.pure >>= (_ + 1 |> Just.apply),
+      6.pure
+    )
+  }
+
+  property("Maybe Nothing Monad flatMap") {
+    assertEquals(
+      Monad[Maybe].flatMap(Nothing[Int])(x => Just(x + 1)),
+      Nothing[Int]
+    )
+
+    assertEquals(
+      Monad[Maybe].flatMap(Just(5))(_ => Nothing[Int]),
+      Nothing[Int]
+    )
+  }
+
+  property("Maybe Just Monad flatMap and then map syntax") {
+    import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Monad.syntax._
+
+    assertEquals(
+      Just(5).flatMap(x => Just(x + 1)).fmap(_ + 1),
+      Just(7)
+    )
+
+    assertEquals(
+      (Just(5) >>= (x => Just(x + 1))) `<$>` (_ + 1),
+      Just(7)
+    )
+  }
+
+  property("Maybe Nothing Monad flatMap and then map syntax") {
+    import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Monad.syntax._
+
+    assertEquals(
+      Just(5).flatMap(_ => Nothing[Int]).fmap(_ + 1),
+      Nothing[Int]
+    )
+  }
+
+  /*property("Id Monad flatMap of arbitrary syntax") {
+    import tech.backwards.fp.learn.Monad.syntax._
+
+    forAll((x: Int) =>
+      assertEquals(
+        Id(x) >>= (x => Id(x + 1)),
+        Id(x + 1)
+      )
+    )
+  }*/
+
+  /*property("Id Monad flatMap of function syntax") {
+    import tech.backwards.fp.learn.Monad.syntax.function._
+
+    assertEquals(
+      { x: Int => Id(x + 1) } flatMap Id(5),
+      Id(6)
+    )
+
+    assertEquals(
+      { x: Int => Id(x + 1) } >>= Id(5),
+      Id(6)
+    )
+  }*/
+}

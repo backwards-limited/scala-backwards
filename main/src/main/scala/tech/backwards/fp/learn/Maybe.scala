@@ -2,27 +2,18 @@ package tech.backwards.fp.learn
 
 sealed trait Maybe[+A]
 
-final case class Just[A](value: A) extends Maybe[A]
+final case class Just[A] private(value: A) extends Maybe[A]
 
 object Just {
-  implicit val functorJust: Functor[Just] =
-    new Functor[Just] {
-      def fmap[A, B](fa: Just[A])(f: A => B): Just[B] =
-        Just(f(fa.value))
-    }
+  def apply[A](a: A): Maybe[A] =
+    new Just(a)
 }
 
-final case class Nothing[A]() extends Maybe[A]
+final case class Nothing[A] private() extends Maybe[A]
 
 object Nothing {
-  def apply[A]: Nothing[A] =
+  def apply[A]: Maybe[A] =
     new Nothing[A]()
-
-  implicit val functorNothing: Functor[Nothing] =
-    new Functor[Nothing] {
-      def fmap[A, B](fa: Nothing[A])(f: A => B): Nothing[B] =
-        apply[B]
-    }
 }
 
 object Maybe {
@@ -30,11 +21,26 @@ object Maybe {
     new Functor[Maybe] {
       def fmap[A, B](fa: Maybe[A])(f: A => B): Maybe[B] =
         fa match {
-          case n: Nothing[A] =>
-            Nothing.functorNothing.fmap(n)(f)
+          case _: Nothing[A] =>
+            Nothing[B]
 
-          case j: Just[A] =>
-            Just.functorJust.fmap(j)(f)
+          case Just(a) =>
+            Just(f(a))
+        }
+    }
+
+  implicit val monadMaybe: Monad[Maybe] =
+    new Monad[Maybe] {
+      def pure[A](a: A): Maybe[A] =
+        Just(a)
+
+      def flatMap[A, B](fa: Maybe[A])(f: A => Maybe[B]): Maybe[B] =
+        fa match {
+          case _: Nothing[A] =>
+            Nothing[B]
+
+          case Just(a) =>
+            f(a)
         }
     }
 }

@@ -10,13 +10,10 @@ object Monad {
   def apply[F[_]: Monad]: Monad[F] =
     implicitly
 
-  object syntax {
-    implicit class MonadSyntax[F[_]: Monad, A](fa: F[A]) {
-      def flatMap[B](f: A => F[B]): F[B] =
-        apply[F].flatMap(fa)(f)
-
-      def >>=[B](f: A => F[B]): F[B] =
-        flatMap(f)
+  object syntax extends LowerLevelImplicits {
+    implicit class Syntax[A](a: A) {
+      def pure[F[_]: Monad]: F[A] =
+        apply[F].pure(a)
     }
 
     object function {
@@ -27,6 +24,16 @@ object Monad {
         def >>=(fa: F[A]): F[B] =
           flatMap(fa)
       }
+    }
+  }
+
+  trait LowerLevelImplicits {
+    implicit class MonadSyntax[F[_]: Monad, A](fa: F[A]) {
+      def flatMap[B](f: A => F[B]): F[B] =
+        apply[F].flatMap(fa)(f)
+
+      def >>=[B](f: A => F[B]): F[B] =
+        flatMap(f)
     }
   }
 }

@@ -10,7 +10,7 @@ class MaybeFunctorSuite extends ScalaCheckSuite {
 
   property("Just Functor fmap")(
     assertEquals(
-      Functor[Just].fmap(Just(1))(_ + 1),
+      Functor[Maybe].fmap(Just(1))(_ + 1),
       Just(2)
     )
   )
@@ -56,7 +56,7 @@ class MaybeFunctorSuite extends ScalaCheckSuite {
 
   property("Nothing Functor fmap")(
     assertEquals(
-      Functor[Nothing].fmap(Nothing[Int])(_ + 1),
+      Functor[Maybe].fmap(Nothing[Int])(_ + 1),
       Nothing[Int]
     )
   )
