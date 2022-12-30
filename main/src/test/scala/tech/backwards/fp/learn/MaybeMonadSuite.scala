@@ -16,12 +16,12 @@ class MaybeMonadSuite extends ScalaCheckSuite {
   )
 
   property("Maybe Just Monad flatMap") {
+    import tech.backwards.fp.Function.syntax._
+
     assertEquals(
       Monad[Maybe].flatMap(Just(5))(x => Just(x + 1)),
       Just(6)
     )
-
-    import tech.backwards.fp.Function.syntax._
 
     assertEquals(
       Monad[Maybe].flatMap(Just(5))(_ + 1 |> Just.apply),
@@ -91,28 +91,28 @@ class MaybeMonadSuite extends ScalaCheckSuite {
     )
   }
 
-  /*property("Id Monad flatMap of arbitrary syntax") {
+  property("Maybe Monad flatMap of arbitrary syntax") {
     import tech.backwards.fp.learn.Monad.syntax._
 
     forAll((x: Int) =>
       assertEquals(
-        Id(x) >>= (x => Id(x + 1)),
-        Id(x + 1)
+        Just(x) >>= (x => Just(x + 1)),
+        Just(x + 1)
       )
     )
-  }*/
+  }
 
-  /*property("Id Monad flatMap of function syntax") {
+  property("Maybe Monad flatMap of function syntax") {
     import tech.backwards.fp.learn.Monad.syntax.function._
 
     assertEquals(
-      { x: Int => Id(x + 1) } flatMap Id(5),
-      Id(6)
+      { x: Int => Just(x + 1) } flatMap Just(5),
+      Just(6)
     )
 
     assertEquals(
-      { x: Int => Id(x + 1) } >>= Id(5),
-      Id(6)
+      { x: Int => Just(x + 1) } >>= Nothing[Int],
+      Nothing[Int]
     )
-  }*/
+  }
 }
