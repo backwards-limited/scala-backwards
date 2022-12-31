@@ -6,7 +6,7 @@ abstract class Monad[F[_]: Functor] {
   def flatMap[A, B](fa: F[A])(f: A => F[B]): F[B]
 }
 
-object Monad {
+object Monad extends MonadImplicits {
   def apply[F[_]: Monad]: Monad[F] =
     implicitly
 
@@ -36,4 +36,30 @@ object Monad {
         flatMap(f)
     }
   }
+}
+
+trait MonadImplicits {
+  implicit val monadList: Monad[List] =
+    new Monad[List] {
+      def pure[A](a: A): List[A] =
+        List(a)
+
+      def flatMap[A, B](fa: List[A])(f: A => List[B]): List[B] =
+        fa.flatMap(f)
+
+      /*
+      We could accumulate manually, but we'll just reuse List.flatMap as above.
+      def flatMap[A, B](fa: List[A])(f: A => List[B]): List[B] = {
+        def go(fb: List[B]): List[A] => List[B] = {
+          case a :: as =>
+            go(fb ::: f(a))(as)
+
+          case Nil =>
+            fb
+        }
+
+        go(List.empty[B])(fa)
+      }
+      */
+    }
 }

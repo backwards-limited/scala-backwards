@@ -113,12 +113,12 @@ class MaybeFunctorSuite extends ScalaCheckSuite {
       _ * 3
 
     assertEquals(
-      Just(2) `<$>` f fmap g,
+      Just(2) fmap f fmap g,
       Just(2).fmap(f andThen g)
     )
 
     assertEquals(
-      Nothing[Int] `<$>` f fmap g,
+      Nothing[Int] `<$>` f `<$>` g,
       Nothing[Int].fmap(f andThen g)
     )
   }

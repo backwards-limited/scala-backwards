@@ -21,7 +21,7 @@ object Maybe {
     new Functor[Maybe] {
       def fmap[A, B](fa: Maybe[A])(f: A => B): Maybe[B] =
         fa match {
-          case _: Nothing[A] =>
+          case Nothing() =>
             Nothing[B]
 
           case Just(a) =>
@@ -36,7 +36,7 @@ object Maybe {
 
       def flatMap[A, B](fa: Maybe[A])(f: A => Maybe[B]): Maybe[B] =
         fa match {
-          case _: Nothing[A] =>
+          case Nothing() =>
             Nothing[B]
 
           case Just(a) =>
