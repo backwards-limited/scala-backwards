@@ -10,7 +10,7 @@ class DisjunctionFunctorSuite extends ScalaCheckSuite {
 
   property("Left Disjunction Functor fmap")(
     assertEquals(
-      Functor[Left[String, *]].fmap(Left[String, Int]("foo"))(_ + 1),
+      Functor[Disjunction[String, *]].fmap(Left[String, Int]("foo"))(_ + 1),
       Left[String, Int]("foo")
     )
   )
@@ -31,7 +31,7 @@ class DisjunctionFunctorSuite extends ScalaCheckSuite {
 
   property("Right Disjunction Functor fmap")(
     assertEquals(
-      Functor[Right[String, *]].fmap(Right[String, Int](10))(_ + 1),
+      Functor[Disjunction[String, *]].fmap(Right[String, Int](10))(_ + 1),
       Right[String, Int](11)
     )
   )

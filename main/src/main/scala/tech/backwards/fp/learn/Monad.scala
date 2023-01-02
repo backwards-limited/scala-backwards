@@ -11,7 +11,7 @@ object Monad extends MonadImplicits {
     implicitly
 
   object syntax extends LowerLevelImplicits {
-    implicit class MonadSyntax[A](a: A) {
+    implicit class Syntax[A](a: A) {
       def pure[F[_]: Monad]: F[A] =
         apply[F].pure(a)
     }
@@ -38,7 +38,7 @@ object Monad extends MonadImplicits {
   }
 }
 
-trait MonadImplicits {
+sealed trait MonadImplicits {
   implicit val monadList: Monad[List] =
     new Monad[List] {
       def pure[A](a: A): List[A] =
