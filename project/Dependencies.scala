@@ -3,18 +3,15 @@ import sbt._
 object Dependencies {
   def apply(): Seq[ModuleID] =
     List(
-      scalaReflect, scalaMeta, scalatest, scalatestplus, specs2, munit, munitCatsEffect, weaver, scalaMock, scalacheck, scalacheckShapeless, scalatestContainers, s3mock, magnolify,
+      scalaMeta, scalatest, scalatestplus, specs2, munit, munitCatsEffect, weaver, scalaMock, scalacheck, scalacheckShapeless, scalatestContainers, s3mock, magnolify,
       log4Cats, scribe, pprint, pureConfig,
       cats, catsEffect, catsEffectTesting, catsRetry, kittens, mouse, simulacrum, refined, monocle, shapeless, /*meowMtl,*/ chimney,
       scalaParallelCollections, parserCombinators, http4s, fs2, scalaUri, betterFiles, sttp, caliban, awsJava, quill, postgresql,
       circe, playJson
     ).flatten
 
-  lazy val scalaReflect: Seq[ModuleID] =
-    List("org.scala-lang" % "scala-reflect" % BuildProperties("scala.version"))
-
   lazy val scalaMeta: Seq[ModuleID] =
-    List("org.scalameta" %% "scalameta" % "4.6.0")
+    List("org.scalameta" %% "scalameta" % "4.7.1")
 
   lazy val scalatest: Seq[ModuleID] =
     List("org.scalatest" %% "scalatest" % "3.2.14" % "test, it" withSources() withJavadoc())
@@ -109,7 +106,7 @@ object Dependencies {
 
   lazy val catsEffect: Seq[ModuleID] = {
     val group = "org.typelevel"
-    val version = "3.4.2"
+    val version = "3.4.4"
 
     List(
       "cats-effect"
@@ -148,7 +145,7 @@ object Dependencies {
 
   lazy val monocle: Seq[ModuleID] = {
     val group = "dev.optics"
-    val version = "3.1.0"
+    val version = "3.2.0"
 
     List(
       "monocle-core", "monocle-macro", "monocle-generic"
@@ -206,7 +203,7 @@ object Dependencies {
 
   lazy val sttp: Seq[ModuleID] = {
     val group = "com.softwaremill.sttp.client3"
-    val version = "3.8.5"
+    val version = "3.8.6"
 
     List(
       "core", "circe", "async-http-client-backend-cats", "async-http-client-backend-zio"
@@ -215,7 +212,7 @@ object Dependencies {
 
   lazy val caliban: Seq[ModuleID] = {
     val group = "com.github.ghostdogpr"
-    val version = "2.0.1"
+    val version = "2.0.2"
 
     List(
       "caliban-client"
@@ -223,7 +220,7 @@ object Dependencies {
   }
 
   lazy val awsJava: Seq[ModuleID] =
-    List("com.amazonaws" % "aws-java-sdk" % "1.12.361")
+    List("com.amazonaws" % "aws-java-sdk" % "1.12.377")
 
   lazy val quill: Seq[ModuleID] = {
     val group = "io.getquill"

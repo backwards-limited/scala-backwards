@@ -6,9 +6,7 @@ addSbtPlugin("net.vonbuchholtz" % "sbt-dependency-check" % "4.2.0")
 
 addSbtPlugin("com.github.ghostdogpr" % "caliban-codegen-sbt" % "2.0.1")
 
-addSbtPlugin("com.github.sbt" % "sbt-native-packager" % "1.9.9")
-
-addSbtPlugin("com.typesafe.sbt" % "sbt-site" % "1.4.1")
+addSbtPlugin("com.github.sbt" % "sbt-native-packager" % "1.9.11")
 
 addSbtPlugin("com.github.sbt" % "sbt-release" % "1.1.0")
 

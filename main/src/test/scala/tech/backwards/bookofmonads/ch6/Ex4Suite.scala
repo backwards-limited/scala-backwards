@@ -10,6 +10,6 @@ import munit.CatsEffectSuite
  */
 class Ex4Suite extends CatsEffectSuite {
   test("") {
-
+    assert(true)
   }
 }

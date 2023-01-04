@@ -9,7 +9,8 @@ object Writer {
   /**
    * Because of using the "kind projector" compiler plugin the following becomes much easier:
    * {{{
-   *   implicit def functorWriter[W] = new Functor[({ type E[A] = Writer[W, A] })# E]
+   *  implicit def functorWriter[W] =
+   *    new Functor[({ type E[A] = Writer[W, A] })# E]
    * }}}
    */
   implicit def functorWriter[W]: Functor[Writer[W, *]] =

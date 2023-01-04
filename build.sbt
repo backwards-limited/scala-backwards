@@ -53,8 +53,8 @@ def project(id: String, base: File): Project =
         "-language:postfixOps",
         "-Ymacro-annotations",
         "-Yrangepos",
-        "-P:kind-projector:underscore-placeholders" // Can use _ instead of * when defining anonymous type lambdas
-        //"-Xfatal-warnings"
+        // "-P:kind-projector:underscore-placeholders" // Can use _ instead of * when defining anonymous type lambdas
+        // "-Xfatal-warnings"
         // "-Ywarn-value-discard"
       ),
       libraryDependencies ++= Dependencies(),
