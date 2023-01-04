@@ -21,6 +21,15 @@ object Monoid extends MonoidImplicits {
 sealed trait MonoidImplicits {
   import tech.backwards.fp.learn.Monoid.syntax._
 
+  implicit val monoidString: Monoid[String] =
+    new Monoid[String] {
+      def mzero: String =
+        ""
+
+      def mappend(x: String, y: String): String =
+        x + y
+    }
+
   implicit val monoidSum: Monoid[Sum] =
     new Monoid[Sum] {
       lazy val mzero: Sum =

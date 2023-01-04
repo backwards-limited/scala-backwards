@@ -18,6 +18,9 @@ object Functor extends FunctorImplicits {
 
       def `<$>`[B](f: A => B): F[B] =
         fmap(f)
+
+      def as[B](b: => B): F[B] =
+        fmap(_ => b)
     }
 
     object function {

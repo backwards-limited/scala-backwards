@@ -1,6 +1,7 @@
 package tech.backwards.fp.learn
 
 import munit.ScalaCheckSuite
+import tech.backwards.fp.learn.Writer.tell
 import org.scalacheck.Prop._
 import org.scalacheck.Test
 
@@ -8,26 +9,26 @@ class WriterMonadSuite extends ScalaCheckSuite {
   override def scalaCheckTestParameters: Test.Parameters =
     super.scalaCheckTestParameters.withMinSuccessfulTests(100).withMaxDiscardRatio(10)
 
-  /*property("Writer Monad pure")(
+  property("Writer Monad pure") {
     assertEquals(
       Monad[Writer[String, *]].pure(5).run(),
       "" -> 5
     )
-  )*/
-
-  /*property("Disjunction Left Monad flatMap") {
-    import tech.backwards.fp.Function.syntax._
 
     assertEquals(
-      Monad[Disjunction[String, *]].flatMap(Left[String, Int]("foo"))(x => Right(x + 1)),
-      Left[String, Int]("foo")
+      Monad[Writer[List[String], *]].pure(5).run(),
+      Nil -> 5
     )
+  }
+
+  property("Writer Monad flatMap") {
+    import tech.backwards.fp.learn.Functor.syntax._
 
     assertEquals(
-      Monad[Disjunction[String, *]].flatMap(Left[String, Int]("foo"))(_ + 1 |> Right.apply),
-      Left[String, Int]("foo")
+      Monad[Writer[String, *]].flatMap(tell[String].as(5))(x => tell[String].as(x + 1)).run(),
+      "" -> 6
     )
-  }*/
+  }
 
   /*property("Disjunction Left Monad flatMap syntax") {
     import tech.backwards.fp.Function.syntax._
