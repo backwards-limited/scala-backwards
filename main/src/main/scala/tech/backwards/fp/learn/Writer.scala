@@ -30,11 +30,10 @@ object Writer {
       import tech.backwards.fp.learn.Monoid.syntax._
 
       def pure[A](a: A): Writer[W, A] =
-        tell(Monoid[W].mzero).map(_ => a)
+        tell[W].as(a)
 
       def flatMap[A, B](fa: Writer[W, A])(f: A => Writer[W, B]): Writer[W, B] = {
-        val (w, a) = fa.run()
-
+        val (w,  a) = fa.run()
         val (w2, b) = f(a).run()
 
         tell(w |+| w2).as(b)
