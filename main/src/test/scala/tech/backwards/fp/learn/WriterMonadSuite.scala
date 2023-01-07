@@ -2,7 +2,7 @@ package tech.backwards.fp.learn
 
 import munit.ScalaCheckSuite
 import tech.backwards.fp.learn.Writer.tell
-import tech.backwards.io.Console.syntax.{ConsoleSyntax, ConsoleSyntax2}
+import tech.backwards.io.Console.syntax._
 import org.scalacheck.Prop._
 import org.scalacheck.Test
 
@@ -13,12 +13,12 @@ class WriterMonadSuite extends ScalaCheckSuite {
   property("Writer Monad pure") {
     assertEquals(
       Monad[Writer[String, *]].pure(5).run(),
-      Monoid[String].mzero -> 5
+      (Monoid[String].mzero -> 5).debug(_.yellow)
     )
 
     assertEquals(
       Monad[Writer[List[String], *]].pure(5).run(),
-      Monoid[List[String]].mzero -> 5
+      (Monoid[List[String]].mzero -> 5).debug(_.cyan)
     )
   }
 
@@ -103,7 +103,7 @@ class WriterMonadSuite extends ScalaCheckSuite {
     forAll((x: Int) =>
       assertEquals(
         Writer(() => "foo" -> x).flatMap(x => Writer(() => "bar" -> (x + 1))).run(),
-        ("foobar" -> (x + 1)).debug(_.yellow)
+        "foobar" -> (x + 1)
       )
     )
   }
