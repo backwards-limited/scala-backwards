@@ -1,14 +1,14 @@
 package tech.backwards.bookofmonads.ch5
 
-import cats.{Functor, Semigroup}
 import cats.implicits._
-import munit.CatsEffectSuite
+import cats.{Functor, Semigroup}
+import munit.FunSuite
 
 /**
  * Monad Laws - What we call laws, mathematicians call theorems.
  * First, Function laws; Functor laws; and Monoids
  */
-class Ex1Suite extends CatsEffectSuite with FunctionFixture { self =>
+class Ex1Suite extends FunSuite with FunctionFixture { self =>
   test("Function left identity law") {
     val id: String => String =
       self.id[String]

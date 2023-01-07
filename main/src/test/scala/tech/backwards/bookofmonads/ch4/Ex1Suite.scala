@@ -2,25 +2,25 @@ package tech.backwards.bookofmonads.ch4
 
 import cats.{Applicative, Functor, Monad}
 import cats.effect._
-import cats.implicits.{catsSyntaxOptionId, none}
-import munit.CatsEffectSuite
+import cats.implicits._
 import scribe.Logger
 import tech.backwards.scribe.TestLogHandler
+import weaver._
 
 /**
  * Utilities for monadic code
  */
-class Ex1Suite extends CatsEffectSuite {
-  test("Functor map") {
-    assertEquals(
+object Ex1Suite extends SimpleIOSuite {
+  pureTest("Functor map") {
+    expect.eql(
       Functor[List].map(List(1, 2, 3))(_ + 1),
       List(2, 3, 4)
     )
 
-    def map[F[_]: Functor, A, B](f: A => B)(Fa: F[A]): F[B] =
+    def map[F[_] : Functor, A, B](f: A => B)(Fa: F[A]): F[B] =
       Functor[F].map(Fa)(f)
 
-    assertEquals(
+    expect.eql(
       map((_: Int) + 1)(List(1, 2, 3)),
       List(2, 3, 4)
     )
@@ -37,14 +37,11 @@ class Ex1Suite extends CatsEffectSuite {
       Functor[List].map(List("Bob", "Sue"))(name => IO(logger info name))
       // We end up with a list of monadic actions, not a monadic action itself.
 
-    assertEquals(
-      result.length,
-      2 // Cannot assert as List(IO.unit, IO.unit) since the result is a list of "thunk"
-    )
-
-    assertEquals(
-      testLogHandler.logRecords,
-      Nil
+    result.sequence.map(xs =>
+      expect.all(
+        xs == List.fill(2)(()),
+        testLogHandler.logRecords.map(_.logOutput.plainText) == List("Bob", "Sue")
+      )
     )
   }
 
@@ -69,11 +66,11 @@ class Ex1Suite extends CatsEffectSuite {
     val result: IO[List[Unit]] =
       mapM((name: String) => IO(logger info name))(List("Bob", "Sue"))
 
-    result.assertEquals(List.fill(2)(()))
-
-    assertEquals(
-      testLogHandler.logRecords,
-      Nil
+    result.map(xs =>
+      expect.all(
+        xs == List.fill(2)(()),
+        testLogHandler.logRecords.map(_.logOutput.plainText) == List("Bob", "Sue")
+      )
     )
   }
 
@@ -97,14 +94,11 @@ class Ex1Suite extends CatsEffectSuite {
     val result: IO[List[Unit]] =
       mapM((name: String) => IO(logger info s"Hi $name"))(List("Bob", "Sue"))
 
-    assertEquals(
-      result.unsafeRunSync(),
-      List.fill(2)(())
-    )
-
-    assertEquals(
-      testLogHandler.logRecords.map(_.logOutput.plainText),
-      List("Hi Bob", "Hi Sue")
+    result.map(xs =>
+      expect.all(
+        xs == List.fill(2)(()),
+        testLogHandler.logRecords.map(_.logOutput.plainText) == List("Hi Bob", "Hi Sue")
+      )
     )
   }
 
@@ -122,7 +116,7 @@ class Ex1Suite extends CatsEffectSuite {
           )
       }
 
-    sequence(List(IO("a"), IO("b"))) assertEquals List("a", "b")
+    sequence(List(IO("a"), IO("b"))).map(xs => expect(xs == List("a", "b")))
   }
 
   test("sequence, which leads to redefining mapM in terms of sequence - Applicative style") {
@@ -136,7 +130,7 @@ class Ex1Suite extends CatsEffectSuite {
           Applicative[F].ap(Functor[F].map(x)(a => a :: (_: List[A])))(sequence(xs))
       }
 
-    sequence(List(IO("a"), IO("b"))) assertEquals List("a", "b")
+    sequence(List(IO("a"), IO("b"))).map(xs => expect(xs == List("a", "b")))
   }
 
   test("Redefine mapM as a composition of sequence and map") {
@@ -156,7 +150,7 @@ class Ex1Suite extends CatsEffectSuite {
     val result: IO[List[String]] =
       mapM((name: String) => IO(s"Hi $name"))(List("Bob", "Sue"))
 
-    result assertEquals List("Hi Bob", "Hi Sue")
+    result.map(xs => expect(xs == List("Hi Bob", "Hi Sue")))
   }
 
   test("zipWithM") {
@@ -184,7 +178,7 @@ class Ex1Suite extends CatsEffectSuite {
     val result: IO[List[String]] =
       zipWithM((a: Int) => (b: String) => IO(b + a))(List(1, 2))(List("x", "y"))
 
-    result assertEquals List("x1", "y2")
+    result.map(xs => expect(xs == List("x1", "y2")))
   }
 
   test("zipWithM - Shorter version") {
@@ -203,7 +197,7 @@ class Ex1Suite extends CatsEffectSuite {
     val result: IO[List[String]] =
       zipWithM((a: Int) => (b: String) => IO(b + a))(List(1, 2))(List("x", "y"))
 
-    result assertEquals List("x1", "y2")
+    result.map(xs => expect(xs == List("x1", "y2")))
   }
 
   test("replicateM") {
@@ -221,6 +215,6 @@ class Ex1Suite extends CatsEffectSuite {
     def replicateM[F[_]: Monad, A](n: Int)(Fa: F[A]): F[List[A]] =
       sequence(List.fill(n)(Fa))
 
-    replicateM(3)(IO("hi")) assertEquals List("hi", "hi", "hi")
+    replicateM(3)(IO("hi")).map(xs => expect(xs == List("hi", "hi", "hi")))
   }
 }

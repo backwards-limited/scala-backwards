@@ -1,12 +1,12 @@
 package tech.backwards.bookofmonads.ch4
 
 import cats.implicits.{catsSyntaxOptionId, none}
-import munit.CatsEffectSuite
+import weaver._
 
 /**
  * Traversable
  */
-class Ex2Suite extends CatsEffectSuite {
+object Ex2Suite extends SimpleIOSuite {
   /**
    * The list constructor supports two ways of mapping a function over all of its elements:
    * {{{
@@ -28,10 +28,7 @@ class Ex2Suite extends CatsEffectSuite {
    *      traverse :: Applicative m => (a -> m b) -> f a -> m (f b)
    * }}}
    */
-  test("Traverse") {
-    assertEquals(
-      1,
-      1
-    )
-  }
+  pureTest("Traverse")(
+    expect(true)
+  )
 }

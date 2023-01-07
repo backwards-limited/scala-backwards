@@ -3,12 +3,12 @@ package tech.backwards.bookofmonads.ch6
 import cats.data.WriterT
 import cats.effect.IO
 import cats.implicits.{catsSyntaxFlatMapOps, catsSyntaxOptionId, none}
-import munit.CatsEffectSuite
+import weaver._
 
 /**
  * Writer Monad
  */
-class Ex3Suite extends CatsEffectSuite {
+object Ex3Suite extends SimpleIOSuite {
   test("Writer") {
     final case class User(id: Int)
 
@@ -24,6 +24,6 @@ class Ex3Suite extends CatsEffectSuite {
     val program: WriterT[IO, Vector[String], Order] =
       user(1) >>= order
 
-    program.run.assertEquals(Vector("Getting user", "Getting order for user: User(1)") -> Order(100))
+    program.run.map(xs => expect(xs == Vector("Getting user", "Getting order for user: User(1)") -> Order(100)))
   }
 }
