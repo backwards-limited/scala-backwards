@@ -2,6 +2,7 @@ package tech.backwards.fp.learn
 
 import munit.ScalaCheckSuite
 import tech.backwards.fp.learn.Writer.tell
+import tech.backwards.io.Console.syntax.{ConsoleSyntax, ConsoleSyntax2}
 import org.scalacheck.Prop._
 import org.scalacheck.Test
 
@@ -12,12 +13,12 @@ class WriterMonadSuite extends ScalaCheckSuite {
   property("Writer Monad pure") {
     assertEquals(
       Monad[Writer[String, *]].pure(5).run(),
-      "" -> 5
+      Monoid[String].mzero -> 5
     )
 
     assertEquals(
       Monad[Writer[List[String], *]].pure(5).run(),
-      Nil -> 5
+      Monoid[List[String]].mzero -> 5
     )
   }
 
@@ -26,140 +27,93 @@ class WriterMonadSuite extends ScalaCheckSuite {
 
     assertEquals(
       Monad[Writer[String, *]].flatMap(tell[String].as(5))(x => tell[String].as(x + 1)).run(),
-      "" -> 6
+      Monoid[String].mzero -> 6
     )
   }
 
-  /*property("Disjunction Left Monad flatMap syntax") {
-    import tech.backwards.fp.Function.syntax._
+  property("Writer Monad flatMap syntax") {
     import tech.backwards.fp.learn.Monad.syntax._
 
     assertEquals(
-      Left[String, Int]("foo").flatMap(x => Right(x + 1)),
-      Left[String, Int]("foo")
+      Writer(() => "foo" -> 10).flatMap(x => Writer(() => "bar" -> (x + 1))).run(),
+      "foobar" -> 11
     )
 
     assertEquals(
-      Left[String, Int]("foo") >>= (_ + 1 |> Right.apply),
-      Left[String, Int]("foo")
+      Writer(() => List("foo") -> 10).flatMap(x => Writer(() => List("bar") -> (x + 1))).run(),
+      List("foo", "bar") -> 11
     )
+  }
 
-    assertEquals(
-      Right[String, Int](5) >>= (_ => Left[String, Int]("foo")),
-      Left[String, Int]("foo")
-    )
-  }*/
-
-  /*property("Disjunction Right Monad flatMap") {
-    import tech.backwards.fp.Function.syntax._
-
-    assertEquals(
-      Monad[Disjunction[String, *]].flatMap(Right(5))(x => Right(x + 1)),
-      Right(6)
-    )
-
-    assertEquals(
-      Monad[Disjunction[String, *]].flatMap(Right(5))(_ + 1 |> Right.apply),
-      Right(6)
-    )
-  }*/
-
-  /*property("Disjunction Right Monad flatMap syntax") {
-    import tech.backwards.fp.Function.syntax._
-    import tech.backwards.fp.learn.Monad.syntax._
-
-    assertEquals(
-      Right(5).flatMap(x => Right(x + 1)),
-      Right(6)
-    )
-
-    assertEquals(
-      Right(5) >>= (_ + 1 |> Right.apply),
-      Right(6)
-    )
-  }*/
-
-  /*property("Disjunction Right Monad pure and flatMap syntax") {
-    import tech.backwards.fp.Function.syntax._
-    import tech.backwards.fp.learn.Disjunction._
-    import tech.backwards.fp.learn.Monad.syntax._
-
-    assertEquals(
-      5.pure.flatMap(x => Right(x + 1)),
-      6.pure
-    )
-
-    assertEquals(
-      5.pure >>= (_ + 1 |> Right.apply),
-      6.pure
-    )
-  }*/
-
-  /*property("Disjunction Right Monad flatMap and then map syntax") {
+  property("Writer Monad pure and flatMap syntax") {
     import tech.backwards.fp.learn.Functor.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
 
     assertEquals(
-      Right(5).flatMap(x => Right(x + 1)).fmap(_ + 1),
-      Right(7)
+      5.pure[Writer[String, *]].flatMap(x => tell[String].as(x + 1)).run(),
+      Monoid[String].mzero -> 6
     )
+  }
 
-    assertEquals(
-      (Right(5) >>= (x => Right(x + 1))) `<$>` (_ + 1),
-      Right(7)
-    )
-  }*/
-
-  /*property("Disjunction right for comprehension syntax") {
+  property("Writer for comprehension syntax") {
     import tech.backwards.fp.learn.Functor.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
 
-    assertEquals(
+    val writer: Writer[List[String], Int] =
       for {
-        x <- 1.pure[Disjunction[String, *]]
-        y <- 2.pure[Disjunction[String, *]]
-        z <- 3.pure[Disjunction[String, *]]
-      } yield x + y + z,
-      Right(6)
-    )
-  }*/
+        x <- 1.pure[Writer[List[String], *]]
+        _ <- tell(List("one"))
+        y <- 2.pure[Writer[List[String], *]]
+        _ <- tell(List("two"))
+        z <- 3.pure[Writer[List[String], *]]
+        _ <- tell(List("three"))
+      } yield x + y + z
 
-  /*property("Disjunction Left for comprehension syntax") {
+    assertEquals(
+      writer.run(),
+      List("one", "two", "three") -> 6
+    )
+  }
+
+  property("Writer for comprehension syntax") {
     import tech.backwards.fp.learn.Functor.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
 
-    assertEquals(
-      for {
-        x <- 1.pure[Disjunction[String, *]]
-        y <- Left[String, Int]("foo")
-        z <- 3.pure[Disjunction[String, *]]
-      } yield x + y + z,
-      Left("foo")
-    )
-  }*/
+    type Writer[A] = tech.backwards.fp.learn.Writer[List[String], A]
 
-  /*property("Disjunction Monad flatMap of arbitrary syntax") {
+    val writer: Writer[Int] =
+      for {
+        x <- 1.pure[Writer]
+        _ <- tell(List("one"))
+        y <- 2.pure[Writer]
+        _ <- tell(List("two"))
+        z <- 3.pure[Writer]
+        _ <- tell(List("three"))
+      } yield x + y + z
+
+    assertEquals(
+      writer.run(),
+      List("one", "two", "three") -> 6
+    )
+  }
+
+  property("Writer Monad flatMap of arbitrary syntax") {
     import tech.backwards.fp.learn.Monad.syntax._
 
     forAll((x: Int) =>
       assertEquals(
-        Right(x) >>= (x => Right(x + 1)),
-        Right(x + 1)
+        Writer(() => "foo" -> x).flatMap(x => Writer(() => "bar" -> (x + 1))).run(),
+        ("foobar" -> (x + 1)).debug(_.yellow)
       )
     )
-  }*/
+  }
 
-  /*property("Disjunction Monad flatMap of function syntax") {
+  property("Writer Monad flatMap of function syntax") {
     import tech.backwards.fp.learn.Monad.syntax.function._
 
     assertEquals(
-      { x: Int => Right(x + 1) } flatMap Right(5),
-      Right(6)
+      { x: Int => Writer(() => "bar" -> (x + 1)) }.flatMap(Writer(() => "foo" -> 5)).run(),
+      "foobar" -> 6
     )
-
-    assertEquals(
-      { x: Int => Right[String, Int](x + 1) } >>= Left("foo"),
-      Left("foo")
-    )
-  }*/
+  }
 }

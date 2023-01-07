@@ -24,6 +24,13 @@ object Writer {
         }
     }
 
+  /**
+   * Because of using the "kind projector" compiler plugin the following becomes much easier:
+   * {{{
+   *  implicit def monadWriter[W: Monoid] =
+   *    new Monad[({ type E[A] = Writer[W, A] })# E]
+   * }}}
+   */
   implicit def monadWriter[W: Monoid]: Monad[Writer[W, *]] =
     new Monad[Writer[W, *]] {
       import tech.backwards.fp.learn.Functor.syntax._
