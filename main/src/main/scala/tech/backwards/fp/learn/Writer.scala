@@ -3,11 +3,11 @@ package tech.backwards.fp.learn
 final case class Writer[W, A](run: () => (W, A))
 
 object Writer {
+  def writer[W: Monoid]: Writer[W, Unit] =
+    Writer(() => Monoid[W].mzero -> ())
+
   def tell[W](w: W): Writer[W, Unit] =
     Writer(() => w -> ())
-
-  def tell[W: Monoid]: Writer[W, Unit] =
-    Writer(() => Monoid[W].mzero -> ())
 
   /**
    * Because of using the "kind projector" compiler plugin the following becomes much easier:
@@ -37,7 +37,7 @@ object Writer {
       import tech.backwards.fp.learn.Monoid.syntax._
 
       def pure[A](a: A): Writer[W, A] =
-        tell[W].as(a)
+        writer[W].as(a)
 
       def flatMap[A, B](fa: Writer[W, A])(f: A => Writer[W, B]): Writer[W, B] = {
         val (w,  a) = fa.run()
