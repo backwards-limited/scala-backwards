@@ -33,4 +33,23 @@ object State {
           ss -> f(a)
         }
     }
+
+  /**
+   * Because of using the "kind projector" compiler plugin the following becomes much easier:
+   * {{{
+   *  implicit def monadState[S] =
+   *    new Monad[({ type E[A] = State[S, A] })# E]
+   * }}}
+   */
+  implicit def monadState[S]: Monad[State[S, *]] =
+    new Monad[State[S, *]] {
+      def pure[A](a: A): State[S, A] =
+        State(s => s -> a)
+
+      def flatMap[A, B](fa: State[S, A])(f: A => State[S, B]): State[S, B] =
+        State { s =>
+          val (ss, a) = fa.run(s)
+          f(a).run(ss)
+        }
+    }
 }
