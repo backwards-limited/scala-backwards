@@ -30,7 +30,7 @@ class StateSuite extends ScalaCheckSuite {
 
   property("State modify") {
     assertEquals(
-      State modify { s: Int => s + 1 } run 5,
+      State modify ((s: Int) => s + 1) run 5,
       6 -> ()
     )
   }
