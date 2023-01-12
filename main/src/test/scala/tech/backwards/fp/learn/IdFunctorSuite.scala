@@ -33,12 +33,12 @@ class IdFunctorSuite extends ScalaCheckSuite {
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     assertEquals(
-      { x: Int => x + 1 } fmap Id(1),
+      ((x: Int) => x + 1) fmap Id(1),
       Id(2)
     )
 
     assertEquals(
-      { x: Int => x + 1 } `<$>` Id(1),
+      ((x: Int) => x + 1) `<$>` Id(1),
       Id(2)
     )
   }

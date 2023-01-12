@@ -132,7 +132,7 @@ class WriterMonadSuite extends ScalaCheckSuite {
     import tech.backwards.fp.learn.Monad.syntax.function._
 
     assertEquals(
-      { x: Int => Writer(() => "bar" -> (x + 1)) }.flatMap(Writer(() => "foo" -> 5)).run(),
+      ((x: Int) => Writer(() => "bar" -> (x + 1))).flatMap(Writer(() => "foo" -> 5)).run(),
       "foobar" -> 6
     )
   }

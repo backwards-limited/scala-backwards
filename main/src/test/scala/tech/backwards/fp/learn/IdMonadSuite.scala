@@ -51,12 +51,12 @@ class IdMonadSuite extends ScalaCheckSuite {
     import tech.backwards.fp.learn.Monad.syntax.function._
 
     assertEquals(
-      { x: Int => Id(x + 1) } flatMap Id(5),
+      ((x: Int) => Id(x + 1)) flatMap Id(5),
       Id(6)
     )
 
     assertEquals(
-      { x: Int => Id(x + 1) } >>= Id(5),
+      ((x: Int) => Id(x + 1)) >>= Id(5),
       Id(6)
     )
   }

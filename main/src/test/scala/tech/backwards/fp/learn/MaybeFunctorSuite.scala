@@ -33,12 +33,12 @@ class MaybeFunctorSuite extends ScalaCheckSuite {
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     assertEquals(
-      { x: Int => x + 1 } fmap Just(1),
+      ((x: Int) => x + 1) fmap Just(1),
       Just(2)
     )
 
     assertEquals(
-      { x: Int => x + 1 } `<$>` Just(1),
+      ((x: Int) => x + 1) `<$>` Just(1),
       Just(2)
     )
   }
@@ -79,12 +79,12 @@ class MaybeFunctorSuite extends ScalaCheckSuite {
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     assertEquals(
-      { x: Int => x + 1 } fmap Nothing[Int],
+      ((x: Int) => x + 1) fmap Nothing[Int],
       Nothing[Int]
     )
 
     assertEquals(
-      { x: Int => x + 1 } `<$>` Nothing[Int],
+      ((x: Int) => x + 1) `<$>` Nothing[Int],
       Nothing[Int]
     )
   }

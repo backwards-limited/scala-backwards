@@ -47,7 +47,7 @@ class WriterFunctorSuite extends ScalaCheckSuite {
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     assertEquals(
-      { x: Int => x + 1 }.fmap(Writer(() => "foo" -> 10)).run(),
+      ((x: Int) => x + 1).fmap(Writer(() => "foo" -> 10)).run(),
       "foo" -> 11
     )
   }

@@ -80,12 +80,12 @@ class StateFunctorSuite extends ScalaCheckSuite {
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     assertEquals(
-      { x: Int => x + 1 }.fmap(State((s: String) => s"$s statified" -> 10)).run("state"),
+      ((x: Int) => x + 1).fmap(State((s: String) => s"$s statified" -> 10)).run("state"),
       "state statified" -> 11
     )
 
     assertEquals(
-      { x: Int => x + 1 } `<$>` State((s: String) => s"$s statified" -> 10) run "state",
+      ((x: Int) => x + 1) `<$>` State((s: String) => s"$s statified" -> 10) run "state",
       "state statified" -> 11
     )
   }

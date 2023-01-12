@@ -84,12 +84,12 @@ class DisjunctionFunctorSuite extends ScalaCheckSuite {
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     assertEquals(
-      { x: Int => x + 1 } fmap Left[String, Int]("foo"),
+      ((x: Int) => x + 1) fmap Left[String, Int]("foo"),
       Left[String, Int]("foo")
     )
 
     assertEquals(
-      { x: Int => x + 1 } `<$>` Left[String, Int]("foo"),
+      ((x: Int) => x + 1) `<$>` Left[String, Int]("foo"),
       Left[String, Int]("foo")
     )
   }
@@ -98,12 +98,12 @@ class DisjunctionFunctorSuite extends ScalaCheckSuite {
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     assertEquals(
-      { x: Int => x + 1 } fmap Right[String, Int](10),
+      ((x: Int) => x + 1) fmap Right[String, Int](10),
       Right[String, Int](11)
     )
 
     assertEquals(
-      { x: Int => x + 1 } `<$>` Right[String, Int](10),
+      ((x: Int) => x + 1) `<$>` Right[String, Int](10),
       Right[String, Int](11)
     )
   }

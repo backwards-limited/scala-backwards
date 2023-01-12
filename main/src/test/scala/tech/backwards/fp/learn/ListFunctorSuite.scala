@@ -41,12 +41,12 @@ class ListFunctorSuite extends ScalaCheckSuite {
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     assertEquals(
-      { x: Int => x + 1 } fmap List(1, 2, 3),
+      ((x: Int) => x + 1) fmap List(1, 2, 3),
       List(2, 3, 4)
     )
 
     assertEquals(
-      { x: Int => x + 1 } `<$>` List(1, 2, 3),
+      ((x: Int) => x + 1) `<$>` List(1, 2, 3),
       List(2, 3, 4)
     )
   }

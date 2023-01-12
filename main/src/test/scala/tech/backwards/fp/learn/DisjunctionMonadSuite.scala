@@ -152,12 +152,12 @@ class DisjunctionMonadSuite extends ScalaCheckSuite {
     import tech.backwards.fp.learn.Monad.syntax.function._
 
     assertEquals(
-      { x: Int => Right(x + 1) } flatMap Right(5),
+      ((x: Int) => Right(x + 1)) flatMap Right(5),
       Right(6)
     )
 
     assertEquals(
-      { x: Int => Right[String, Int](x + 1) } >>= Left("foo"),
+      ((x: Int) => Right[String, Int](x + 1)) >>= Left("foo"),
       Left("foo")
     )
   }

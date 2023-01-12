@@ -82,12 +82,12 @@ class ListMonadSuite extends ScalaCheckSuite {
     import tech.backwards.fp.learn.Monad.syntax.function._
 
     assertEquals(
-      { x: Int => List(x + 1) } flatMap List(1, 2, 3),
+      ((x: Int) => List(x + 1)) flatMap List(1, 2, 3),
       List(2, 3, 4)
     )
 
     assertEquals(
-      { x: Int => List(x + 1) } >>= List(1, 2, 3),
+      ((x: Int) => List(x + 1)) >>= List(1, 2, 3),
       List(2, 3, 4)
     )
   }

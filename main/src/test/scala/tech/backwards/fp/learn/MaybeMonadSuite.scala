@@ -134,12 +134,12 @@ class MaybeMonadSuite extends ScalaCheckSuite {
     import tech.backwards.fp.learn.Monad.syntax.function._
 
     assertEquals(
-      { x: Int => Just(x + 1) } flatMap Just(5),
+      ((x: Int) => Just(x + 1)) flatMap Just(5),
       Just(6)
     )
 
     assertEquals(
-      { x: Int => Just(x + 1) } >>= Nothing[Int],
+      ((x: Int) => Just(x + 1)) >>= Nothing[Int],
       Nothing[Int]
     )
   }
