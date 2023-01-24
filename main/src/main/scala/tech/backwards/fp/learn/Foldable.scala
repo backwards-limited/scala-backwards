@@ -15,15 +15,22 @@ object Foldable extends FoldableImplicits {
       def foldr[B](seed: B)(f: (A, B) => B): B =
         apply[F].foldr(fa)(seed)(f)
     }
+
+    implicit class FoldableTuple2Syntax[A](fa: (A, A))(implicit F: Foldable[Lambda[X => (X, X)]]) {
+      def foldr[B](seed: B)(f: (A, B) => B): B =
+        F.foldr(fa)(seed)(f)
+    }
+
+    implicit class FoldableTuple3Syntax[A](fa: (A, A, A))(implicit F: Foldable[Lambda[X => (X, X, X)]]) {
+      def foldr[B](seed: B)(f: (A, B) => B): B =
+        F.foldr(fa)(seed)(f)
+    }
   }
 }
 
 sealed trait FoldableImplicits {
-  implicit val foldableId: Foldable[Id] =
-    new Foldable[Id] {
-      def foldr[A, B](fa: Id[A])(seed: B)(f: (A, B) => B): B =
-        f(fa.value, seed)
-    }
+  def foldRight[A, B](xs: List[A])(seed: B)(f: (A, B) => B): B =
+    xs.foldRight(seed)(f)
 
   implicit val foldableList: Foldable[List] =
     new Foldable[List] {
@@ -37,5 +44,57 @@ sealed trait FoldableImplicits {
 
         go(fa.reverse, seed)
       }
+    }
+
+  /**
+   * Because of using the "kind projector" compiler plugin the following becomes much easier:
+   * {{{
+   *   implicit def tuple2Foldable = new Foldable[({ type E[X] = (X, X) })# E]
+   * }}}
+   *
+   * Another longer way is:
+   * {{{
+   *  type Pair[A] = (A, A)
+   *
+   *  implicit val foldableTuple2: Foldable[Pair] =
+   *    new Foldable[Pair] {
+   *      def foldr[A, B](fa: (A, A))(seed: B)(f: (A, B) => B): B = ???
+   *    }
+   * }}}
+   * Original implementation before drying the code for many arity:
+   * {{{
+   *  implicit val foldableTuple2: Foldable[Lambda[X => (X, X)]] =
+   *    new Foldable[Lambda[X => (X, X)]] {
+   *      def foldr[A, B](fa: (A, A))(seed: B)(f: (A, B) => B): B = {
+   *        println(fa.productIterator.toList.asInstanceOf[List[A]])
+   *
+   *        f(fa._1, f(fa._2, seed))
+   *      }
+   *    }
+   * }}}
+   */
+  implicit val foldableTuple2: Foldable[Lambda[X => (X, X)]] =
+    new Foldable[Lambda[X => (X, X)]] {
+      def foldr[A, B](fa: (A, A))(seed: B)(f: (A, B) => B): B =
+        foldRight(fa.productIterator.toList.asInstanceOf[List[A]])(seed)(f)
+    }
+
+  /**
+   * Original implementation before drying the code for many arity:
+   * {{{
+   *  implicit val foldableTuple3: Foldable[Lambda[X => (X, X, X)]] =
+   *    new Foldable[Lambda[X => (X, X, X)]] {
+   *      def foldr[A, B](fa: (A, A, A))(seed: B)(f: (A, B) => B): B = {
+   *        println(fa.productIterator.toList.asInstanceOf[List[A]])
+   *
+   *        f(fa._1, f(fa._2, f(fa._3, seed)))
+   *      }
+   *    }
+   * }}}
+   */
+  implicit val foldableTuple3: Foldable[Lambda[X => (X, X, X)]] =
+    new Foldable[Lambda[X => (X, X, X)]] {
+      def foldr[A, B](fa: (A, A, A))(seed: B)(f: (A, B) => B): B =
+        foldRight(fa.productIterator.toList.asInstanceOf[List[A]])(seed)(f)
     }
 }

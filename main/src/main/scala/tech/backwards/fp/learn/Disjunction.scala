@@ -57,4 +57,23 @@ object Disjunction {
             f(a)
         }
     }
+
+  /**
+   * Because of using the "kind projector" compiler plugin the following becomes much easier:
+   * {{{
+   *   implicit def foldableDisjunction[L] =
+   *   new Foldable[({ type E[A] = Disjunction[L, A] })# E]
+   * }}}
+   */
+  implicit def foldableDisjunction[L]: Foldable[Disjunction[L, *]] =
+    new Foldable[Disjunction[L, *]] {
+      def foldr[A, B](fa: Disjunction[L, A])(seed: B)(f: (A, B) => B): B =
+        fa match {
+          case Left(_) =>
+            seed
+
+          case Right(a) =>
+            f(a, seed)
+        }
+    }
 }

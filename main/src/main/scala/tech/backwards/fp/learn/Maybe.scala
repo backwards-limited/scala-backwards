@@ -43,4 +43,16 @@ object Maybe {
             f(a)
         }
     }
+
+  implicit val foldableMaybe: Foldable[Maybe] =
+    new Foldable[Maybe] {
+      def foldr[A, B](fa: Maybe[A])(seed: B)(f: (A, B) => B): B =
+        fa match {
+          case Nothing() =>
+            seed
+
+          case Just(a) =>
+            f(a, seed)
+        }
+    }
 }

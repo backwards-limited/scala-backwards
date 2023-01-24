@@ -44,4 +44,76 @@ class FoldableSuite extends ScalaCheckSuite {
       "seed"
     )
   }
+
+  property("Tuple Foldable") {
+    assertEquals(
+      Foldable[Lambda[X => (X, X)]].foldr("a" -> "b")("seed")((a, b) => s"$b-$a"),
+      "seed-b-a"
+    )
+
+    assertEquals(
+      Foldable[Lambda[X => (X, X, X)]].foldr(("a", "b", "c"))("seed")((a, b) => s"$b-$a"),
+      "seed-c-b-a"
+    )
+
+    import tech.backwards.fp.learn.Foldable.syntax._
+
+    assertEquals(
+      ("a" -> "b").foldr("seed")((a, b) => s"$b-$a"),
+      "seed-b-a"
+    )
+
+    assertEquals(
+      ("a", "b", "c").foldr("seed")((a, b) => s"$b-$a"),
+      "seed-c-b-a"
+    )
+  }
+
+  property("Maybe Foldable") {
+    assertEquals(
+      Foldable[Maybe].foldr(Just("a"))("seed")((a, b) => s"$b-$a"),
+      "seed-a"
+    )
+
+    assertEquals(
+      Foldable[Maybe].foldr(Nothing[String])("seed")((a, b) => s"$b-$a"),
+      "seed"
+    )
+
+    import tech.backwards.fp.learn.Foldable.syntax._
+
+    assertEquals(
+      Just("a").foldr("seed")((a, b) => s"$b-$a"),
+      "seed-a"
+    )
+
+    assertEquals(
+      Nothing[String].foldr("seed")((a, b) => s"$b-$a"),
+      "seed"
+    )
+  }
+
+  property("Disjunction Foldable") {
+    assertEquals(
+      Foldable[Disjunction[String, *]].foldr(Right("a"))("seed")((a, b) => s"$b-$a"),
+      "seed-a"
+    )
+
+    assertEquals(
+      Foldable[Disjunction[String, *]].foldr(Left[String, String]("whoops"))("seed")((a, b) => s"$b-$a"),
+      "seed"
+    )
+
+    import tech.backwards.fp.learn.Foldable.syntax._
+
+    assertEquals(
+      Right("a").foldr("seed")((a, b) => s"$b-$a"),
+      "seed-a"
+    )
+
+    assertEquals(
+      Nothing[String].foldr("seed")((a, b) => s"$b-$a"),
+      "seed"
+    )
+  }
 }
