@@ -23,4 +23,13 @@ object Id {
       def foldr[A, B](fa: Id[A])(seed: B)(f: (A, B) => B): B =
         f(fa.value, seed)
     }
+
+  implicit val applicativeId: Applicative[Id] =
+    new Applicative[Id] {
+      def pure[A](a: A): Id[A] =
+        Id(a)
+
+      def ap[A, B](ff: Id[A => B])(fa: Id[A]): Id[B] =
+        pure(ff.value(fa.value))
+    }
 }
