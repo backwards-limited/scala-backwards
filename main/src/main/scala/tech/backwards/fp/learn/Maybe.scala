@@ -63,14 +63,11 @@ object Maybe {
 
       def ap[A, B](ff: Maybe[A => B])(fa: Maybe[A]): Maybe[B] =
         (ff, fa) match {
-          case (Nothing(), _) =>
-            Nothing[B]
-
-          case (_, Nothing()) =>
-            Nothing[B]
-
           case (Just(f), Just(a)) =>
             pure(f(a))
+
+          case _ =>
+            Nothing[B]
         }
     }
 }
