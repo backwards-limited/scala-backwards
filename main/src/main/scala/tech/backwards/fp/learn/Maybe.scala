@@ -61,13 +61,14 @@ object Maybe {
       def pure[A](a: A): Maybe[A] =
         Just(a)
 
-      def ap[A, B](ff: Maybe[A => B])(fa: Maybe[A]): Maybe[B] =
-        (ff, fa) match {
-          case (Just(f), Just(a)) =>
-            pure(f(a))
+      def ap[A, B](ff: Maybe[A => B])(fa: Maybe[A]): Maybe[B] = {
+        ff match {
+          case Just(f) =>
+            functorMaybe.fmap(fa)(f)
 
           case _ =>
             Nothing[B]
         }
+      }
     }
 }
