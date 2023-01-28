@@ -55,4 +55,22 @@ object Maybe {
             f(a, seed)
         }
     }
+
+  implicit val applicativeMaybe: Applicative[Maybe] =
+    new Applicative[Maybe] {
+      def pure[A](a: A): Maybe[A] =
+        Just(a)
+
+      def ap[A, B](ff: Maybe[A => B])(fa: Maybe[A]): Maybe[B] =
+        (ff, fa) match {
+          case (Nothing(), _) =>
+            Nothing[B]
+
+          case (_, Nothing()) =>
+            Nothing[B]
+
+          case (Just(f), Just(a)) =>
+            pure(f(a))
+        }
+    }
 }
