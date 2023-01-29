@@ -29,12 +29,23 @@ object Applicative extends ApplicativeImplicits {
 }
 
 sealed trait ApplicativeImplicits {
-  /*implicit val monadList: Monad[List] =
-    new Monad[List] {
+  implicit val applicativeList: Applicative[List] =
+    new Applicative[List] {
       def pure[A](a: A): List[A] =
         List(a)
 
-      def flatMap[A, B](fa: List[A])(f: A => List[B]): List[B] =
-        fa.flatMap(f)
-    }*/
+      def ap[A, B](ff: List[A => B])(fa: List[A]): List[B] =
+        ff flatMap fa.map
+
+      /* Alternative though not that nice:
+      def ap[A, B](ff: List[A => B])(fa: List[A]): List[B] =
+        ff match {
+          case f :: fs =>
+            fa.map(f) ++ ap(fs)(fa)
+
+          case _ =>
+            Nil
+        }
+      */
+    }
 }
