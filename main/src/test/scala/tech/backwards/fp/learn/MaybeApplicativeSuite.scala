@@ -121,6 +121,11 @@ class MaybeApplicativeSuite extends ScalaCheckSuite {
     )
 
     assertEquals(
+      ((x: Int) => (y: Int) => (z: Int) => x + y + z) `<$>` Just(5) <*> Just(10) <*> Just(20),
+      Just(35)
+    )
+
+    assertEquals(
       ((x: Int, y: Int, z: Int) => x + y + z).curried `<$>` Just(5) <*> Just(10) <*> Just(20),
       Just(35)
     )
@@ -135,6 +140,11 @@ class MaybeApplicativeSuite extends ScalaCheckSuite {
 
     assertEquals(
       add `<$>` Just(5) <*> Nothing[Int] <*> Just(20),
+      Nothing[Int]
+    )
+
+    assertEquals(
+      ((x: Int) => (y: Int) => (z: Int) => x + y + z) `<$>` Just(5) <*> Just(10) <*> Nothing[Int],
       Nothing[Int]
     )
 

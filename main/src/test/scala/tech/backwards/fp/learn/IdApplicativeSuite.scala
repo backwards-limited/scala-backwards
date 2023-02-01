@@ -79,6 +79,11 @@ class IdApplicativeSuite extends ScalaCheckSuite {
     )
 
     assertEquals(
+      ((x: Int) => (y: Int) => (z: Int) => x + y + z) `<$>` Id(5) <*> Id(10) <*> Id(20),
+      Id(35)
+    )
+
+    assertEquals(
       ((x: Int, y: Int, z: Int) => x + y + z).curried `<$>` Id(5) <*> Id(10) <*> Id(20),
       Id(35)
     )

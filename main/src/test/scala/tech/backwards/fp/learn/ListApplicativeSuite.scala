@@ -130,6 +130,14 @@ class ListApplicativeSuite extends ScalaCheckSuite {
     )
 
     assertEquals(
+      ((x: Int) => (y: Int) => x + y) `<$>` List(1, 11) <*> List(3, 4, 5),
+      List(
+        4, 5, 6,
+        14, 15, 16
+      )
+    )
+
+    assertEquals(
       ((x: Int, y: Int) => x + y).curried `<$>` List(1, 11) <*> List(3, 4, 5),
       List(
         4, 5, 6,
@@ -147,6 +155,11 @@ class ListApplicativeSuite extends ScalaCheckSuite {
 
     assertEquals(
       add `<$>` List.empty[Int] <*> List(3, 4, 5),
+      Nil
+    )
+
+    assertEquals(
+      ((x: Int) => (y: Int) => x + y) `<$>` List(1, 11) <*> Nil,
       Nil
     )
 
