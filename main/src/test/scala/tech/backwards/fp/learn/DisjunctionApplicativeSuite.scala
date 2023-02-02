@@ -24,6 +24,24 @@ class DisjunctionApplicativeSuite extends ScalaCheckSuite {
     )
   }
 
+  property("Disjunction Right syntax") {
+    import tech.backwards.fp.learn.Disjunction.syntax._
+
+    assertEquals(
+      5.right[String],
+      Right(5)
+    )
+  }
+
+  property("Disjunction Left syntax") {
+    import tech.backwards.fp.learn.Disjunction.syntax._
+
+    assertEquals(
+      "foo".left[Int],
+      Left("foo")
+    )
+  }
+
   property("Disjunction Right Applicative ap") {
     val add: Int => Int => Int => Int =
       x => y => z => x + y + z
@@ -87,23 +105,24 @@ class DisjunctionApplicativeSuite extends ScalaCheckSuite {
 
   property("Disjunction Left Applicative ap syntax") {
     import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
 
     val add: Int => Int => Int => Int =
       x => y => z => x + y + z
 
     assertEquals(
-      Right[String, Int](5).fmap(add).ap(Left("foo")).ap(Right(20)),
+      5.right[String].fmap(add).ap(Left("foo")).ap(Right(20)),
       Left("foo")
     )
 
     assertEquals(
-      Right[String, Int](5) fmap add ap Right(10) ap Left("foo"),
+      5.right[String] fmap add ap Right(10) ap Left("foo"),
       Left("foo")
     )
 
     assertEquals(
-      Right[String, Int](5) `<$>` add <*> Left("foo") <*> Right(20),
+      5.right[String] `<$>` add <*> Left("foo") <*> Right(20),
       Left("foo")
     )
   }
@@ -133,23 +152,24 @@ class DisjunctionApplicativeSuite extends ScalaCheckSuite {
 
   property("Disjunction Left Applicative ap function syntax") {
     import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     val add: Int => Int => Int => Int =
       x => y => z => x + y + z
 
     assertEquals(
-      add `<$>` Right[String, Int](5) <*> Left("foo") <*> Right(20),
+      add `<$>` 5.right[String] <*> Left("foo") <*> Right(20),
       Left("foo")
     )
 
     assertEquals(
-      ((x: Int) => (y: Int) => (z: Int) => x + y + z) `<$>` Right[String, Int](5) <*> Right(10) <*> Left("foo"),
+      ((x: Int) => (y: Int) => (z: Int) => x + y + z) `<$>` 5.right[String] <*> Right(10) <*> Left("foo"),
       Left("foo")
     )
 
     assertEquals(
-      ((x: Int, y: Int, z: Int) => x + y + z).curried `<$>` Right[String, Int](5) <*> Right(10) <*> Left("foo"),
+      ((x: Int, y: Int, z: Int) => x + y + z).curried `<$>` 5.right[String] <*> Right(10) <*> Left("foo"),
       Left("foo")
     )
   }

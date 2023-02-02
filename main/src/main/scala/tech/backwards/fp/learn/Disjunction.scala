@@ -17,6 +17,16 @@ object Right {
 }
 
 object Disjunction {
+  object syntax {
+    implicit class DisjunctionSyntax[A](a: A) {
+      def right[L]: Disjunction[L, A] =
+        Right[L, A](a)
+
+      def left[R]: Disjunction[A, R] =
+        Left[A, R](a)
+    }
+  }
+  
   /**
    * Because of using the "kind projector" compiler plugin the following becomes much easier:
    * {{{
