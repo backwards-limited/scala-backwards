@@ -46,4 +46,27 @@ object Writer {
         tell(w |+| w2).as(b)
       }
     }
+
+  /**
+   * Because of using the "kind projector" compiler plugin the following becomes much easier:
+   * {{{
+   *  implicit def applicativeWriter[W: Monoid] =
+   *    new Applicative[({ type E[A] = Writer[W, A] })# E]
+   * }}}
+   */
+  implicit def applicativeWriter[W: Monoid]: Applicative[Writer[W, *]] =
+    new Applicative[Writer[W, *]] {
+      import tech.backwards.fp.learn.Functor.syntax._
+      import tech.backwards.fp.learn.Monoid.syntax._
+
+      def pure[A](a: A): Writer[W, A] =
+        writer[W].as(a)
+
+      def ap[A, B](ff: Writer[W, A => B])(fa: Writer[W, A]): Writer[W, B] = {
+        val (w, f) = ff.run()
+        val (w2, a) = fa.run()
+
+        tell(w |+| w2).as(f(a))
+      }
+    }
 }
