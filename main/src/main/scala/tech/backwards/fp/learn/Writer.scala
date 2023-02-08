@@ -3,6 +3,9 @@ package tech.backwards.fp.learn
 final case class Writer[W, A](run: () => (W, A))
 
 object Writer {
+  def apply[W, A](wa: (W, A)): Writer[W, A] =
+    Writer(() => wa)
+
   def writer[W: Monoid]: Writer[W, Unit] =
     Writer(() => Monoid[W].mzero -> ())
 

@@ -77,7 +77,7 @@ class WriterApplicativeSuite extends ScalaCheckSuite {
     )
   }
 
-  /*property("Disjunction Right Applicative ap syntax") {
+  property("Writer (String accumulator) Applicative ap syntax") {
     import tech.backwards.fp.learn.Applicative.syntax.function._
     import tech.backwards.fp.learn.Functor.syntax._
 
@@ -85,65 +85,45 @@ class WriterApplicativeSuite extends ScalaCheckSuite {
       x => y => z => x + y + z
 
     assertEquals(
-      Right(5).fmap(add).ap(Right(10)).ap(Right(20)),
-      Right(35)
+      tell("a").as(5).fmap(add).ap(tell("b").as(10)).ap(tell("c").as(20)).run(),
+      "abc" -> 35
     )
 
     assertEquals(
-      Right(5) fmap add ap Right(10) ap Right(20),
-      Right(35)
+      (tell("a").as(5) fmap add ap tell("b").as(10) ap tell("c").as(20)).run(),
+      "abc" -> 35
     )
 
     assertEquals(
-      Right(5) `<$>` add <*> Right(10) <*> Right(20),
-      Right(35)
+      (tell("a").as(5) `<$>` add <*> tell("b").as(10) <*> tell("c").as(20)).run(),
+      "abc" -> 35
     )
-  }*/
+  }
 
-  /*property("Disjunction Left Applicative ap") {
-    val add: Int => Int => Int => Int =
-      x => y => z => x + y + z
-
-    val addFirstPartiallyApplied: Disjunction[String, Int => Int => Int] =
-      Functor[Disjunction[String, *]].fmap(Right(5))(add)
-
-    val addSecondPartiallyApplied: Disjunction[String, Int => Int] =
-      Applicative[Disjunction[String, *]].ap(addFirstPartiallyApplied)(Left("foo"))
-
-    val addThirdAndLastPartiallyApplied: Disjunction[String, Int] =
-      Applicative[Disjunction[String, *]].ap(addSecondPartiallyApplied)(Right(20))
-
-    assertEquals(
-      addThirdAndLastPartiallyApplied,
-      Left("foo")
-    )
-  }*/
-
-  /*property("Disjunction Left Applicative ap syntax") {
+  property("Writer (List accumulator) Applicative ap syntax") {
     import tech.backwards.fp.learn.Applicative.syntax.function._
-    import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
 
     val add: Int => Int => Int => Int =
       x => y => z => x + y + z
 
     assertEquals(
-      5.right[String].fmap(add).ap(Left("foo")).ap(Right(20)),
-      Left("foo")
+      tell(List("a")).as(5).fmap(add).ap(tell(List("b")).as(10)).ap(tell(List("c")).as(20)).run(),
+      List("a", "b", "c") -> 35
     )
 
     assertEquals(
-      5.right[String] fmap add ap Right(10) ap Left("foo"),
-      Left("foo")
+      (tell(List("a")).as(5) fmap add ap tell(List("b")).as(10) ap tell(List("c")).as(20)).run(),
+      List("a", "b", "c") -> 35
     )
 
     assertEquals(
-      5.right[String] `<$>` add <*> Left("foo") <*> Right(20),
-      Left("foo")
+      (tell(List("a")).as(5) `<$>` add <*> tell(List("b")).as(10) <*> tell(List("c")).as(20)).run(),
+      List("a", "b", "c") -> 35
     )
-  }*/
+  }
 
-  /*property("Disjunction Right Applicative ap function syntax") {
+  property("Writer (String accumulator) Applicative ap function syntax") {
     import tech.backwards.fp.learn.Applicative.syntax.function._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
@@ -151,46 +131,45 @@ class WriterApplicativeSuite extends ScalaCheckSuite {
       x => y => z => x + y + z
 
     assertEquals(
-      add `<$>` Right(5) <*> Right(10) <*> Right(20),
-      Right(35)
+      (add `<$>` Writer("a" -> 5) <*> Writer("b" -> 10) <*> Writer("c" -> 20)).run(),
+      "abc" -> 35
     )
 
     assertEquals(
-      ((x: Int) => (y: Int) => (z: Int) => x + y + z) `<$>` Right(5) <*> Right(10) <*> Right(20),
-      Right(35)
+      (((x: Int) => (y: Int) => (z: Int) => x + y + z) `<$>` Writer("a" -> 5) <*> Writer("b" -> 10) <*> Writer("c" -> 20)).run(),
+      "abc" -> 35
     )
 
     assertEquals(
-      ((x: Int, y: Int, z: Int) => x + y + z).curried `<$>` Right(5) <*> Right(10) <*> Right(20),
-      Right(35)
+      (((x: Int, y: Int, z: Int) => x + y + z).curried `<$>` Writer("a" -> 5) <*> Writer("b" -> 10) <*> Writer("c" -> 20)).run(),
+      "abc" -> 35
     )
-  }*/
+  }
 
-  /*property("Disjunction Left Applicative ap function syntax") {
+  property("Writer (List accumulator) Applicative ap function syntax") {
     import tech.backwards.fp.learn.Applicative.syntax.function._
-    import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     val add: Int => Int => Int => Int =
       x => y => z => x + y + z
 
     assertEquals(
-      add `<$>` 5.right[String] <*> Left("foo") <*> Right(20),
-      Left("foo")
+      (add `<$>` Writer(List("a") -> 5) <*> Writer(List("b") -> 10) <*> Writer(List("c") -> 20)).run(),
+      List("a", "b", "c") -> 35
     )
 
     assertEquals(
-      ((x: Int) => (y: Int) => (z: Int) => x + y + z) `<$>` 5.right[String] <*> Right(10) <*> Left("foo"),
-      Left("foo")
+      (((x: Int) => (y: Int) => (z: Int) => x + y + z) `<$>` Writer(List("a") -> 5) <*> Writer(List("b") -> 10) <*> Writer(List("c") -> 20)).run(),
+      List("a", "b", "c") -> 35
     )
 
     assertEquals(
-      ((x: Int, y: Int, z: Int) => x + y + z).curried `<$>` 5.right[String] <*> Right(10) <*> Left("foo"),
-      Left("foo")
+      (((x: Int, y: Int, z: Int) => x + y + z).curried `<$>` Writer(List("a") -> 5) <*> Writer(List("b") -> 10) <*> Writer(List("c") -> 20)).run(),
+      List("a", "b", "c") -> 35
     )
-  }*/
+  }
 
-  /*property("Disjunction Right Applicative ap function of arbitrary syntax") {
+  property("Writer (String accumulator) Applicative ap function of arbitrary syntax") {
     import tech.backwards.fp.learn.Applicative.syntax.function._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
@@ -199,9 +178,24 @@ class WriterApplicativeSuite extends ScalaCheckSuite {
 
     forAll((x: Int, y: Int, z: Int) =>
       assertEquals(
-        add `<$>` Right(x) <*> Right(y) <*> Right(z),
-        Right(x + y + z)
+        (add `<$>` Writer("a" -> x) <*> Writer("b" -> y) <*> Writer("c" -> z)).run(),
+        "abc" -> (x + y + z)
       )
     )
-  }*/
+  }
+
+  property("Writer (List accumulator) Applicative ap function of arbitrary syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Functor.syntax.function._
+
+    val add: Int => Int => Int => Int =
+      x => y => z => x + y + z
+
+    forAll((x: Int, y: Int, z: Int) =>
+      assertEquals(
+        (add `<$>` Writer(List("a") -> x) <*> Writer(List("b") -> y) <*> Writer(List("c") -> z)).run(),
+        List("a", "b", "c") -> (x + y + z)
+      )
+    )
+  }
 }
