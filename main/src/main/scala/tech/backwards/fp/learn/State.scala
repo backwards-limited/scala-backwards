@@ -1,5 +1,7 @@
 package tech.backwards.fp.learn
 
+import scala.util.chaining.scalaUtilChainingOps
+
 final case class State[S, A](run: S => (S, A)) {
   def exec(s: S): S =
     run(s)._1
@@ -28,10 +30,11 @@ object State {
   implicit def functorState[S]: Functor[State[S, *]] =
     new Functor[State[S, *]] {
       def fmap[A, B](fa: State[S, A])(f: A => B): State[S, B] =
-        State { s =>
-          val (ss, a) = fa.run(s)
-          ss -> f(a)
-        }
+        State(s =>
+          fa.run(s) match {
+            case (s, a) => s -> f(a)
+          }
+        )
     }
 
   /**
@@ -47,9 +50,34 @@ object State {
         State(s => s -> a)
 
       def flatMap[A, B](fa: State[S, A])(f: A => State[S, B]): State[S, B] =
-        State { s =>
-          val (ss, a) = fa.run(s)
-          f(a).run(ss)
-        }
+        State(s =>
+          fa.run(s) match {
+            case (s, a) => f(a).run(s)
+          }
+        )
+    }
+
+  /**
+   * Because of using the "kind projector" compiler plugin the following becomes much easier:
+   * {{{
+   *  implicit def applicativeState[S]: Applicative[({ type E[A] = State[S, A] })# E] =
+   *    new Applicative[({ type E[A] = State[S, A] })# E]
+   * }}}
+   */
+  implicit def applicativeState[S]: Applicative[State[S, *]] =
+    new Applicative[State[S, *]] {
+      def pure[A](a: A): State[S, A] =
+        State(_ -> a)
+
+      def ap[A, B](ff: State[S, A => B])(fa: State[S, A]): State[S, B] =
+        State(s =>
+          ff.run(s) match {
+            case (s, f) =>
+              fa.run(s).pipe {
+                case (s, a) =>
+                  s -> f(a)
+              }
+          }
+        )
     }
 }

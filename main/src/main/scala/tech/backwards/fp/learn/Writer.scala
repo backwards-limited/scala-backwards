@@ -65,11 +65,9 @@ object Writer {
       def pure[A](a: A): Writer[W, A] =
         writer[W].as(a)
 
-      def ap[A, B](ff: Writer[W, A => B])(fa: Writer[W, A]): Writer[W, B] = {
-        val (w, f) = ff.run()
-        val (w2, a) = fa.run()
-
-        tell(w |+| w2).as(f(a))
-      }
+      def ap[A, B](ff: Writer[W, A => B])(fa: Writer[W, A]): Writer[W, B] =
+        (ff.run(), fa.run()) match {
+          case ((w, f), (w2, a)) => tell(w |+| w2).as(f(a))
+        }
     }
 }
