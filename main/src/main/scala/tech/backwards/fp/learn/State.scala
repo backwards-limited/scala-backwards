@@ -1,7 +1,5 @@
 package tech.backwards.fp.learn
 
-import scala.util.chaining.scalaUtilChainingOps
-
 final case class State[S, A](run: S => (S, A)) {
   def exec(s: S): S =
     run(s)._1
@@ -73,9 +71,8 @@ object State {
         State(s =>
           ff.run(s) match {
             case (s, f) =>
-              fa.run(s).pipe {
-                case (s, a) =>
-                  s -> f(a)
+              fa.run(s) match {
+                case (s, a) => s -> f(a)
               }
           }
         )

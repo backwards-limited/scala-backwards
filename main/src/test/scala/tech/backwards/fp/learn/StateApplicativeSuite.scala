@@ -54,74 +54,88 @@ class StateApplicativeSuite extends ScalaCheckSuite {
     )
   }
 
-  /*property("Writer (List accumulator) Applicative ap") {
-    import tech.backwards.fp.learn.Functor.syntax._
-
+  property("State (List accumulator) Applicative ap") {
     val add: Int => Int => Int => Int =
       x => y => z => x + y + z
 
-    val addFirstPartiallyApplied: Writer[List[String], Int => Int => Int] =
-      Functor[Writer[List[String], *]].fmap(tell(List("a")).as(5))(add)
+    val addFirstPartiallyApplied: State[List[String], Int => Int => Int] =
+      Functor[State[List[String], *]].fmap(State(s => (s :+ "a") -> 5))(add)
 
-    val addSecondPartiallyApplied: Writer[List[String], Int => Int] =
-      Applicative[Writer[List[String], *]].ap(addFirstPartiallyApplied)(tell(List("b")).as(10))
+    val addSecondPartiallyApplied: State[List[String], Int => Int] =
+      Applicative[State[List[String], *]].ap(addFirstPartiallyApplied)(State(s => (s :+ "b") -> 10))
 
-    val addThirdAndLastPartiallyApplied: Writer[List[String], Int] =
-      Applicative[Writer[List[String], *]].ap(addSecondPartiallyApplied)(tell(List("c")).as(20))
+    val addThirdAndLastPartiallyApplied: State[List[String], Int] =
+      Applicative[State[List[String], *]].ap(addSecondPartiallyApplied)(State(s => (s :+ "c") -> 20))
 
     assertEquals(
-      addThirdAndLastPartiallyApplied.run(),
-      List("a", "b", "c") -> 35
+      addThirdAndLastPartiallyApplied.run(List("hello")),
+      List("hello", "a", "b", "c") -> 35
     )
-  }*/
+  }
 
-  /*property("Writer (String accumulator) Applicative ap syntax") {
+  property("State (String accumulator) Applicative ap syntax") {
     import tech.backwards.fp.learn.Applicative.syntax.function._
     import tech.backwards.fp.learn.Functor.syntax._
 
     val add: Int => Int => Int => Int =
       x => y => z => x + y + z
 
+    // Example of a longer approach to the following tests:
+    val example: (String, Int) =
+      State.modify[String](_ + "a").map(_ => 5).fmap(add)
+        .ap(State.modify[String](_ + "b").map(_ => 10))
+        .ap(State.modify[String](_ +"c").map(_ => 20)).run("hello")
+
+    println(example)
+
     assertEquals(
-      tell("a").as(5).fmap(add).ap(tell("b").as(10)).ap(tell("c").as(20)).run(),
-      "abc" -> 35
+      State((s: String) => s"${s}a" -> 5).fmap(add).ap(State((s: String) => s"${s}b" -> 10)).ap(State((s: String) => s"${s}c" -> 20)).run("hello"),
+      "helloabc" -> 35
     )
 
     assertEquals(
-      (tell("a").as(5) fmap add ap tell("b").as(10) ap tell("c").as(20)).run(),
-      "abc" -> 35
+      (State((s: String) => s"${s}a" -> 5) fmap add ap State((s: String) => s"${s}b" -> 10) ap State((s: String) => s"${s}c" -> 20)).run("hello"),
+      "helloabc" -> 35
     )
 
     assertEquals(
-      (tell("a").as(5) `<$>` add <*> tell("b").as(10) <*> tell("c").as(20)).run(),
-      "abc" -> 35
+      (State((s: String) => s"${s}a" -> 5) `<$>` add <*> State((s: String) => s"${s}b" -> 10) <*> State((s: String) => s"${s}c" -> 20)).run("hello"),
+      "helloabc" -> 35
     )
-  }*/
+  }
 
-  /*property("Writer (List accumulator) Applicative ap syntax") {
+  property("State (List accumulator) Applicative ap syntax") {
     import tech.backwards.fp.learn.Applicative.syntax.function._
     import tech.backwards.fp.learn.Functor.syntax._
 
     val add: Int => Int => Int => Int =
       x => y => z => x + y + z
 
+    // Example of a longer approach to the following tests:
+    val example: (List[String], Int) =
+      State.modify[List[String]](_ :+ "a").map(_ => 5).fmap(add)
+        .ap(State.modify[List[String]](_ :+ "b").map(_ => 10))
+        .ap(State.modify[List[String]](_ :+ "c").map(_ => 20)).run(List("hello"))
+
+    println(example)
+
     assertEquals(
-      tell(List("a")).as(5).fmap(add).ap(tell(List("b")).as(10)).ap(tell(List("c")).as(20)).run(),
-      List("a", "b", "c") -> 35
+      State((s: List[String]) => (s :+ "a") -> 5).fmap(add).ap(State((s: List[String]) => (s :+ "b") -> 10)).ap(State((s: List[String]) => (s :+ "c") -> 20)).run(List("hello")),
+      List("hello", "a", "b", "c") -> 35
     )
 
     assertEquals(
-      (tell(List("a")).as(5) fmap add ap tell(List("b")).as(10) ap tell(List("c")).as(20)).run(),
-      List("a", "b", "c") -> 35
+      (State((s: List[String]) => (s :+ "a") -> 5) fmap add ap State((s: List[String]) => (s :+ "b") -> 10) ap State((s: List[String]) => (s :+ "c") -> 20)).run(List("hello")),
+      List("hello", "a", "b", "c") -> 35
     )
 
     assertEquals(
-      (tell(List("a")).as(5) `<$>` add <*> tell(List("b")).as(10) <*> tell(List("c")).as(20)).run(),
-      List("a", "b", "c") -> 35
+      (State((s: List[String]) => (s :+ "a") -> 5) `<$>` add <*> State((s: List[String]) => (s :+ "b") -> 10) <*> State((s: List[String]) => (s :+ "c") -> 20)).run(List("hello")),
+      List("hello", "a", "b", "c") -> 35
     )
-  }*/
+  }
 
-  /*property("Writer (String accumulator) Applicative ap function syntax") {
+  property("State (String accumulator) Applicative ap function syntax") {
     import tech.backwards.fp.learn.Applicative.syntax.function._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
@@ -129,22 +143,22 @@ class StateApplicativeSuite extends ScalaCheckSuite {
       x => y => z => x + y + z
 
     assertEquals(
-      (add `<$>` Writer("a" -> 5) <*> Writer("b" -> 10) <*> Writer("c" -> 20)).run(),
-      "abc" -> 35
+      (add `<$>` State((s: String) => s"${s}a" -> 5) <*> State((s: String) => s"${s}b" -> 10) <*> State((s: String) => s"${s}c" -> 20)).run("hello"),
+      "helloabc" -> 35
     )
 
     assertEquals(
-      (((x: Int) => (y: Int) => (z: Int) => x + y + z) `<$>` Writer("a" -> 5) <*> Writer("b" -> 10) <*> Writer("c" -> 20)).run(),
-      "abc" -> 35
+      (((x: Int) => (y: Int) => (z: Int) => x + y + z) `<$>` State((s: String) => s"${s}a" -> 5) <*> State((s: String) => s"${s}b" -> 10) <*> State((s: String) => s"${s}c" -> 20)).run("hello"),
+      "helloabc" -> 35
     )
 
     assertEquals(
-      (((x: Int, y: Int, z: Int) => x + y + z).curried `<$>` Writer("a" -> 5) <*> Writer("b" -> 10) <*> Writer("c" -> 20)).run(),
-      "abc" -> 35
+      (((x: Int, y: Int, z: Int) => x + y + z).curried `<$>` State((s: String) => s"${s}a" -> 5) <*> State((s: String) => s"${s}b" -> 10) <*> State((s: String) => s"${s}c" -> 20)).run("hello"),
+      "helloabc" -> 35
     )
-  }*/
+  }
 
-  /*property("Writer (List accumulator) Applicative ap function syntax") {
+  property("State (List accumulator) Applicative ap function syntax") {
     import tech.backwards.fp.learn.Applicative.syntax.function._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
@@ -152,22 +166,22 @@ class StateApplicativeSuite extends ScalaCheckSuite {
       x => y => z => x + y + z
 
     assertEquals(
-      (add `<$>` Writer(List("a") -> 5) <*> Writer(List("b") -> 10) <*> Writer(List("c") -> 20)).run(),
-      List("a", "b", "c") -> 35
+      (add `<$>` State((s: List[String]) => (s :+ "a") -> 5) <*> State((s: List[String]) => (s :+ "b") -> 10) <*> State((s: List[String]) => (s :+ "c") -> 20)).run(List("hello")),
+      List("hello", "a", "b", "c") -> 35
     )
 
     assertEquals(
-      (((x: Int) => (y: Int) => (z: Int) => x + y + z) `<$>` Writer(List("a") -> 5) <*> Writer(List("b") -> 10) <*> Writer(List("c") -> 20)).run(),
-      List("a", "b", "c") -> 35
+      (((x: Int) => (y: Int) => (z: Int) => x + y + z) `<$>` State((s: List[String]) => (s :+ "a") -> 5) <*> State((s: List[String]) => (s :+ "b") -> 10) <*> State((s: List[String]) => (s :+ "c") -> 20)).run(List("hello")),
+      List("hello", "a", "b", "c") -> 35
     )
 
     assertEquals(
-      (((x: Int, y: Int, z: Int) => x + y + z).curried `<$>` Writer(List("a") -> 5) <*> Writer(List("b") -> 10) <*> Writer(List("c") -> 20)).run(),
-      List("a", "b", "c") -> 35
+      (((x: Int, y: Int, z: Int) => x + y + z).curried `<$>` State((s: List[String]) => (s :+ "a") -> 5) <*> State((s: List[String]) => (s :+ "b") -> 10) <*> State((s: List[String]) => (s :+ "c") -> 20)).run(List("hello")),
+      List("hello", "a", "b", "c") -> 35
     )
-  }*/
+  }
 
-  /*property("Writer (String accumulator) Applicative ap function of arbitrary syntax") {
+  property("State (String accumulator) Applicative ap function of arbitrary syntax") {
     import tech.backwards.fp.learn.Applicative.syntax.function._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
@@ -176,13 +190,13 @@ class StateApplicativeSuite extends ScalaCheckSuite {
 
     forAll((x: Int, y: Int, z: Int) =>
       assertEquals(
-        (add `<$>` Writer("a" -> x) <*> Writer("b" -> y) <*> Writer("c" -> z)).run(),
-        "abc" -> (x + y + z)
+        (add `<$>` State((s: String) => s"${s}a" -> x) <*> State((s: String) => s"${s}b" -> y) <*> State((s: String) => s"${s}c" -> z)).run("hello"),
+        "helloabc" -> (x + y + z)
       )
     )
-  }*/
+  }
 
-  /*property("Writer (List accumulator) Applicative ap function of arbitrary syntax") {
+  property("State (List accumulator) Applicative ap function of arbitrary syntax") {
     import tech.backwards.fp.learn.Applicative.syntax.function._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
@@ -195,5 +209,12 @@ class StateApplicativeSuite extends ScalaCheckSuite {
         List("a", "b", "c") -> (x + y + z)
       )
     )
-  }*/
+
+    forAll((x: Int, y: Int, z: Int) =>
+      assertEquals(
+        (add `<$>` State((s: List[String]) => (s :+ "a") -> x) <*> State((s: List[String]) => (s :+ "b") -> y) <*> State((s: List[String]) => (s :+ "c") -> z)).run(List("hello")),
+        List("hello", "a", "b", "c") -> (x + y + z)
+      )
+    )
+  }
 }
