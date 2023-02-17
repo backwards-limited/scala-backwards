@@ -16,14 +16,14 @@ object Foldable extends FoldableImplicits {
         apply[F].foldr(fa)(seed)(f)
     }
 
-    implicit class FoldableTuple2Syntax[A](fa: (A, A))(implicit F: Foldable[Lambda[X => (X, X)]]) {
+    implicit class FoldableTuple2Syntax[A](fa: (A, A)) {
       def foldr[B](seed: B)(f: (A, B) => B): B =
-        F.foldr(fa)(seed)(f)
+        foldableTuple2.foldr(fa)(seed)(f)
     }
 
-    implicit class FoldableTuple3Syntax[A](fa: (A, A, A))(implicit F: Foldable[Lambda[X => (X, X, X)]]) {
+    implicit class FoldableTuple3Syntax[A](fa: (A, A, A)) {
       def foldr[B](seed: B)(f: (A, B) => B): B =
-        F.foldr(fa)(seed)(f)
+        foldableTuple3.foldr(fa)(seed)(f)
     }
   }
 }

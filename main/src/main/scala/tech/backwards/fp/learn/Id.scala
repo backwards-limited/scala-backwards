@@ -32,4 +32,10 @@ object Id {
       def ap[A, B](ff: Id[A => B])(fa: Id[A]): Id[B] =
         pure(ff.value(fa.value))
     }
+
+  implicit val traversalId: Traversal[Id] =
+    new Traversal[Id] {
+      def traverse[G[_]: Functor: Applicative, A, B](fa: Id[A])(f: A => G[B]): G[Id[B]] =
+        Functor[G].fmap(f(fa.value))(Id.apply)
+    }
 }
