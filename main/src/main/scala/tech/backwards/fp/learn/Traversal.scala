@@ -14,7 +14,7 @@ object Traversal extends TraversalImplicits {
         apply[F].traverse(fa)(f)
     }
 
-    implicit class TraversalSequenceSyntax[F[_]: Traversal, G[_]: Applicative, A](fa: F[G[A]]) {
+    implicit class TraversalNestedSyntax[F[_]: Traversal, G[_]: Applicative, A](fa: F[G[A]]) {
       def sequence: G[F[A]] =
         apply[F].traverse(fa)(identity)
     }
@@ -24,9 +24,25 @@ object Traversal extends TraversalImplicits {
         traversalTuple2.traverse(fa)(f)
     }
 
+    implicit class TraversalTuple2NestedSyntax[F[_]: Applicative, A](fa: (F[A], F[A])) {
+      def sequence: F[(A, A)] = {
+        import tech.backwards.fp.learn.Applicative.syntax.function._
+
+        Applicative[F].functor.fmap(fa._1)((x: A) => (y: A) => (x, y)).ap(fa._2)
+      }
+    }
+
     implicit class TraversalTuple3Syntax[A](fa: (A, A, A)) {
       def traverse[G[_]: Applicative, B](f: A => G[B]): G[(B, B, B)] =
         traversalTuple3.traverse(fa)(f)
+    }
+
+    implicit class TraversalTuple3NestedSyntax[F[_]: Applicative, A](fa: (F[A], F[A], F[A])) {
+      def sequence: F[(A, A, A)] = {
+        import tech.backwards.fp.learn.Applicative.syntax.function._
+
+        Applicative[F].functor.fmap(fa._1)((x: A) => (y: A) => (z: A) => (x, y, z)).ap(fa._2).ap(fa._3)
+      }
     }
   }
 }
