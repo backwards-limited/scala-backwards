@@ -35,7 +35,7 @@ object Id {
 
   implicit val traversalId: Traversal[Id] =
     new Traversal[Id] {
-      def traverse[G[_]: Functor: Applicative, A, B](fa: Id[A])(f: A => G[B]): G[Id[B]] =
-        Functor[G].fmap(f(fa.value))(Id.apply)
+      def traverse[G[_]: Applicative, A, B](fa: Id[A])(f: A => G[B]): G[Id[B]] =
+        Applicative[G].functor.fmap(f(fa.value))(Id.apply)
     }
 }

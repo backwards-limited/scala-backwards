@@ -1,6 +1,9 @@
 package tech.backwards.fp.learn
 
 abstract class Monad[F[_]: Functor] {
+  val functor: Functor[F] =
+    Functor[F]
+
   def pure[A](a: A): F[A]
 
   def flatMap[A, B](fa: F[A])(f: A => F[B]): F[B]
