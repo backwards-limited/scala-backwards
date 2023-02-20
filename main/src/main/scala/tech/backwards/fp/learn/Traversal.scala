@@ -96,7 +96,7 @@ sealed trait TraversalImplicits {
         import tech.backwards.fp.learn.Applicative.syntax.function._
 
         fa.foldRight(Applicative[G].pure(List.empty[B])) { (a, bs) =>
-          Applicative[G].functor.fmap(f(a))((b: B) => (bs: List[B]) => b :: bs) ap bs
+          Applicative[G].functor.fmap(f(a))((b: B) => (bs: List[B]) => b +: bs) ap bs
         }
       }
     }
