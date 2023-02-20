@@ -60,7 +60,7 @@ sealed trait TraversalImplicits {
       Original, when Applicative did not declare a Functor instance,
       and Traversal had the declaration: def traverse[G[_]: Applicative: Functor, A, B]
 
-      def traverse[G[_] : Functor : Applicative, A, B](fa: (A, A))(f: A => G[B]): G[(B, B)] = {
+      def traverse[G[_]: Functor: Applicative, A, B](fa: (A, A))(f: A => G[B]): G[(B, B)] = {
         import tech.backwards.fp.learn.Applicative.syntax.function._
         import tech.backwards.fp.learn.Functor.syntax.function._
 
@@ -81,7 +81,7 @@ sealed trait TraversalImplicits {
       Original, when Applicative did not declare a Functor instance,
       and Traversal had the declaration: def traverse[G[_]: Applicative: Functor, A, B]
 
-      def traverse[G[_] : Applicative : Functor, A, B](fa: (A, A, A))(f: A => G[B]): G[(B, B, B)] = {
+      def traverse[G[_]: Applicative: Functor, A, B](fa: (A, A, A))(f: A => G[B]): G[(B, B, B)] = {
         import tech.backwards.fp.learn.Applicative.syntax.function._
         import tech.backwards.fp.learn.Functor.syntax.function._
 
