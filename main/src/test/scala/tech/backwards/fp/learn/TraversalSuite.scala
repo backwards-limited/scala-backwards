@@ -172,15 +172,67 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  /*property("Traverse Tuple2[List]")
+  property("Traverse Tuple2[List]")(
+    assertEquals(
+      Traversal[Lambda[X => (X, X)]].traverse((1, 3)) {
+        case 1 => List(2, 3)
+        case 3 => List(4)
+      },
+      List((2, 4), (3, 4))
+    )
+  )
 
-  property("Traverse Tuple2[List] syntax")
+  property("Traverse Tuple2[List] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
 
-  property("Sequence Tuple2[List] syntax")
+    assertEquals(
+      (1, 3).traverse {
+        case 1 => List(2, 3)
+        case 3 => List(4)
+      },
+      List((2, 4), (3, 4))
+    )
+  }
 
-  property("Traverse Tuple3[List]")
+  property("Sequence Tuple2[List] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
 
-  property("Traverse Tuple3[List] syntax")
+    assertEquals(
+      (List(2, 3), List(4)).sequence,
+      List((2, 4), (3, 4))
+    )
+  }
 
-  property("Sequence Tuple3[List] syntax")*/
+  property("Traverse Tuple3[List]")(
+    assertEquals(
+      Traversal[Lambda[X => (X, X, X)]].traverse((1, 3, 4)) {
+        case 1 => List(2, 3)
+        case 3 => List(4)
+        case 4 => List(5, 6)
+      },
+      List((2, 4, 5), (2, 4, 6), (3, 4, 5), (3, 4, 6))
+    )
+  )
+
+  property("Traverse Tuple3[List] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      (1, 3, 4).traverse {
+        case 1 => List(2, 3)
+        case 3 => List(4)
+        case 4 => List(5, 6)
+      },
+      List((2, 4, 5), (2, 4, 6), (3, 4, 5), (3, 4, 6))
+    )
+  }
+
+  property("Sequence Tuple3[List] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      (List(1, 2), List(3), List(4, 5)).sequence,
+      List((1, 3, 4), (1, 3, 5), (2, 3, 4), (2, 3, 5))
+    )
+  }
 }
