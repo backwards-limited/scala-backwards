@@ -95,9 +95,9 @@ sealed trait TraversalImplicits {
       def traverse[G[_]: Applicative, A, B](fa: List[A])(f: A => G[B]): G[List[B]] = {
         import tech.backwards.fp.learn.Applicative.syntax.function._
 
-        fa.foldRight(Applicative[G].pure(List.empty[B])) { (a, bs) =>
+        fa.foldRight(Applicative[G].pure(List.empty[B]))((a, bs) =>
           Applicative[G].functor.fmap(f(a))((b: B) => (bs: List[B]) => b +: bs) ap bs
-        }
+        )
       }
     }
 }
