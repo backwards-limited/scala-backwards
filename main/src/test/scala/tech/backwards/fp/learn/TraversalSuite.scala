@@ -235,4 +235,54 @@ class TraversalSuite extends ScalaCheckSuite {
       List((1, 3, 4), (1, 3, 5), (2, 3, 4), (2, 3, 5))
     )
   }
+
+  property("Traverse Id[Maybe]")(
+    assertEquals(
+      Traversal[Id].traverse(Id(5))(x => Just(x + 1)),
+      Just(Id(6))
+    )
+  )
+
+  property("Traverse Id[Maybe] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Id(5).traverse(x => Just(x + 1)),
+      Just(Id(6))
+    )
+  }
+
+  property("Sequence Id[Maybe] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Id(Just(5)).sequence,
+      Just(Id(5))
+    )
+  }
+
+  property("Traverse Maybe[Id]")(
+    assertEquals(
+      Traversal[Maybe].traverse(Just(5))(x => Id(x + 1)),
+      Id(Just(6))
+    )
+  )
+
+  property("Traverse Maybe[Id] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Just(5).traverse(x => Id(x + 1)),
+      Id(Just(6))
+    )
+  }
+
+  property("Sequence Maybe[Id] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Just(Id(5)).sequence,
+      Id(Just(5))
+    )
+  }
 }
