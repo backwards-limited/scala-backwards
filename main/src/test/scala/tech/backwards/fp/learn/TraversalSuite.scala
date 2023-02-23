@@ -285,4 +285,89 @@ class TraversalSuite extends ScalaCheckSuite {
       Id(Just(5))
     )
   }
+
+  property("Traverse Tuple2[Maybe]") {
+    assertEquals(
+      Traversal[Lambda[X => (X, X)]].traverse(1, 2)(x => Just(x + 1)),
+      Just(2, 3)
+    )
+
+    assertEquals(
+      Traversal[Lambda[X => (X, X)]].traverse(1, 2)(x => if (x == 2) Nothing[Int] else Just(x + 1)),
+      Nothing[(Int, Int)]
+    )
+  }
+
+  property("Traverse Tuple2[Maybe] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      (1, 2).traverse(x => Just(x + 1)),
+      Just(2, 3)
+    )
+
+    assertEquals(
+      (1, 2).traverse(x => if (x == 2) Nothing[Int] else Just(x + 1)),
+      Nothing[(Int, Int)]
+    )
+  }
+
+  property("Sequence Tuple2[Maybe] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      (Just(1), Just(2)).sequence,
+      Just(1, 2)
+    )
+
+    assertEquals(
+      (Just(1), Nothing[Int]).sequence,
+      Nothing[(Int, Int)]
+    )
+  }
+
+  property("Traverse Maybe[Tuple2]".ignore)(
+  )
+
+  property("Traverse Maybe[Tuple2] syntax".ignore)(
+  )
+
+  property("Sequence Maybe[Tuple2]".ignore)(
+  )
+
+  property("Traverse Tuple3[Maybe]".ignore)(
+  )
+
+  property("Traverse Tuple3[Maybe] syntax".ignore)(
+  )
+
+  property("Sequence Tuple3[Maybe] syntax".ignore)(
+  )
+
+  property("Traverse Maybe[Tuple3]".ignore)(
+  )
+
+  property("Traverse Maybe[Tuple3] syntax".ignore)(
+  )
+
+  property("Sequence Maybe[Tuple3]".ignore)(
+  )
+
+  property("Traverse List[Maybe]".ignore)(
+  )
+
+  property("Traverse List[Maybe] syntax".ignore)(
+  )
+
+  property("Sequence List[Maybe] syntax".ignore)(
+  )
+
+  property("Traverse Maybe[List]".ignore)(
+  )
+
+  property("Traverse Maybe[List] syntax".ignore)(
+  )
+
+  property("Sequence Maybe[List] syntax".ignore)(
+  )
 }
