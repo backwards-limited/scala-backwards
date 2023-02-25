@@ -19,6 +19,11 @@ object Traversal extends TraversalImplicits {
         apply[F].traverse(fa)(identity)
     }
 
+    implicit class TraversalSequenceTuple2Syntax[F[_]: Applicative, A, B](fa: F[(A, B)]) {
+      def sequence: (F[A], F[B]) =
+        Applicative[F].functor.fmap(fa)(_._1) -> Applicative[F].functor.fmap(fa)(_._2)
+    }
+
     implicit class TraversalTuple2Syntax[A](fa: (A, A)) {
       def traverse[G[_]: Applicative, B](f: A => G[B]): G[(B, B)] =
         traversalTuple2.traverse(fa)(f)

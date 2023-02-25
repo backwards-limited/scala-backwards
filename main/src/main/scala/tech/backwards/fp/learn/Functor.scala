@@ -44,4 +44,16 @@ sealed trait FunctorImplicits {
       def fmap[A, B](fa: List[A])(f: A => B): List[B] =
         fa map f
     }
+
+  implicit val functorTuple1: Functor[Tuple1] =
+    new Functor[Tuple1] {
+      def fmap[A, B](fa: Tuple1[A])(f: A => B): Tuple1[B] =
+        Tuple1(f(fa._1))
+    }
+
+  implicit val functorTuple2: Functor[Lambda[X => (X, X)]] =
+    new Functor[Lambda[X => (X, X)]] {
+      def fmap[A, B](fa: (A, A))(f: A => B): (B, B) =
+        f(fa._1) -> f(fa._2)
+    }
 }
