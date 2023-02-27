@@ -69,4 +69,13 @@ sealed trait ApplicativeImplicits {
       def ap[A, B](ff: (A => B, A => B))(fa: (A, A)): (B, B) =
         ff._1(fa._1) -> ff._2(fa._2)
     }
+
+  implicit def applicativeTuple3(implicit F: Functor[Lambda[X => (X, X, X)]]): Applicative[Lambda[X => (X, X, X)]] =
+    new Applicative[Lambda[X => (X, X, X)]] {
+      def pure[A](a: A): (A, A, A) =
+        (a, a, a)
+
+      def ap[A, B](ff: (A => B, A => B, A => B))(fa: (A, A, A)): (B, B, B) =
+        (ff._1(fa._1), ff._2(fa._2), ff._3(fa._3))
+    }
 }

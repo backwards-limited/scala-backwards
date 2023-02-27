@@ -407,23 +407,90 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  property("Traverse Tuple3[Maybe]".ignore)(
-  )
+  property("Traverse Tuple3[Maybe]") {
+    assertEquals(
+      Traversal[Lambda[X => (X, X, X)]].traverse(1, 2, 3)(x => Just(x + 1)),
+      Just(2, 3, 4)
+    )
 
-  property("Traverse Tuple3[Maybe] syntax".ignore)(
-  )
+    assertEquals(
+      Traversal[Lambda[X => (X, X, X)]].traverse(1, 2, 3)(x => if (x == 2) Nothing[Int] else Just(x + 1)),
+      Nothing[(Int, Int, Int)]
+    )
+  }
 
-  property("Sequence Tuple3[Maybe] syntax".ignore)(
-  )
+  property("Traverse Tuple3[Maybe] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
 
-  property("Traverse Maybe[Tuple3]".ignore)(
-  )
+    assertEquals(
+      (1, 2, 3).traverse(x => Just(x + 1)),
+      Just(2, 3, 4)
+    )
 
-  property("Traverse Maybe[Tuple3] syntax".ignore)(
-  )
+    assertEquals(
+      (1, 2, 3).traverse(x => if (x == 2) Nothing[Int] else Just(x + 1)),
+      Nothing[(Int, Int, Int)]
+    )
+  }
 
-  property("Sequence Maybe[Tuple3]".ignore)(
-  )
+  property("Sequence Tuple3[Maybe] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      (Just(1), Just(2), Just(3)).sequence,
+      Just(1, 2, 3)
+    )
+
+    assertEquals(
+      (Just(1), Nothing[Int], Just(3)).sequence,
+      Nothing[(Int, Int, Int)]
+    )
+  }
+
+  property("Traverse Maybe[Tuple3]") {
+    assertEquals(
+      Traversal[Maybe].traverse[Lambda[X => (X, X, X)], Int, Int](Just(1))(x => (x + 1, x + 2, x + 3)),
+      (Just(2), Just(3), Just(4))
+    )
+
+    assertEquals(
+      Traversal[Maybe].traverse[Lambda[X => (X, X, X)], Int, String](Just(1))(_ => ("foo", "bar", "qux")),
+      (Just("foo"), Just("bar"), Just("qux"))
+    )
+
+    assertEquals(
+      Traversal[Maybe].traverse[Lambda[X => (X, X, X)], Int, Int](Nothing[Int])(x => (x + 1, x + 2, x + 3)),
+      (Nothing[Int], Nothing[Int], Nothing[Int])
+    )
+  }
+
+  property("Traverse Maybe[Tuple3] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Just(1).traverse[Lambda[X => (X, X, X)], Int](x => (x + 1, x + 2, x + 3)),
+      (Just(2), Just(3), Just(4))
+    )
+
+    assertEquals(
+      Just(1).traverse[Lambda[X => (X, X, X)], String](_ => ("foo", "bar", "qux")),
+      (Just("foo"), Just("bar"), Just("qux"))
+    )
+
+    assertEquals(
+      Nothing[Int].traverse[Lambda[X => (X, X, X)], Int](x => (x + 1, x + 2, x + 3)),
+      (Nothing[Int], Nothing[Int], Nothing[Int])
+    )
+  }
+
+  property("Sequence Maybe[Tuple3] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Just(1, 2, 3).sequence,
+      (Just(1), Just(2), Just(3))
+    )
+  }
 
   property("Traverse List[Maybe]".ignore)(
   )
