@@ -186,7 +186,7 @@ class TraversalSuite extends ScalaCheckSuite {
     import tech.backwards.fp.learn.Traversal.syntax._
 
     assertEquals(
-      (1, 3).traverse {
+      (1, 3) traverse {
         case 1 => List(2, 3)
         case 3 => List(4)
       },
@@ -218,7 +218,7 @@ class TraversalSuite extends ScalaCheckSuite {
     import tech.backwards.fp.learn.Traversal.syntax._
 
     assertEquals(
-      (1, 3, 4).traverse {
+      (1, 3, 4) traverse {
         case 1 => List(2, 3)
         case 3 => List(4)
         case 4 => List(5, 6)
@@ -293,7 +293,10 @@ class TraversalSuite extends ScalaCheckSuite {
     )
 
     assertEquals(
-      Traversal[Lambda[X => (X, X)]].traverse(1, 2)(x => if (x == 2) Nothing[Int] else Just(x + 1)),
+      Traversal[Lambda[X => (X, X)]].traverse(1, 2) {
+        case 2 => Nothing[Int]
+        case x => Just(x + 1)
+      },
       Nothing[(Int, Int)]
     )
   }
@@ -307,7 +310,10 @@ class TraversalSuite extends ScalaCheckSuite {
     )
 
     assertEquals(
-      (1, 2).traverse(x => if (x == 2) Nothing[Int] else Just(x + 1)),
+      (1, 2) traverse {
+        case 2 => Nothing[Int]
+        case x => Just(x + 1)
+      },
       Nothing[(Int, Int)]
     )
   }
@@ -414,7 +420,10 @@ class TraversalSuite extends ScalaCheckSuite {
     )
 
     assertEquals(
-      Traversal[Lambda[X => (X, X, X)]].traverse(1, 2, 3)(x => if (x == 2) Nothing[Int] else Just(x + 1)),
+      Traversal[Lambda[X => (X, X, X)]].traverse(1, 2, 3) {
+        case 2 => Nothing[Int]
+        case x => Just(x + 1)
+      },
       Nothing[(Int, Int, Int)]
     )
   }
@@ -428,7 +437,10 @@ class TraversalSuite extends ScalaCheckSuite {
     )
 
     assertEquals(
-      (1, 2, 3).traverse(x => if (x == 2) Nothing[Int] else Just(x + 1)),
+      (1, 2, 3) traverse {
+        case 2 => Nothing[Int]
+        case x => Just(x + 1)
+      },
       Nothing[(Int, Int, Int)]
     )
   }
@@ -492,14 +504,51 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  property("Traverse List[Maybe]".ignore)(
-  )
+  property("Traverse List[Maybe]") {
+    assertEquals(
+      Traversal[List].traverse(List(1, 2, 3))(x => Just(x + 1)),
+      Just(List(2, 3, 4))
+    )
 
-  property("Traverse List[Maybe] syntax".ignore)(
-  )
+    assertEquals(
+      Traversal[List].traverse(List(1, 2, 3)) {
+        case 2 => Nothing[Int]
+        case x => Just(x + 1)
+      },
+      Nothing[List[Int]]
+    )
+  }
 
-  property("Sequence List[Maybe] syntax".ignore)(
-  )
+  property("Traverse List[Maybe] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      List(1, 2, 3).traverse(x => Just(x + 1)),
+      Just(List(2, 3, 4))
+    )
+
+    assertEquals(
+      List(1, 2, 3) traverse {
+        case 2 => Nothing[Int]
+        case x => Just(x + 1)
+      },
+      Nothing[List[Int]]
+    )
+  }
+
+  property("Sequence List[Maybe] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      List(Just(1), Just(2), Just(3)).sequence,
+      Just(List(1, 2, 3))
+    )
+
+    assertEquals(
+      List(Just(1), Nothing[Int], Just(3)).sequence,
+      Nothing[List[Int]]
+    )
+  }
 
   property("Traverse Maybe[List]".ignore)(
   )
