@@ -550,12 +550,97 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  property("Traverse Maybe[List]".ignore)(
+  property("Traverse Maybe[List]") {
+    assertEquals(
+      Traversal[Maybe].traverse(Just(1))(x => List(x)),
+      List(Just(1))
+    )
+
+    assertEquals(
+      Traversal[Maybe].traverse(Nothing[Int])(x => List(x)),
+      List(Nothing[Int])
+    )
+  }
+
+  property("Traverse Maybe[List] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Just(1).traverse(x => List(x)),
+      List(Just(1))
+    )
+
+    assertEquals(
+      Nothing[Int].traverse(x => List(x)),
+      List(Nothing[Int])
+    )
+  }
+
+  property("Sequence Maybe[List] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Just(List(1, 2)).sequence,
+      List(Just(1), Just(2))
+    )
+
+    assertEquals(
+      Nothing[List[Int]].sequence,
+      List(Nothing[Int])
+    )
+  }
+
+  property("Traverse Id[Right]")(
+    assertEquals(
+      Traversal[Id].traverse(Id(5))(x => Right(x + 1)),
+      Right(Id(6))
+    )
   )
 
-  property("Traverse Maybe[List] syntax".ignore)(
-  )
+  property("Traverse Id[Right] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
 
-  property("Sequence Maybe[List] syntax".ignore)(
-  )
+    assertEquals(
+      Id(5).traverse(x => Right(x + 1)),
+      Right(Id(6))
+    )
+  }
+
+  property("Sequence Id[Right] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Id(Right(5)).sequence,
+      Right(Id(5))
+    )
+  }
+
+  property("Traverse Id[Left]") {
+    assertEquals(
+      Traversal[Id].traverse(Id(5))(_ => Left("a")),
+      Left("a")
+    )
+  }
+
+  property("Traverse Id[Left] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Id(5).traverse(_ => Left("a")),
+      Left("a")
+    )
+  }
+
+  property("Sequence Id[Left] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Id(Left[String, Int]("a")).sequence,
+      Left("a")
+    )
+  }
+
+  // TODO - State
+
+  // TODO - Writer
 }
