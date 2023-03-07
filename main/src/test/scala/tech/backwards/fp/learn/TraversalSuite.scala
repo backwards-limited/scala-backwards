@@ -640,6 +640,119 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
+  property("Traverse Right[Id]")(
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse(Right(5))(x => Id(x + 1)),
+      Id(Right[String, Int](6))
+    )
+  )
+
+  property("Traverse Right[Id] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Right(5).traverse(x => Id(x + 1)),
+      Id(Right(6))
+    )
+  }
+
+  property("Sequence Right[Id] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Right(Id(5)).sequence,
+      Id(Right(5))
+    )
+  }
+
+  property("Traverse Left[Id]") {
+    import tech.backwards.fp.learn.Disjunction.syntax._
+
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse("a".left[Int])(x => Id(x + 1)),
+      Id("a".left[Int])
+    )
+  }
+
+  property("Traverse Left[Id] syntax") {
+    import tech.backwards.fp.learn.Disjunction.syntax._
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      "a".left[Int].traverse(x => Id(x + 1)),
+      Id("a".left[Int])
+    )
+  }
+
+  property("Sequence Left[Id] syntax".ignore) {
+    // Meaningless:
+    // Left(Id("a")).sequence
+  }
+
+  property("Traverse List[Disjunction]") {
+    assertEquals(
+      Traversal[List].traverse(List(1, 2, 3))(x => Right(x + 1)),
+      Right(List(2, 3, 4))
+    )
+
+    assertEquals(
+      Traversal[List].traverse(List(1, 2, 3)) {
+        case 2 => Left("a")
+        case x => Right(x + 1)
+      },
+      Left("a")
+    )
+  }
+
+  property("Traverse List[Disjunction] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      List(1, 2, 3).traverse(x => Right(x + 1)),
+      Right(List(2, 3, 4))
+    )
+
+    assertEquals(
+      List(1, 2, 3) traverse {
+        case 2 => Left("a")
+        case x => Right(x + 1)
+      },
+      Left("a")
+    )
+  }
+
+  property("Sequence List[Disjunction] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      List(Right(1), Right(2), Right(3)).sequence,
+      Right(List(1, 2, 3))
+    )
+
+    assertEquals(
+      List(Right(1), Left("a"), Right(3)).sequence,
+      Left("a")
+    )
+
+    assertEquals(
+      List(Right(1), Left("a"), Left("b")).sequence,
+      Left("a")
+    )
+  }
+
+  /*
+  Disjunction[List]
+
+  Tuple2[Disjunction]
+  Disjunction[Tuple2]
+
+  Tuple3[Disjunction]
+  Disjunction[Tuple3]
+
+  Maybe[Disjunction]
+  Disjunction[Maybe]
+   */
+
   // TODO - State
 
   // TODO - Writer

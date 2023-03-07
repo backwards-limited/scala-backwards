@@ -101,4 +101,16 @@ object Disjunction {
             Functor[Disjunction[L, *]].fmap(fa)(f)
         }
     }
+
+  implicit def traversalDisjunction[L]: Traversal[Disjunction[L, *]] =
+    new Traversal[Disjunction[L, *]] {
+      def traverse[G[_]: Applicative, A, B](fa: Disjunction[L, A])(f: A => G[B]): G[Disjunction[L, B]] =
+        fa match {
+          case Left(l) =>
+            Applicative[G].pure(Left(l))
+
+          case Right(a) =>
+            Applicative[G].functor.fmap(f(a))((b: B) => Right(b))
+        }
+    }
 }
