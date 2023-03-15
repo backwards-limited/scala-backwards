@@ -684,9 +684,13 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  property("Sequence Left[Id] syntax".ignore) {
-    // Meaningless:
-    // Left(Id("a")).sequence
+  property("Sequence Left[Id] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Left[String, Id[Int]]("a").sequence,
+      Id(Left[String, Int]("a"))
+    )
   }
 
   property("Traverse List[Disjunction]") {
@@ -740,13 +744,147 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
+  property("Traverse Disjunction[List]") {
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse(Right(5))(x => List(x + 1)),
+      List(Right(6))
+    )
+
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse(Left[String, Int]("a"))(x => List(x + 1)),
+      List(Left("a"))
+    )
+  }
+
+  property("Traverse Disjunction[List] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Right(5).traverse(x => List(x + 1)),
+      List(Right(6))
+    )
+
+    assertEquals(
+      Left[String, Int]("a").traverse(x => List(x + 1)),
+      List(Left("a"))
+    )
+  }
+
+  property("Sequence Disjunction[List] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Right(List(5, 6)).sequence,
+      List(Right(5), Right(6))
+    )
+
+    assertEquals(
+      Left[String, List[Int]]("a").sequence,
+      List(Left("a"))
+    )
+  }
+
+  property("Traverse Tuple2[Disjunction]") {
+    assertEquals(
+      Traversal[Lambda[X => (X, X)]].traverse(1, 2)(x => Right(x + 1)),
+      Right(2, 3)
+    )
+
+    assertEquals(
+      Traversal[Lambda[X => (X, X)]].traverse(1, 2) {
+        case 2 => Left("a")
+        case x => Right(x + 1)
+      },
+      Left("a")
+    )
+  }
+
+  property("Traverse Tuple2[Disjunction] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      (1, 2).traverse(x => Right(x + 1)),
+      Right(2, 3)
+    )
+
+    assertEquals(
+      (1, 2) traverse {
+        case 2 => Left("a")
+        case x => Right(x + 1)
+      },
+      Left("a")
+    )
+  }
+
+  property("Sequence Tuple2[Disjunction] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      (Right(1), Right(2)).sequence,
+      Right(1, 2)
+    )
+
+    assertEquals(
+      (Right[String, Int](1), Left[String, Int]("a")).sequence,
+      Left("a")
+    )
+  }
+
+  property("Traverse Disjunction[Tuple2]") {
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse[Lambda[X => (X, X)], Int, Int](Right(1))(x => (x + 1, x + 2)),
+      (Right(2), Right(3))
+    )
+
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse[Lambda[X => (X, X)], Int, String](Right(1))(_ => ("foo", "bar")),
+      (Right("foo"), Right("bar"))
+    )
+
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse[Lambda[X => (X, X)], Int, Int](Left("a"))(x => (x + 1, x + 2)),
+      (Left("a"), Left("a"))
+    )
+  }
+
+  property("Traverse Disjunction[Tuple2] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Right(1).traverse[Lambda[X => (X, X)], Int](x => (x + 1, x + 2)),
+      (Right(2), Right(3))
+    )
+
+    assertEquals(
+      Right(1).traverse[Lambda[X => (X, X)], String](_ => ("foo", "bar")),
+      (Right("foo"), Right("bar"))
+    )
+
+    assertEquals(
+      Left[String, Int]("a").traverse[Lambda[X => (X, X)], Int](x => (x + 1, x + 2)),
+      (Left("a"), Left("a"))
+    )
+  }
+
+  property("Sequence Disjunction[Tuple2] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Right(1, 2).sequence,
+      (Right(1), Right(2))
+    )
+
+    assertEquals(
+      Left[String, (Int, Int)]("a").sequence,
+      (Left("a"), Left("a"))
+    )
+  }
+
+  //////////////////////////////////// TODO - WIP
+  // Tuple3[Disjunction]
+
+
   /*
-  Disjunction[List]
-
-  Tuple2[Disjunction]
-  Disjunction[Tuple2]
-
-  Tuple3[Disjunction]
   Disjunction[Tuple3]
 
   Maybe[Disjunction]
