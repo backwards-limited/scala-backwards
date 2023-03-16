@@ -34,15 +34,10 @@ To see an example of the above, take a look at [Kafka Backwards](https://github.
 ## Table of Contents
 
 - [Setup](docs/setup.md)
-
 - [SBT](docs/sbt.md)
-
 - [Release](docs/release.md)
-
 - Functionality
-
-    - [Kleisli](docs/kleisli.md) 
-    
+    - [Functional Programming](docs/functional-programming.md) 
+    - [Kleisli](docs/kleisli.md)
     - [MonadError](docs/monad-error.md)
-
     - [Masking](docs/masking.md)

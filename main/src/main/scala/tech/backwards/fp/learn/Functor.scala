@@ -1,5 +1,22 @@
 package tech.backwards.fp.learn
 
+/**
+ * Note about F[_], type constructors, and Lambda[X => (X, X)].
+ *
+ * Many of our type classes have a parametric type constructor, such as F[_].
+ * We could have a List[_], which itself is a type constructor, which is just a function of type:
+ * {{{
+ *   T => List[T]
+ *   e.g.
+ *   String => List[String]
+ *   where shorthand for T => List[T] is
+ *   List[_]
+ * }}}
+ * To provide a Tuple as a type constructor we would have e.g. a tuple 2:
+ * {{{
+ *   Lambda[X => (X, X)]
+ * }}}
+ */
 trait Functor[F[_]] {
   def fmap[A, B](fa: F[A])(f: A => B): F[B]
 }
