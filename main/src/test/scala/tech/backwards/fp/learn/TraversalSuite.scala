@@ -1007,12 +1007,138 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  //////////////////////////////////// TODO - WIP
-  // Maybe[Disjunction]
+  property("Traverse Maybe[Disjunction]") {
+    assertEquals(
+      Traversal[Maybe].traverse(Just(1))(Right.apply),
+      Right(Just(1))
+    )
 
-  /*
-  Disjunction[Maybe]
-   */
+    assertEquals(
+      Traversal[Maybe].traverse(Just(1))(_ => Left("a")),
+      Left("a")
+    )
+
+    assertEquals(
+      Traversal[Maybe].traverse(Nothing[Int])(Right.apply),
+      Right(Nothing[Int])
+    )
+
+    assertEquals(
+      Traversal[Maybe].traverse(Nothing[Int])(_ => Left("a")),
+      Right[String, Maybe[Int]](Nothing[Int]) // One might expect Left("a"), but "worksheet" with Cats version asserts this.
+    )
+  }
+
+  property("Traverse Maybe[Disjunction] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Just(1) traverse Right.apply,
+      Right(Just(1))
+    )
+
+    assertEquals(
+      Just(1).traverse(_ => Left("a")),
+      Left("a")
+    )
+
+    assertEquals(
+      Nothing[Int].traverse(Right.apply),
+      Right(Nothing[Int])
+    )
+
+    assertEquals(
+      Nothing[Int].traverse(_ => Left("a")),
+      Right[String, Maybe[Int]](Nothing[Int]) // One might expect Left("a"), but "worksheet" with Cats version asserts this.
+    )
+  }
+
+  property("Sequence Maybe[Disjunction] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Just(Right(1)).sequence,
+      Right(Just(1))
+    )
+
+    assertEquals(
+      Just(Left("a")).sequence,
+      Left("a")
+    )
+
+    assertEquals(
+      Nothing[Disjunction[String, Int]].sequence,
+      Right(Nothing[Int])
+    )
+  }
+
+  //////////////////////////////////// TODO - WIP
+  // Disjunction[Maybe]
+  property("Traverse Disjunction[Maybe]") {
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse(Right(1))(Just.apply),
+      Just(Right(1))
+    )
+
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse(Right(1))(_ => Nothing[Int]),
+      Nothing[Disjunction[String, Int]]
+    )
+
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse(Left[String, Int]("a"))(Just.apply),
+      Just(Left("a"))
+    )
+
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse(Left[String, Int]("a"))(_ => Nothing[Int]),
+      Just(Left("a")) // One might expect Nothing[Disjunction[String, Int]], but "worksheet" with Cats version asserts this.
+    )
+  }
+
+  property("Traverse Disjunction[Maybe] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Right(1) traverse Just.apply,
+      Just(Right(1))
+    )
+
+    assertEquals(
+      Right(1).traverse(_ => Nothing[Int]),
+      Nothing[Disjunction[String, Int]]
+    )
+
+    assertEquals(
+      Left[String, Int]("a") traverse Just.apply,
+      Just(Left("a"))
+    )
+
+    assertEquals(
+      Left[String, Int]("a").traverse(_ => Nothing[Int]),
+      Just(Left("a")) // One might expect Nothing[Disjunction[String, Int]], but "worksheet" with Cats version asserts this.
+    )
+  }
+
+  property("Sequence Disjunction[Maybe] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Right(Just(1)).sequence,
+      Just(Right(1))
+    )
+
+    assertEquals(
+      Right(Nothing[Int]).sequence,
+      Nothing[Disjunction[String, Int]]
+    )
+
+    assertEquals(
+      Left[String, Maybe[Int]]("a").sequence,
+      Just(Left("a"))
+    )
+  }
+
 
   // TODO - State
 
