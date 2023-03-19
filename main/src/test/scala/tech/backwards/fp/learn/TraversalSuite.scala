@@ -1278,7 +1278,91 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  // TODO - Traverse List[State]
+  property("Traverse List[State]") {
+    import tech.backwards.fp.learn.Applicative.syntax._
+
+    assertEquals(
+      Traversal[List].traverse(List(1, 2, 3))(x => State[String, Int](_ + "bar" -> (x + 5))).run("foo"),
+      "foobarbarbar" -> List(6, 7, 8)
+    )
+
+    assertEquals(
+      Traversal[List].traverse(List(1, 2, 3)) {
+        case x @ 2 =>
+          State[String, Int](_ + "bar" -> (x + 10))
+        case x =>
+          (x + 1).pure[State[String, *]]
+      } run "foo",
+      "foobar" -> List(2, 12, 4)
+    )
+
+    assertEquals(
+      Traversal[List].traverse(List(1, 2, 3))(x => State[List[String], Int](_ ++ List("bar") -> (x + 5))).run(List("foo")),
+      List("foo", "bar", "bar", "bar") -> List(6, 7, 8)
+    )
+
+    assertEquals(
+      Traversal[List].traverse(List(1, 2, 3)) {
+        case x @ 2 =>
+          State[List[String], Int](_ ++ List("bar") -> (x + 10))
+        case x =>
+          (x + 1).pure[State[List[String], *]]
+      } run List("foo"),
+      List("foo", "bar") -> List(2, 12, 4)
+    )
+  }
+
+  property("Traverse List[State] syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax._
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      List(1, 2, 3).traverse(x => State[String, Int](_ + "bar" -> (x + 5))).run("foo"),
+      "foobarbarbar" -> List(6, 7, 8)
+    )
+
+    assertEquals(
+      List(1, 2, 3).traverse {
+        case x @ 2 =>
+          State[String, Int](_ + "bar" -> (x + 10))
+        case x =>
+          (x + 1).pure[State[String, *]]
+      } run "foo",
+      "foobar" -> List(2, 12, 4)
+    )
+
+    assertEquals(
+      List(1, 2, 3).traverse(x => State[List[String], Int](_ ++ List("bar") -> (x + 5))).run(List("foo")),
+      List("foo", "bar", "bar", "bar") -> List(6, 7, 8)
+    )
+
+    assertEquals(
+      List(1, 2, 3).traverse {
+        case x @ 2 =>
+          State[List[String], Int](_ ++ List("bar") -> (x + 10))
+        case x =>
+          (x + 1).pure[State[List[String], *]]
+      } run List("foo"),
+      List("foo", "bar") -> List(2, 12, 4)
+    )
+  }
+
+  property("Sequence List[State] syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax._
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      List(1.pure[State[String, *]], State[String, Int](_ + "bar" -> 2), 3.pure[State[String, *]]).sequence.run("foo"),
+      "foobar" -> List(1, 2, 3)
+    )
+
+    assertEquals(
+      List(1.pure[State[List[String], *]], State[List[String], Int](_ ++ List("bar") -> 2), 3.pure[State[List[String], *]]).sequence.run(List("foo")),
+      List("foo", "bar") -> List(1, 2, 3)
+    )
+  }
+
+
   // TODO - Traverse Maybe[State]
   // TODO - Traverse Disjunction[State]
 
