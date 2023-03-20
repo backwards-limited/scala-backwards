@@ -1362,8 +1362,77 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
+  property("Traverse Maybe[State]") {
+    assertEquals(
+      Traversal[Maybe].traverse(Just(1))(x => State[String, Int](_ + "bar" -> (x + 5))).run("foo"),
+      "foobar" -> Just(6)
+    )
 
-  // TODO - Traverse Maybe[State]
+    assertEquals(
+      Traversal[Maybe].traverse(Nothing[Int])(x => State[String, Int](_ + "bar" -> (x + 5))).run("foo"),
+      "foo" -> Nothing[Int]
+    )
+
+    assertEquals(
+      Traversal[Maybe].traverse(Just(1))(x => State[List[String], Int](_ ++ List("bar") -> (x + 5))).run(List("foo")),
+      List("foo", "bar") -> Just(6)
+    )
+
+    assertEquals(
+      Traversal[Maybe].traverse(Nothing[Int])(x => State[List[String], Int](_ ++ List("bar") -> (x + 5))).run(List("foo")),
+      List("foo") -> Nothing[Int]
+    )
+  }
+
+  property("Traverse Maybe[State] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Just(1).traverse(x => State[String, Int](_ + "bar" -> (x + 5))).run("foo"),
+      "foobar" -> Just(6)
+    )
+
+    assertEquals(
+      Nothing[Int].traverse(x => State[String, Int](_ + "bar" -> (x + 5))).run("foo"),
+      "foo" -> Nothing[Int]
+    )
+
+    assertEquals(
+      Just(1).traverse(x => State[List[String], Int](_ ++ List("bar") -> (x + 5))).run(List("foo")),
+      List("foo", "bar") -> Just(6)
+    )
+
+    assertEquals(
+      Nothing[Int].traverse(x => State[List[String], Int](_ ++ List("bar") -> (x + 5))).run(List("foo")),
+      List("foo") -> Nothing[Int]
+    )
+  }
+
+  property("Traverse Maybe[State] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Just(State[String, Int](_ + "bar" -> 1)).sequence.run("foo"),
+      "foobar" -> Just(1)
+    )
+
+    assertEquals(
+      Nothing[State[String, Int]].sequence.run("foo"),
+      "foo" -> Nothing[Int]
+    )
+
+    assertEquals(
+      Just(State[List[String], Int](_ ++ List("bar") -> 1)).sequence.run(List("foo")),
+      List("foo", "bar") -> Just(1)
+    )
+
+    assertEquals(
+      Nothing[State[List[String], Int]].sequence.run(List("foo")),
+      List("foo") -> Nothing[Int]
+    )
+  }
+
+
   // TODO - Traverse Disjunction[State]
 
 
