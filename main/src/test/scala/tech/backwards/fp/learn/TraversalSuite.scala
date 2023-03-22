@@ -1502,9 +1502,50 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  // TODO - Traverse Id[Writer]
+  property("Traverse Id[Writer]") {
+    assertEquals(
+      Traversal[Id].traverse(Id(1))(x => Writer("foo" -> (x + 5))).run(),
+      "foo" -> Id(6)
+    )
+
+    assertEquals(
+      Traversal[Id].traverse(Id(1))(x => Writer(List("foo") -> (x + 5))).run(),
+      List("foo") -> Id(6)
+    )
+  }
+
+  property("Traverse Id[Writer] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Id(1).traverse(x => Writer("foo" -> (x + 5))).run(),
+      "foo" -> Id(6)
+    )
+
+    assertEquals(
+      Id(1).traverse(x => Writer(List("foo") -> (x + 5))).run(),
+      List("foo") -> Id(6)
+    )
+  }
+
+  property("Sequence Id[Writer] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Id(Writer("foo" -> 1)).sequence.run(),
+      "foo" -> Id(1)
+    )
+
+    assertEquals(
+      Id(Writer(List("foo") -> 1)).sequence.run(),
+      List("foo") -> Id(1)
+    )
+  }
+
   // TODO - Traverse Tuple2[Writer]
   // TODO - Traverse List[Writer]
   // TODO - Traverse Maybe[Writer]
   // TODO - Traverse Disjunction[Writer]
+
+  // TODO - Is it possible to Traverse Writer[Id], and the rest? i.e. can we traverse Writer (when we now know we cannot traverse State)?
 }
