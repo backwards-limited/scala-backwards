@@ -1432,9 +1432,75 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
+  property("Traverse Disjunction[State]") {
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse(Right(1))(x => State[String, Int](_ + "bar" -> (x + 5))).run("foo"),
+      "foobar" -> Right(6)
+    )
 
-  // TODO - Traverse Disjunction[State]
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse(Left[String, Int]("a"))(x => State[String, Int](_ + "bar" -> (x + 5))).run("foo"),
+      "foo" -> Left("a")
+    )
 
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse(Right(1))(x => State[List[String], Int](_ ++ List("bar") -> (x + 5))).run(List("foo")),
+      List("foo", "bar") -> Right(6)
+    )
+
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse(Left[String, Int]("a"))(x => State[List[String], Int](_ ++ List("bar") -> (x + 5))).run(List("foo")),
+      List("foo") -> Left("a")
+    )
+  }
+
+  property("Traverse Disjunction[State] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Right(1).traverse(x => State[String, Int](_ + "bar" -> (x + 5))).run("foo"),
+      "foobar" -> Right(6)
+    )
+
+    assertEquals(
+      Left[String, Int]("a").traverse(x => State[String, Int](_ + "bar" -> (x + 5))).run("foo"),
+      "foo" -> Left("a")
+    )
+
+    assertEquals(
+      Right(1).traverse(x => State[List[String], Int](_ ++ List("bar") -> (x + 5))).run(List("foo")),
+      List("foo", "bar") -> Right(6)
+    )
+
+    assertEquals(
+      Left[String, Int]("a").traverse(x => State[List[String], Int](_ ++ List("bar") -> (x + 5))).run(List("foo")),
+      List("foo") -> Left("a")
+    )
+  }
+
+  property("Sequence Disjunction[State] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Right(State[String, Int](_ + "bar" -> 1)).sequence.run("foo"),
+      "foobar" -> Right(1)
+    )
+
+    assertEquals(
+      Left[String, State[String, Int]]("a").sequence.run("foo"),
+      "foo" -> Left("a")
+    )
+
+    assertEquals(
+      Right(State[List[String], Int](_ ++ List("bar") -> 1)).sequence.run(List("foo")),
+      List("foo", "bar") -> Right(1)
+    )
+
+    assertEquals(
+      Left[String, State[List[String], Int]]("a").sequence.run(List("foo")),
+      List("foo") -> Left("a")
+    )
+  }
 
   // TODO - Traverse Id[Writer]
   // TODO - Traverse Tuple2[Writer]
