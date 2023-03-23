@@ -1244,7 +1244,7 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  property("Traverse Tuple2[State] syntax") {
+  property("Sequence Tuple2[State] syntax") {
     import tech.backwards.fp.learn.Traversal.syntax._
 
     assertEquals(
@@ -1542,7 +1542,88 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  // TODO - Traverse Tuple2[Writer]
+  // Quite a lot going on here, so we won't test Tuple3[Writer] (We didn't really need to for all others, but that's ok).
+  property("Traverse Tuple2[Writer]") {
+    assertEquals(
+      Traversal[Lambda[X => (X, X)]].traverse((1, 2))(x => Writer("foo" -> (x + 5))).run(),
+      "foofoo" -> (6, 7)
+    )
+
+    assertEquals(
+      Traversal[Lambda[X => (X, X)]].traverse((1, 2)) {
+        case x @ 1 =>
+          Writer("foo" -> (x + 5))
+        case x @ 2 =>
+          Writer("bar" -> (x + 15))
+      }.run(),
+      "foobar" -> (6, 17)
+    )
+
+    assertEquals(
+      Traversal[Lambda[X => (X, X)]].traverse((1, 2))(x => Writer(List("foo") -> (x + 5))).run(),
+      List("foo", "foo") -> (6, 7)
+    )
+
+    assertEquals(
+      Traversal[Lambda[X => (X, X)]].traverse((1, 2)) {
+        case x @ 1 =>
+          Writer(List("foo") -> (x + 5))
+        case x @ 2 =>
+          Writer(List("bar") -> (x + 15))
+      }.run(),
+      List("foo", "bar") -> (6, 17)
+    )
+  }
+
+  property("Traverse Tuple2[Writer] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      (1, 2).traverse(x => Writer("foo" -> (x + 5))).run(),
+      "foofoo" -> (6, 7)
+    )
+
+    assertEquals(
+      (1, 2).traverse {
+        case x @ 1 =>
+          Writer("foo" -> (x + 5))
+        case x @ 2 =>
+          Writer("bar" -> (x + 15))
+      }.run(),
+      "foobar" -> (6, 17)
+    )
+
+    assertEquals(
+      (1, 2).traverse(x => Writer(List("foo") -> (x + 5))).run(),
+      List("foo", "foo") -> (6, 7)
+    )
+
+    assertEquals(
+      (1, 2).traverse {
+        case x @ 1 =>
+          Writer(List("foo") -> (x + 5))
+        case x @ 2 =>
+          Writer(List("bar") -> (x + 15))
+      }.run(),
+      List("foo", "bar") -> (6, 17)
+    )
+  }
+
+  property("Sequence Tuple2[Writer] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      (Writer("foo" -> 5), Writer("bar" -> 6)).sequence.run(),
+      "foobar" -> (5, 6)
+    )
+
+    assertEquals(
+      (Writer(List("foo") -> 5), Writer(List("bar") -> 6)).sequence.run(),
+      List("foo", "bar") -> (5, 6)
+    )
+  }
+
+
   // TODO - Traverse List[Writer]
   // TODO - Traverse Maybe[Writer]
   // TODO - Traverse Disjunction[Writer]
