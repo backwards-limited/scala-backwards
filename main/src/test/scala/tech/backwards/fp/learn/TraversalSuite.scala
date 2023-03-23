@@ -1623,8 +1623,98 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
+  property("Traverse List[Writer]") {
+    import tech.backwards.fp.learn.Applicative.syntax._
 
-  // TODO - Traverse List[Writer]
+    assertEquals(
+      Traversal[List].traverse(List(1, 2, 3))(x => Writer("foo" -> (x + 5))).run(),
+      "foofoofoo" -> List(6, 7, 8)
+    )
+
+    assertEquals(
+      Traversal[List].traverse(List(1, 2, 3)) {
+        case x @ 1 =>
+          Writer("foo" -> (x + 10))
+        case x @ 2 =>
+          (x + 1).pure[Writer[String, *]]
+        case x =>
+          Writer("baz" -> (x + 100))
+      }.run(),
+      "foobaz" -> List(11, 3, 103)
+    )
+
+    assertEquals(
+      Traversal[List].traverse(List(1, 2, 3))(x => Writer(List("foo") -> (x + 5))).run(),
+      List("foo", "foo", "foo") -> List(6, 7, 8)
+    )
+
+    assertEquals(
+      Traversal[List].traverse(List(1, 2, 3)) {
+        case x @ 1 =>
+          Writer(List("foo") -> (x + 10))
+        case x @ 2 =>
+          (x + 1).pure[Writer[List[String], *]]
+        case x =>
+          Writer(List("baz") -> (x + 100))
+      }.run(),
+      List("foo", "baz") -> List(11, 3, 103)
+    )
+  }
+
+  property("Traverse List[Writer] syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax._
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      List(1, 2, 3).traverse(x => Writer("foo" -> (x + 5))).run(),
+      "foofoofoo" -> List(6, 7, 8)
+    )
+
+    assertEquals(
+      List(1, 2, 3).traverse {
+        case x @ 1 =>
+          Writer("foo" -> (x + 10))
+        case x @ 2 =>
+          (x + 1).pure[Writer[String, *]]
+        case x =>
+          Writer("baz" -> (x + 100))
+      }.run(),
+      "foobaz" -> List(11, 3, 103)
+    )
+
+    assertEquals(
+      List(1, 2, 3).traverse(x => Writer(List("foo") -> (x + 5))).run(),
+      List("foo", "foo", "foo") -> List(6, 7, 8)
+    )
+
+    assertEquals(
+      List(1, 2, 3).traverse {
+        case x @ 1 =>
+          Writer(List("foo") -> (x + 10))
+        case x @ 2 =>
+          (x + 1).pure[Writer[List[String], *]]
+        case x =>
+          Writer(List("baz") -> (x + 100))
+      }.run(),
+      List("foo", "baz") -> List(11, 3, 103)
+    )
+  }
+
+  property("Sequence List[Writer] syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax._
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      List(Writer("foo" -> 1), 2.pure[Writer[String, *]], Writer("baz" -> 3)).sequence.run(),
+      "foobaz" -> List(1, 2, 3)
+    )
+
+    assertEquals(
+      List(Writer(List("foo") -> 1), 2.pure[Writer[List[String], *]], Writer(List("baz") -> 3)).sequence.run(),
+      List("foo", "baz") -> List(1, 2, 3)
+    )
+  }
+
   // TODO - Traverse Maybe[Writer]
   // TODO - Traverse Disjunction[Writer]
 
