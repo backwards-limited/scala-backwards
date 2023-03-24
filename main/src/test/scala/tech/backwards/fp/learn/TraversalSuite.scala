@@ -1408,7 +1408,7 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  property("Traverse Maybe[State] syntax") {
+  property("Sequence Maybe[State] syntax") {
     import tech.backwards.fp.learn.Traversal.syntax._
 
     assertEquals(
@@ -1715,7 +1715,76 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  // TODO - Traverse Maybe[Writer]
+  property("Traverse Maybe[Writer]") {
+    assertEquals(
+      Traversal[Maybe].traverse(Just(1))(x => Writer("foo" -> (x + 5))).run(),
+      "foo" -> Just(6)
+    )
+
+    assertEquals(
+      Traversal[Maybe].traverse(Nothing[Int])(x => Writer("foo" -> (x + 5))).run(),
+      "" -> Nothing[Int]
+    )
+
+    assertEquals(
+      Traversal[Maybe].traverse(Just(1))(x => Writer(List("foo") -> (x + 5))).run(),
+      List("foo") -> Just(6)
+    )
+
+    assertEquals(
+      Traversal[Maybe].traverse(Nothing[Int])(x => Writer(List("foo") -> (x + 5))).run(),
+      Nil -> Nothing[Int]
+    )
+  }
+
+  property("Traverse Maybe[Writer] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Just(1).traverse(x => Writer("foo" -> (x + 5))).run(),
+      "foo" -> Just(6)
+    )
+
+    assertEquals(
+      Nothing[Int].traverse(x => Writer("foo" -> (x + 5))).run(),
+      "" -> Nothing[Int]
+    )
+
+    assertEquals(
+      Just(1).traverse(x => Writer(List("foo") -> (x + 5))).run(),
+      List("foo") -> Just(6)
+    )
+
+    assertEquals(
+      Nothing[Int].traverse(x => Writer(List("foo") -> (x + 5))).run(),
+      Nil -> Nothing[Int]
+    )
+  }
+
+  property("Sequence Maybe[Writer] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Just(Writer("foo" -> 1)).sequence.run(),
+      "foo" -> Just(1)
+    )
+
+    assertEquals(
+      Nothing[Writer[String, Int]].sequence.run(),
+      "" -> Nothing[Int]
+    )
+
+    assertEquals(
+      Just(Writer(List("foo") -> 1)).sequence.run(),
+      List("foo") -> Just(1)
+    )
+
+    assertEquals(
+      Nothing[Writer[List[String], Int]].sequence.run(),
+      Nil -> Nothing[Int]
+    )
+  }
+
   // TODO - Traverse Disjunction[Writer]
 
   // TODO - Is it possible to Traverse Writer[Id], and the rest? i.e. can we traverse Writer (when we now know we cannot traverse State)?
