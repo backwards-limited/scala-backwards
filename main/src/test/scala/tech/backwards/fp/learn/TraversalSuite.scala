@@ -1785,7 +1785,75 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  // TODO - Traverse Disjunction[Writer]
+  property("Traverse Disjunction[Writer]") {
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse(Right(1))(x => Writer("foo" -> (x + 5))).run(),
+      "foo" -> Right(6)
+    )
+
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse(Left[String, Int]("a"))(x => Writer("foo" -> (x + 5))).run(),
+      "" -> Left("a")
+    )
+
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse(Right(1))(x => Writer(List("foo") -> (x + 5))).run(),
+      List("foo") -> Right(6)
+    )
+
+    assertEquals(
+      Traversal[Disjunction[String, *]].traverse(Left[String, Int]("a"))(x => Writer(List("foo") -> (x + 5))).run(),
+      Nil -> Left("a")
+    )
+  }
+
+  property("Traverse Disjunction[Writer] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Right(1).traverse(x => Writer("foo" -> (x + 5))).run(),
+      "foo" -> Right(6)
+    )
+
+    assertEquals(
+      Left[String, Int]("a").traverse(x => Writer("foo" -> (x + 5))).run(),
+      "" -> Left("a")
+    )
+
+    assertEquals(
+      Right(1).traverse(x => Writer(List("foo") -> (x + 5))).run(),
+      List("foo") -> Right(6)
+    )
+
+    assertEquals(
+      Left[String, Int]("a").traverse(x => Writer(List("foo") -> (x + 5))).run(),
+      Nil -> Left("a")
+    )
+  }
+
+  property("Sequence Disjunction[Writer] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Right(Writer("foo" -> 1)).sequence.run(),
+      "foo" -> Right(1)
+    )
+
+    assertEquals(
+      Left[String, Writer[String, Int]]("a").sequence.run(),
+      "" -> Left("a")
+    )
+
+    assertEquals(
+      Right(Writer(List("foo") -> 1)).sequence.run(),
+      List("foo") -> Right(1)
+    )
+
+    assertEquals(
+      Left[String, Writer[List[String], Int]]("a").sequence.run(),
+      Nil -> Left("a")
+    )
+  }
 
   // TODO - Is it possible to Traverse Writer[Id], and the rest? i.e. can we traverse Writer (when we now know we cannot traverse State)?
 }
