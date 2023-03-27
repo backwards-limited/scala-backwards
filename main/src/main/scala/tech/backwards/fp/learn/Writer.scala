@@ -70,4 +70,13 @@ object Writer {
           case ((w, f), (w2, a)) => tell(w |+| w2).as(f(a))
         }
     }
+
+  implicit def traversalWriter[W: Monoid]: Traversal[Writer[W, *]] =
+    new Traversal[Writer[W, *]] {
+      def traverse[G[_]: Applicative, A, B](fa: Writer[W, A])(f: A => G[B]): G[Writer[W, B]] = {
+        val (w, a) = fa.run()
+
+        Applicative[G].functor.fmap(f(a))(b => Writer(w -> b))
+      }
+    }
 }

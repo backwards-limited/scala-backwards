@@ -1855,5 +1855,28 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  // TODO - Is it possible to Traverse Writer[Id], and the rest? i.e. can we traverse Writer (when we now know we cannot traverse State)?
+  test("Traverse Writer[Id]") {
+    assertEquals(
+      Traversal[Writer[String, *]].traverse(Writer("foo" -> 1))(x => Id(x)).value.run(),
+      "foo" -> 1
+    )
+
+    assertEquals(
+      Traversal[Writer[List[String], *]].traverse(Writer(List("foo") -> 1))(x => Id(x)).value.run(),
+      List("foo") -> 1
+    )
+  }
+
+  // TODO - Writer[Tuple2]
+
+  // TODO - Writer[List]
+
+  // TODO - Writer[Maybe]
+
+  // TODO - Writer[Disjunction]
+
+  // TODO - Writer[State] ???
+
+
+  // TODO - State[Writer]  ???
 }
