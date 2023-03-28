@@ -1867,7 +1867,54 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  // TODO - Writer[Tuple2]
+  property("Traverse Writer[Tuple2]") {
+    val (fst: Writer[String, Int], snd: Writer[String, Int]) =
+      Traversal[Writer[String, *]].traverse[Lambda[X => (X, X)], Int, Int](Writer("foo" -> 1))(x => (x + 1, x + 2))
+
+    assertEquals(
+      fst.run(),
+      "foo" -> 2
+    )
+
+    assertEquals(
+      snd.run(),
+      "foo" -> 3
+    )
+  }
+
+  property("Traverse Writer[Tuple2] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    val (fst: Writer[String, Int], snd: Writer[String, Int]) =
+      Writer("foo" -> 1).traverse[Lambda[X => (X, X)], Int](x => (x + 1, x + 2))
+
+    assertEquals(
+      fst.run(),
+      "foo" -> 2
+    )
+
+    assertEquals(
+      snd.run(),
+      "foo" -> 3
+    )
+  }
+
+  property("Sequence Writer[Tuple2] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    val (fst: Writer[String, Int], snd: Writer[String, Int]) =
+      Writer("foo" -> (1, 2)).sequence
+
+    assertEquals(
+      fst.run(),
+      "foo" -> 1
+    )
+
+    assertEquals(
+      snd.run(),
+      "foo" -> 2
+    )
+  }
 
   // TODO - Writer[List]
 
