@@ -47,7 +47,7 @@ sealed trait FoldableImplicits {
     }
 
   /**
-   * Because of using the "kind projector" compiler plugin the following becomes much easier:
+   * By using the "kind projector" compiler plugin the following becomes much easier:
    * {{{
    *   implicit def tuple2Foldable = new Foldable[({ type E[X] = (X, X) })# E]
    * }}}

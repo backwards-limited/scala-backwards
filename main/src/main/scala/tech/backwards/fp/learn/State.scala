@@ -19,7 +19,7 @@ object State {
     State(s => f(s) -> ())
 
   /**
-   * Because of using the "kind projector" compiler plugin the following becomes much easier:
+   * By using the "kind projector" compiler plugin the following becomes much easier:
    * {{{
    *  implicit def functorState[S] =
    *    new Functor[({ type E[A] = State[S, A] })# E]
@@ -36,7 +36,7 @@ object State {
     }
 
   /**
-   * Because of using the "kind projector" compiler plugin the following becomes much easier:
+   * By using the "kind projector" compiler plugin the following becomes much easier:
    * {{{
    *  implicit def monadState[S] =
    *    new Monad[({ type E[A] = State[S, A] })# E]
@@ -56,7 +56,7 @@ object State {
     }
 
   /**
-   * Because of using the "kind projector" compiler plugin the following becomes much easier:
+   * By using the "kind projector" compiler plugin the following becomes much easier:
    * {{{
    *  implicit def applicativeState[S]: Applicative[({ type E[A] = State[S, A] })# E] =
    *    new Applicative[({ type E[A] = State[S, A] })# E]

@@ -28,7 +28,7 @@ object Disjunction {
   }
   
   /**
-   * Because of using the "kind projector" compiler plugin the following becomes much easier:
+   * By using the "kind projector" compiler plugin the following becomes much easier:
    * {{{
    *  implicit def functorDisjunction[L] =
    *    new Functor[({ type E[A] = Disjunction[L, A] })# E]
@@ -47,7 +47,7 @@ object Disjunction {
     }
 
   /**
-   * Because of using the "kind projector" compiler plugin the following becomes much easier:
+   * By using the "kind projector" compiler plugin the following becomes much easier:
    * {{{
    *  implicit def monadDisjunction[L] =
    *    new Monad[({ type E[A] = Disjunction[L, A] })# E]
@@ -69,7 +69,7 @@ object Disjunction {
     }
 
   /**
-   * Because of using the "kind projector" compiler plugin the following becomes much easier:
+   * By using the "kind projector" compiler plugin the following becomes much easier:
    * {{{
    *   implicit def foldableDisjunction[L] =
    *   new Foldable[({ type E[A] = Disjunction[L, A] })# E]

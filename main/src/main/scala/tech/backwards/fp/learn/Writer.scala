@@ -13,7 +13,7 @@ object Writer {
     Writer(() => w -> ())
 
   /**
-   * Because of using the "kind projector" compiler plugin the following becomes much easier:
+   * By using the "kind projector" compiler plugin the following becomes much easier:
    * {{{
    *  implicit def functorWriter[W] =
    *    new Functor[({ type E[A] = Writer[W, A] })# E]
@@ -28,7 +28,7 @@ object Writer {
     }
 
   /**
-   * Because of using the "kind projector" compiler plugin the following becomes much easier:
+   * By using the "kind projector" compiler plugin the following becomes much easier:
    * {{{
    *  implicit def monadWriter[W: Monoid] =
    *    new Monad[({ type E[A] = Writer[W, A] })# E]
@@ -51,7 +51,7 @@ object Writer {
     }
 
   /**
-   * Because of using the "kind projector" compiler plugin the following becomes much easier:
+   * By using the "kind projector" compiler plugin the following becomes much easier:
    * {{{
    *  implicit def applicativeWriter[W: Monoid] =
    *    new Applicative[({ type E[A] = Writer[W, A] })# E]

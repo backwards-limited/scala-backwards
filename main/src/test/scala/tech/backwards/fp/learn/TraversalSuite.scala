@@ -1916,7 +1916,47 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  // TODO - Writer[List]
+  property("Traverse Writer[List]") {
+    import tech.backwards.fp.learn.Applicative.syntax._
+
+    assertEquals(
+      Traversal[Writer[String, *]].traverse(Writer("foo" -> 1))(x => List(x + 1, x + 2)).map(_.run()),
+      List("foo" -> 2, "foo" -> 3)
+    )
+
+    assertEquals(
+      Traversal[Writer[String, *]].traverse(Writer("foo" -> 1))(_ => Nil: List[Int]).map(_.run()),
+      Nil
+    )
+  }
+
+  property("Traverse Writer[List] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Writer("foo" -> 1).traverse(x => List(x + 1, x + 2)).map(_.run()),
+      List("foo" -> 2, "foo" -> 3)
+    )
+
+    assertEquals(
+      Writer("foo" -> 1).traverse(_ => Nil: List[Int]).map(_.run()),
+      Nil
+    )
+  }
+
+  property("Sequence Writer[List] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Writer("foo" -> List(1, 2)).sequence.map(_.run()),
+      List("foo" -> 1, "foo" -> 2)
+    )
+
+    assertEquals(
+      Writer("foo" -> List.empty[Int]).sequence.map(_.run()),
+      Nil
+    )
+  }
 
   // TODO - Writer[Maybe]
 
