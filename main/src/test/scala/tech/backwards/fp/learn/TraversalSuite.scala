@@ -1958,7 +1958,49 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  // TODO - Writer[Maybe]
+  property("Traverse Writer[Maybe]") {
+    import tech.backwards.fp.learn.Functor.syntax._
+
+    assertEquals(
+      Traversal[Writer[String, *]].traverse(Writer("foo" -> 1))(x => Just(x + 1)).map(_.run()),
+      Just("foo" -> 2)
+    )
+
+    assertEquals(
+      Traversal[Writer[String, *]].traverse(Writer("foo" -> 1))(_ => Nothing[Int]).map(_.run()),
+      Nothing[(String, Int)]
+    )
+  }
+
+  property("Traverse Writer[Maybe] syntax") {
+    import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Writer("foo" -> 1).traverse(x => Just(x + 1)).map(_.run()),
+      Just("foo" -> 2)
+    )
+
+    assertEquals(
+      Writer("foo" -> 1).traverse(_ => Nothing[Int]).map(_.run()),
+      Nothing[(String, Int)]
+    )
+  }
+
+  property("Sequence Writer[Maybe] syntax") {
+    import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Writer("foo" -> Just(1)).sequence.map(_.run()),
+      Just("foo" -> 1)
+    )
+
+    assertEquals(
+      Writer("foo" -> Nothing[Int]).sequence.map(_.run()),
+      Nothing[(String, Int)]
+    )
+  }
 
   // TODO - Writer[Disjunction]
 
