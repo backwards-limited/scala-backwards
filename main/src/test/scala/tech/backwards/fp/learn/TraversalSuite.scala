@@ -1,7 +1,6 @@
 package tech.backwards.fp.learn
 
 import munit.ScalaCheckSuite
-import org.scalacheck.Prop._
 import org.scalacheck.Test
 
 class TraversalSuite extends ScalaCheckSuite {
@@ -1917,7 +1916,6 @@ class TraversalSuite extends ScalaCheckSuite {
   }
 
   property("Traverse Writer[List]") {
-    import tech.backwards.fp.learn.Applicative.syntax._
 
     assertEquals(
       Traversal[Writer[String, *]].traverse(Writer("foo" -> 1))(x => List(x + 1, x + 2)).map(_.run()),
@@ -2076,8 +2074,55 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  // TODO - Writer[State] ???
+  property("Traverse Writer[State]") {
+    val state: State[String, Writer[String, Int]] =
+      Traversal[Writer[String, *]].traverse(Writer("foo" -> 1))(x => State((s: String) => s -> (x + 1)))
 
+    val (s: String, writer: Writer[String, Int]) =
+      state.run("bar")
 
-  // TODO - State[Writer]  ???
+    assertEquals(s, "bar")
+
+    val (ss: String, i: Int) =
+      writer.run()
+
+    assertEquals(ss, "foo")
+    assertEquals(i, 2)
+  }
+
+  property("Traverse Writer[State] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    val state: State[String, Writer[String, Int]] =
+      Writer("foo" -> 1).traverse(x => State((s: String) => s -> (x + 1)))
+
+    val (s: String, writer: Writer[String, Int]) =
+      state.run("bar")
+
+    assertEquals(s, "bar")
+
+    val (ss: String, i: Int) =
+      writer.run()
+
+    assertEquals(ss, "foo")
+    assertEquals(i, 2)
+  }
+
+  property("Sequence Writer[State] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    val state: State[String, Writer[String, Int]] =
+      Writer("foo" -> State((s: String) => s -> 1)).sequence
+
+    val (s: String, writer: Writer[String, Int]) =
+      state.run("bar")
+
+    assertEquals(s, "bar")
+
+    val (ss: String, i: Int) =
+      writer.run()
+
+    assertEquals(ss, "foo")
+    assertEquals(i, 1)
+  }
 }
