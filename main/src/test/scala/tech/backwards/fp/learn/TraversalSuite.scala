@@ -1970,6 +1970,11 @@ class TraversalSuite extends ScalaCheckSuite {
       Traversal[Writer[String, *]].traverse(Writer("foo" -> 1))(_ => Nothing[Int]).map(_.run()),
       Nothing[(String, Int)]
     )
+
+    assertEquals(
+      Traversal[Writer[String, *]].traverse(Writer("foo" -> 1))(_ => Nothing[Int]),
+      Nothing[Writer[String, Int]]
+    )
   }
 
   property("Traverse Writer[Maybe] syntax") {
@@ -1984,6 +1989,11 @@ class TraversalSuite extends ScalaCheckSuite {
     assertEquals(
       Writer("foo" -> 1).traverse(_ => Nothing[Int]).map(_.run()),
       Nothing[(String, Int)]
+    )
+
+    assertEquals(
+      Writer("foo" -> 1).traverse(_ => Nothing[Int]),
+      Nothing[Writer[String, Int]]
     )
   }
 
@@ -2000,9 +2010,71 @@ class TraversalSuite extends ScalaCheckSuite {
       Writer("foo" -> Nothing[Int]).sequence.map(_.run()),
       Nothing[(String, Int)]
     )
+
+    assertEquals(
+      Writer("foo" -> Nothing[Int]).sequence,
+      Nothing[Writer[String, Int]]
+    )
   }
 
-  // TODO - Writer[Disjunction]
+  property("Traverse Writer[Disjunction]") {
+    import tech.backwards.fp.learn.Functor.syntax._
+
+    assertEquals(
+      Traversal[Writer[String, *]].traverse(Writer("foo" -> 1))(x => Right(x + 1)).map(_.run()),
+      Right("foo" -> 2)
+    )
+
+    assertEquals(
+      Traversal[Writer[String, *]].traverse(Writer("foo" -> 1))(_ => Left[String, Int]("whoops")).map(_.run()),
+      Left("whoops")
+    )
+
+    assertEquals(
+      Traversal[Writer[String, *]].traverse(Writer("foo" -> 1))(_ => Left[String, Int]("whoops")),
+      Left("whoops")
+    )
+  }
+
+  property("Traverse Writer[Disjunction] syntax") {
+    import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Writer("foo" -> 1).traverse(x => Right(x + 1)).map(_.run()),
+      Right("foo" -> 2)
+    )
+
+    assertEquals(
+      Writer("foo" -> 1).traverse(_ => Left[String, Int]("whoops")).map(_.run()),
+      Left("whoops")
+    )
+
+    assertEquals(
+      Writer("foo" -> 1).traverse(_ => Left[String, Int]("whoops")),
+      Left("whoops")
+    )
+  }
+
+  property("Sequence Writer[Disjunction] syntax") {
+    import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Writer("foo" -> Right(1)).sequence.map(_.run()),
+      Right("foo" -> 1)
+    )
+
+    assertEquals(
+      Writer("foo" -> Left[String, Int]("whoops")).sequence.map(_.run()),
+      Left("whoops")
+    )
+
+    assertEquals(
+      Writer("foo" -> Left[String, Int]("whoops")).sequence,
+      Left("whoops")
+    )
+  }
 
   // TODO - Writer[State] ???
 
