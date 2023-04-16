@@ -37,7 +37,7 @@ object Traversal extends TraversalImplicits {
       }
     }
 
-    implicit class TraversalSequenceTuple3Syntax[F[_] : Applicative, A, B, C](fa: F[(A, B, C)]) {
+    implicit class TraversalSequenceTuple3Syntax[F[_]: Applicative, A, B, C](fa: F[(A, B, C)]) {
       def sequence: (F[A], F[B], F[C]) =
         (Applicative[F].functor.fmap(fa)(_._1), Applicative[F].functor.fmap(fa)(_._2), Applicative[F].functor.fmap(fa)(_._3))
     }
