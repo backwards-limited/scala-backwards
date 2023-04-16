@@ -395,6 +395,11 @@ class TraversalSuite extends ScalaCheckSuite {
       Just(Tuple1(1)).sequence,
       Tuple1(Just(1))
     )
+
+    assertEquals(
+      Nothing[Tuple1[Int]].sequence,
+      Tuple1(Nothing[Int])
+    )
   }
 
   property("Traverse Maybe[Tuple2]") {
