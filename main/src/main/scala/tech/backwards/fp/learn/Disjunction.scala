@@ -110,7 +110,7 @@ object Disjunction {
             Applicative[G].pure(Left(l))
 
           case Right(a) =>
-            Applicative[G].functor.fmap(f(a))((b: B) => Right(b))
+            Applicative[G].functor.fmap(f(a))(b => Right(b))
         }
     }
 }
