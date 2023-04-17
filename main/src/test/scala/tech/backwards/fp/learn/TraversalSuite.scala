@@ -719,11 +719,12 @@ class TraversalSuite extends ScalaCheckSuite {
   }
 
   property("Sequence Left[Id] syntax") {
+    import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Traversal.syntax._
 
     assertEquals(
-      Left[String, Id[Int]]("a").sequence,
-      Id(Left[String, Int]("a"))
+      "a".left[Id[Int]].sequence,
+      Id("a".left[Int])
     )
   }
 
