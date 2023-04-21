@@ -15,4 +15,13 @@ object Nested {
       def fmap[A, B](fa: Nested[F, G, A])(f: A => B): Nested[F, G, B] =
         Nested(Functor[F].fmap(fa.value)(ga => Functor[G].fmap(ga)(a => f(a))))
     }
+
+  implicit def applicativeNested[F[_]: Applicative: Functor, G[_]: Applicative: Functor]: Applicative[Nested[F, G, *]] =
+    new Applicative[Nested[F, G, *]] {
+      def pure[A](a: A): Nested[F, G, A] =
+        ???
+
+      def ap[A, B](ff: Nested[F, G, A => B])(fa: Nested[F, G, A]): Nested[F, G, B] =
+        ???
+    }
 }

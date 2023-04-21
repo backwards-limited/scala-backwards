@@ -101,4 +101,19 @@ class NestedSuite extends ScalaCheckSuite {
       List(Just(2), Nothing[Int], Just(4))
     )
   }
+
+  property("Nested Id/Id Applicative") {
+    val nested: Nested[Id, Id, Int] =
+      Applicative[Nested[Id, Id, *]].ap(Nested(Id(Id((_: Int) + 1))))(Nested(Id(Id(5))))
+
+    assertEquals(
+      nested,
+      Nested(Id(Id(6)))
+    )
+
+    assertEquals(
+      Applicative[Nested[Id, Id, *]].ap(Nested[Id, Id, Int => String](Id(Id(_.toString))))(Nested(Id(Id(5)))),
+      Nested(Id(Id("5")))
+    )
+  }
 }
