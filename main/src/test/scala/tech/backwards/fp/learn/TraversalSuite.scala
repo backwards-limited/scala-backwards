@@ -1952,7 +1952,6 @@ class TraversalSuite extends ScalaCheckSuite {
   }
 
   property("Traverse Writer[List]") {
-
     assertEquals(
       Traversal[Writer[String, *]].traverse(Writer("foo" -> 1))(x => List(x + 1, x + 2)).map(_.run()),
       List("foo" -> 2, "foo" -> 3)

@@ -28,7 +28,13 @@ To provide a Tuple as a type constructor we would have e.g. a tuple 2:
 Lambda[X => (X, X)]
 ```
 
-All the above can be learnt from code and tests under package `tech.backwards.fp.learn`. Go through in the following order:
+The above is Scala 2. Scala 3 uses the following syntax:
+```scala
+[X] =>> (X, X)
+```
+
+All the above can be learnt from code and tests under package `tech.backwards.fp.learn`. You could view the `test`s first and try implementing before looking at the `main` code.
+Go through in the following order:
 - TypeClass
 - TotalOrder
 - Show
