@@ -104,7 +104,7 @@ class NestedSuite extends ScalaCheckSuite {
 
   property("Nested Id/Id Applicative") {
     val nested: Nested[Id, Id, Int] =
-      Applicative[Nested[Id, Id, *]].ap(Nested(Id(Id((_: Int) + 1))))(Nested(Id(Id(5))))
+      Applicative[Nested[Id, Id, *]].ap(Nested[Id, Id, Int => Int](Id(Id(_ + 1))))(Nested(Id(Id(5))))
 
     assertEquals(
       nested,
@@ -144,5 +144,117 @@ class NestedSuite extends ScalaCheckSuite {
       ((x: Int) => (y: Int) => x + y) `<$>` Nested(Id(Id(5))) <*> Nested(Id(Id(6))),
       Nested(Id(Id(11)))
     )
+
+    val add: Int => Int => Int =
+      x => y => x + y
+
+    assertEquals(
+      add `<$>` Nested(Id(Id(5))) <*> Nested(Id(Id(6))),
+      Nested(Id(Id(11)))
+    )
   }
+
+  property("Nested Id/Maybe Applicative") {
+    val nested: Nested[Id, Maybe, Int] =
+      Applicative[Nested[Id, Maybe, *]].ap(Nested(Id(Just((_: Int) + 1))))(Nested(Id(Just(5))))
+
+    assertEquals(
+      nested,
+      Nested(Id(Just(6)))
+    )
+
+    assertEquals(
+      Applicative[Nested[Id, Maybe, *]].ap(Nested(Id(Just((_: Int).toString))))(Nested(Id(Just(5)))),
+      Nested(Id(Just("5")))
+    )
+
+    assertEquals(
+      Applicative[Nested[Id, Maybe, *]].ap(Nested(Id(Just((_: Int).toString))))(Nested(Id(Nothing[Int]))),
+      Nested(Id(Nothing[String]))
+    )
+
+    assertEquals(
+      Applicative[Nested[Id, Maybe, *]].ap(Nested(Id(Nothing[Int => String])))(Nested(Id(Just(5)))),
+      Nested(Id(Nothing[String]))
+    )
+  }
+
+  property("Nested Id/Maybe Applicative syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax.function._
+
+    assertEquals(
+      Nested(Id(Just((_: Int).toString))) ap Nested(Id(Just(5))),
+      Nested(Id(Just("5")))
+    )
+
+    assertEquals(
+      Nested(Id(Just((_: Int).toString))) ap Nested(Id(Nothing[Int])),
+      Nested(Id(Nothing[String]))
+    )
+
+    assertEquals(
+      Nested(Id(Nothing[Int => String])) ap Nested(Id(Just(5))),
+      Nested(Id(Nothing[String]))
+    )
+  }
+
+  property("Nested Id/Maybe Applicative and Functor syntax") {
+    import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Applicative.syntax.function._
+
+    assertEquals(
+      Nested(Id(Just(5))).fmap((x: Int) => (y: Int) => x + y).ap(Nested(Id(Just(6)))).value,
+      Id(Just(11))
+    )
+
+    assertEquals(
+      Nested(Id(Just(5))).fmap((x: Int) => (y: Int) => x + y).ap(Nested(Id(Nothing[Int]))).value,
+      Id(Nothing[Int])
+    )
+
+    assertEquals(
+      Nested(Id(Nothing[Int])).fmap((x: Int) => (y: Int) => x + y).ap(Nested(Id(Just(6)))).value,
+      Id(Nothing[Int])
+    )
+  }
+
+  property("Nested Id/Maybe Applicative and Functor function syntax") {
+    import tech.backwards.fp.learn.Functor.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax.function._
+
+    assertEquals(
+      ((x: Int) => (y: Int) => x + y) `<$>` Nested(Id(Just(5))) <*> Nested(Id(Just(6))),
+      Nested(Id(Just(11)))
+    )
+
+    assertEquals(
+      ((x: Int) => (y: Int) => x + y) `<$>` Nested(Id(Just(5))) <*> Nested(Id(Nothing[Int])),
+      Nested(Id(Nothing[Int]))
+    )
+
+    assertEquals(
+      ((x: Int) => (y: Int) => x + y) `<$>` Nested(Id(Nothing[Int])) <*> Nested(Id(Just(6))),
+      Nested(Id(Nothing[Int]))
+    )
+
+    val add: Int => Int => Int =
+      x => y => x + y
+
+    assertEquals(
+      add `<$>` Nested(Id(Just(5))) <*> Nested(Id(Just(6))),
+      Nested(Id(Just(11)))
+    )
+
+    assertEquals(
+      add `<$>` Nested(Id(Just(5))) <*> Nested(Id(Nothing[Int])),
+      Nested(Id(Nothing[Int]))
+    )
+
+    assertEquals(
+      add `<$>` Nested(Id(Nothing[Int])) <*> Nested(Id(Just(6))),
+      Nested(Id(Nothing[Int]))
+    )
+  }
+
+  // TODO Id/Disjunction Applicative (as per the Maybe above)
 }
