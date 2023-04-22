@@ -17,6 +17,13 @@ object Nothing {
 }
 
 object Maybe {
+  object syntax {
+    implicit class Syntax[A](a: A) {
+      def just: Maybe[A] =
+        Just(a)
+    }
+  }
+
   implicit val functorMaybe: Functor[Maybe] =
     new Functor[Maybe] {
       def fmap[A, B](fa: Maybe[A])(f: A => B): Maybe[B] =

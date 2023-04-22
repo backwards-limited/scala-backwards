@@ -56,10 +56,11 @@ class NestedSuite extends ScalaCheckSuite {
 
   property("Nested Id/Maybe Functor syntax") {
     import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Maybe.syntax._
 
     assertEquals(
-      Nested(Id(Just("foo"))).fmap(_ + "bar").value,
-      Id(Just("foobar"))
+      Nested(Id("foo".just)).fmap(_ + "bar").value,
+      Id("foobar".just)
     )
 
     assertEquals(
@@ -90,10 +91,11 @@ class NestedSuite extends ScalaCheckSuite {
 
   property("Nested List/Maybe Functor syntax") {
     import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Maybe.syntax._
 
     assertEquals(
-      Nested(List(Just(1), Just(2), Just(3))).fmap(_ + 1).value,
-      List(Just(2), Just(3), Just(4))
+      Nested(List(1.just, 2.just, 3.just)).fmap(_ + 1).value,
+      List(2.just, 3.just, 4.just)
     )
 
     assertEquals(
@@ -181,19 +183,20 @@ class NestedSuite extends ScalaCheckSuite {
 
   property("Nested Id/Maybe Applicative syntax") {
     import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Maybe.syntax._
 
     assertEquals(
-      Nested(Id(Just((_: Int).toString))) ap Nested(Id(Just(5))),
-      Nested(Id(Just("5")))
+      Nested(Id(((x: Int) => x.toString).just)) <*> Nested(Id(5.just)),
+      Nested(Id("5".just))
     )
 
     assertEquals(
-      Nested(Id(Just((_: Int).toString))) ap Nested(Id(Nothing[Int])),
+      Nested(Id(((x: Int) => x.toString).just)) <*> Nested(Id(Nothing[Int])),
       Nested(Id(Nothing[String]))
     )
 
     assertEquals(
-      Nested(Id(Nothing[Int => String])) ap Nested(Id(Just(5))),
+      Nested(Id(Nothing[Int => String])) <*> Nested(Id(5.just)),
       Nested(Id(Nothing[String]))
     )
   }
@@ -201,19 +204,20 @@ class NestedSuite extends ScalaCheckSuite {
   property("Nested Id/Maybe Applicative and Functor syntax") {
     import tech.backwards.fp.learn.Applicative.syntax.function._
     import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Maybe.syntax._
 
     assertEquals(
-      Nested(Id(Just(5))).fmap((x: Int) => (y: Int) => x + y).ap(Nested(Id(Just(6)))).value,
-      Id(Just(11))
+      Nested(Id(5.just)).fmap((x: Int) => (y: Int) => x + y).ap(Nested(Id(6.just))).value,
+      Id(11.just)
     )
 
     assertEquals(
-      Nested(Id(Just(5))).fmap((x: Int) => (y: Int) => x + y).ap(Nested(Id(Nothing[Int]))).value,
+      Nested(Id(5.just)).fmap((x: Int) => (y: Int) => x + y).ap(Nested(Id(Nothing[Int]))).value,
       Id(Nothing[Int])
     )
 
     assertEquals(
-      Nested(Id(Nothing[Int])).fmap((x: Int) => (y: Int) => x + y).ap(Nested(Id(Just(6)))).value,
+      Nested(Id(Nothing[Int])).fmap((x: Int) => (y: Int) => x + y).ap(Nested(Id(6.just))).value,
       Id(Nothing[Int])
     )
   }
@@ -221,19 +225,20 @@ class NestedSuite extends ScalaCheckSuite {
   property("Nested Id/Maybe Applicative and Functor function syntax") {
     import tech.backwards.fp.learn.Applicative.syntax.function._
     import tech.backwards.fp.learn.Functor.syntax.function._
+    import tech.backwards.fp.learn.Maybe.syntax._
 
     assertEquals(
-      ((x: Int) => (y: Int) => x + y) `<$>` Nested(Id(Just(5))) <*> Nested(Id(Just(6))),
-      Nested(Id(Just(11)))
+      ((x: Int) => (y: Int) => x + y) `<$>` Nested(Id(5.just)) <*> Nested(Id(6.just)),
+      Nested(Id(11.just))
     )
 
     assertEquals(
-      ((x: Int) => (y: Int) => x + y) `<$>` Nested(Id(Just(5))) <*> Nested(Id(Nothing[Int])),
+      ((x: Int) => (y: Int) => x + y) `<$>` Nested(Id(5.just)) <*> Nested(Id(Nothing[Int])),
       Nested(Id(Nothing[Int]))
     )
 
     assertEquals(
-      ((x: Int) => (y: Int) => x + y) `<$>` Nested(Id(Nothing[Int])) <*> Nested(Id(Just(6))),
+      ((x: Int) => (y: Int) => x + y) `<$>` Nested(Id(Nothing[Int])) <*> Nested(Id(6.just)),
       Nested(Id(Nothing[Int]))
     )
 
@@ -241,17 +246,17 @@ class NestedSuite extends ScalaCheckSuite {
       x => y => x + y
 
     assertEquals(
-      add `<$>` Nested(Id(Just(5))) <*> Nested(Id(Just(6))),
-      Nested(Id(Just(11)))
+      add `<$>` Nested(Id(5.just)) <*> Nested(Id(6.just)),
+      Nested(Id(11.just))
     )
 
     assertEquals(
-      add `<$>` Nested(Id(Just(5))) <*> Nested(Id(Nothing[Int])),
+      add `<$>` Nested(Id(5.just)) <*> Nested(Id(Nothing[Int])),
       Nested(Id(Nothing[Int]))
     )
 
     assertEquals(
-      add `<$>` Nested(Id(Nothing[Int])) <*> Nested(Id(Just(6))),
+      add `<$>` Nested(Id(Nothing[Int])) <*> Nested(Id(6.just)),
       Nested(Id(Nothing[Int]))
     )
   }
@@ -360,4 +365,10 @@ class NestedSuite extends ScalaCheckSuite {
       Nested(Id("whoops".left[Int]))
     )
   }
+
+  // TODO - Nested List/Maybe
+
+  // TODO - Nested List/Disjunction
+
+  // TODO - Traverse (and Sequence)
 }
