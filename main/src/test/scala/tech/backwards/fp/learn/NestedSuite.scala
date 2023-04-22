@@ -116,4 +116,33 @@ class NestedSuite extends ScalaCheckSuite {
       Nested(Id(Id("5")))
     )
   }
+
+  property("Nested Id/Id Applicative syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax.function._
+
+    assertEquals(
+      Nested(Id(Id((_: Int) + 1))).ap(Nested(Id(Id(5)))).value,
+      Id(Id(6))
+    )
+  }
+
+  property("Nested Id/Id Applicative and Functor syntax") {
+    import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Applicative.syntax.function._
+
+    assertEquals(
+      Nested(Id(Id(5))).fmap((x: Int) => (y: Int) => x + y).ap(Nested(Id(Id(6)))).value,
+      Id(Id(11))
+    )
+  }
+
+  property("Nested Id/Id Applicative and Functor function syntax") {
+    import tech.backwards.fp.learn.Functor.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax.function._
+
+    assertEquals(
+      ((x: Int) => (y: Int) => x + y) `<$>` Nested(Id(Id(5))) <*> Nested(Id(Id(6))),
+      Nested(Id(Id(11)))
+    )
+  }
 }

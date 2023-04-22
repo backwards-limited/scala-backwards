@@ -18,10 +18,14 @@ object Nested {
 
   implicit def applicativeNested[F[_]: Applicative: Functor, G[_]: Applicative: Functor]: Applicative[Nested[F, G, *]] =
     new Applicative[Nested[F, G, *]] {
+      import tech.backwards.fp.learn.Functor.syntax._
+      import tech.backwards.fp.learn.Applicative.syntax._
+      import tech.backwards.fp.learn.Applicative.syntax.function._
+
       def pure[A](a: A): Nested[F, G, A] =
-        ???
+        Nested(a.pure[G].pure[F]) // Nested(Applicative[F].pure(Applicative[G].pure(a)))
 
       def ap[A, B](ff: Nested[F, G, A => B])(fa: Nested[F, G, A]): Nested[F, G, B] =
-        ???
+        Nested(ff.value `<$>` ((gab: G[A => B]) => (ga: G[A]) => gab <*> ga) <*> fa.value)
     }
 }
