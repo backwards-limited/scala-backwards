@@ -366,7 +366,110 @@ class NestedSuite extends ScalaCheckSuite {
     )
   }
 
-  // TODO - Nested List/Maybe
+  property("Nested List/Maybe Applicative") {
+    val nested: Nested[List, Maybe, Int] =
+      Applicative[Nested[List, Maybe, *]].ap(Nested(List(Just((_: Int) + 1), Just((_: Int) + 3))))(Nested(List(Just(5), Just(6))))
+
+    assertEquals(
+      nested,
+      Nested(List(Just(6), Just(7), Just(8), Just(9)))
+    )
+
+    assertEquals(
+      Applicative[Nested[List, Maybe, *]].ap(Nested(List(Just((_: Int) + 1), Just((_: Int) + 3))))(Nested(List(Just(5), Just(6)))),
+      Nested(List(Just(6), Just(7), Just(8), Just(9)))
+    )
+
+    assertEquals(
+      Applicative[Nested[List, Maybe, *]].ap(Nested(List(Just((_: Int) + 1), Just((_: Int) + 3))))(Nested(List(Just(5), Nothing[Int]))),
+      Nested(List(Just(6), Nothing[Int], Just(8), Nothing[Int]))
+    )
+
+    assertEquals(
+      Applicative[Nested[List, Maybe, *]].ap(Nested(List(Just((_: Int) + 1), Nothing[Int => Int])))(Nested(List(Just(5), Just(6)))),
+      Nested(List(Just(6), Just(7), Nothing[Int], Nothing[Int]))
+    )
+  }
+
+  property("Nested List/Maybe Applicative syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Maybe.syntax._
+
+    assertEquals(
+      Nested(List(((_: Int) + 1).just, ((_: Int) + 3).just)) <*> Nested(List(5.just, 6.just)),
+      Nested(List(6.just, 7.just, 8.just, 9.just))
+    )
+
+    assertEquals(
+      Nested(List(((_: Int) + 1).just, ((_: Int) + 3).just)) <*> Nested(List(5.just, Nothing[Int])),
+      Nested(List(6.just, Nothing[Int], 8.just, Nothing[Int]))
+    )
+
+    assertEquals(
+      Nested(List(((_: Int) + 1).just, Nothing[Int => Int])) <*> Nested(List(5.just, 6.just)),
+      Nested(List(6.just, 7.just, Nothing[Int], Nothing[Int]))
+    )
+  }
+
+  property("Nested List/Maybe Applicative and Functor syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Maybe.syntax._
+
+    assertEquals(
+      Nested(List(1.just, 2.just, 3.just)).fmap((x: Int) => (y: Int) => x + y).ap(Nested(List(5.just, 6.just))).value,
+      List(6.just, 7.just, 7.just, 8.just, 8.just, 9.just)
+    )
+
+    assertEquals(
+      Nested(List(1.just, 2.just, 3.just)).fmap((x: Int) => (y: Int) => x + y).ap(Nested(List(5.just, Nothing[Int]))).value,
+      List(6.just, Nothing[Int], 7.just, Nothing[Int], 8.just, Nothing[Int])
+    )
+
+    assertEquals(
+      Nested(List(1.just, Nothing[Int], 3.just)).fmap((x: Int) => (y: Int) => x + y).ap(Nested(List(5.just, 6.just))).value,
+      List(6.just, 7.just, Nothing[Int], Nothing[Int], 8.just, 9.just)
+    )
+  }
+
+  property("Nested Id/Maybe Applicative and Functor function syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Functor.syntax.function._
+    import tech.backwards.fp.learn.Maybe.syntax._
+
+    assertEquals(
+      ((x: Int) => (y: Int) => x + y) `<$>` Nested(List(1.just, 2.just, 3.just)) <*> Nested(List(5.just, 6.just)),
+      Nested(List(6.just, 7.just, 7.just, 8.just, 8.just, 9.just))
+    )
+
+    assertEquals(
+      ((x: Int) => (y: Int) => x + y) `<$>` Nested(List(1.just, 2.just, 3.just)) <*> Nested(List(5.just, Nothing[Int])),
+      Nested(List(6.just, Nothing[Int], 7.just, Nothing[Int], 8.just, Nothing[Int]))
+    )
+
+    assertEquals(
+      ((x: Int) => (y: Int) => x + y) `<$>` Nested(List(1.just, Nothing[Int], 3.just)) <*> Nested(List(5.just, 6.just)),
+      Nested(List(6.just, 7.just, Nothing[Int], Nothing[Int], 8.just, 9.just))
+    )
+
+    val add: Int => Int => Int =
+      x => y => x + y
+
+    assertEquals(
+      add `<$>` Nested(List(1.just, 2.just, 3.just)) <*> Nested(List(5.just, 6.just)),
+      Nested(List(6.just, 7.just, 7.just, 8.just, 8.just, 9.just))
+    )
+
+    assertEquals(
+      add `<$>` Nested(List(1.just, 2.just, 3.just)) <*> Nested(List(5.just, Nothing[Int])),
+      Nested(List(6.just, Nothing[Int], 7.just, Nothing[Int], 8.just, Nothing[Int]))
+    )
+
+    assertEquals(
+      add `<$>` Nested(List(1.just, Nothing[Int], 3.just)) <*> Nested(List(5.just, 6.just)),
+      Nested(List(6.just, 7.just, Nothing[Int], Nothing[Int], 8.just, 9.just))
+    )
+  }
 
   // TODO - Nested List/Disjunction
 
