@@ -127,8 +127,8 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested Id/Id Applicative and Functor syntax") {
-    import tech.backwards.fp.learn.Functor.syntax._
     import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Functor.syntax._
 
     assertEquals(
       Nested(Id(Id(5))).fmap((x: Int) => (y: Int) => x + y).ap(Nested(Id(Id(6)))).value,
@@ -137,8 +137,8 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested Id/Id Applicative and Functor function syntax") {
-    import tech.backwards.fp.learn.Functor.syntax.function._
     import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Functor.syntax.function._
 
     assertEquals(
       ((x: Int) => (y: Int) => x + y) `<$>` Nested(Id(Id(5))) <*> Nested(Id(Id(6))),
@@ -199,8 +199,8 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested Id/Maybe Applicative and Functor syntax") {
-    import tech.backwards.fp.learn.Functor.syntax._
     import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Functor.syntax._
 
     assertEquals(
       Nested(Id(Just(5))).fmap((x: Int) => (y: Int) => x + y).ap(Nested(Id(Just(6)))).value,
@@ -219,8 +219,8 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested Id/Maybe Applicative and Functor function syntax") {
-    import tech.backwards.fp.learn.Functor.syntax.function._
     import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Functor.syntax.function._
 
     assertEquals(
       ((x: Int) => (y: Int) => x + y) `<$>` Nested(Id(Just(5))) <*> Nested(Id(Just(6))),
@@ -256,5 +256,108 @@ class NestedSuite extends ScalaCheckSuite {
     )
   }
 
-  // TODO Id/Disjunction Applicative (as per the Maybe above)
+  property("Nested Id/Disjunction Applicative") {
+    val nested: Nested[Id, Disjunction[String, *], Int] =
+      Applicative[Nested[Id, Disjunction[String, *], *]].ap(Nested(Id(Right[String, Int => Int](_ + 1))))(Nested(Id(Right(5))))
+
+    assertEquals(
+      nested,
+      Nested(Id(Right[String, Int](6)))
+    )
+
+    assertEquals(
+      Applicative[Nested[Id, Disjunction[String, *], *]].ap(Nested(Id(Right[String, Int => Int](_ + 1))))(Nested(Id(Right(5)))),
+      Nested(Id(Right[String, Int](6)))
+    )
+
+    assertEquals(
+      Applicative[Nested[Id, Disjunction[String, *], *]].ap(Nested(Id(Right[String, Int => Int](_ + 1))))(Nested(Id(Left("whoops")))),
+      Nested(Id(Left[String, Int]("whoops")))
+    )
+
+    assertEquals(
+      Applicative[Nested[Id, Disjunction[String, *], *]].ap(Nested(Id(Left[String, Int => Int]("whoops"))))(Nested(Id(Right(5)))),
+      Nested(Id(Left[String, Int]("whoops")))
+    )
+  }
+
+  property("Nested Id/Disjunction Applicative syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Disjunction.syntax._
+
+    assertEquals(
+      Nested(Id(((_: Int) + 1).right[String])) <*> Nested(Id(5.right)),
+      Nested(Id(6.right[String]))
+    )
+
+    assertEquals(
+      Nested(Id(((_: Int) + 1).right[String])) <*> Nested(Id("whoops".left)),
+      Nested(Id("whoops".left[Int]))
+    )
+
+    assertEquals(
+      Nested(Id("whoops".left[Int => Int])) <*> Nested(Id(5.right)),
+      Nested(Id("whoops".left[Int]))
+    )
+  }
+
+  property("Nested Id/Disjunction Applicative and Functor syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Disjunction.syntax._
+    import tech.backwards.fp.learn.Functor.syntax._
+
+    assertEquals(
+      Nested(Id(5.right)).fmap((x: Int) => (y: Int) => x + y).ap(Nested(Id(6.right))).value,
+      Id(11.right)
+    )
+
+    assertEquals(
+      Nested(Id(5.right[String])).fmap((x: Int) => (y: Int) => x + y).ap(Nested(Id("whoops".left))).value,
+      Id("whoops".left[Int])
+    )
+
+    assertEquals(
+      Nested(Id("whoops".left[Int])).fmap((x: Int) => (y: Int) => x + y).ap(Nested(Id(6.right))).value,
+      Id("whoops".left[Int])
+    )
+  }
+
+  property("Nested Id/Disjunction Applicative and Functor function syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Disjunction.syntax._
+    import tech.backwards.fp.learn.Functor.syntax.function._
+
+    assertEquals(
+      ((x: Int) => (y: Int) => x + y) `<$>` Nested(Id(5.right)) <*> Nested(Id(6.right)),
+      Nested(Id(11.right))
+    )
+
+    assertEquals(
+      ((x: Int) => (y: Int) => x + y) `<$>` Nested(Id(5.right[String])) <*> Nested(Id("whoops".left)),
+      Nested(Id("whoops".left[Int]))
+    )
+
+    assertEquals(
+      ((x: Int) => (y: Int) => x + y) `<$>` Nested(Id("whoops".left[Int])) <*> Nested(Id(6.right)),
+      Nested(Id("whoops".left[Int]))
+    )
+
+    val add: Int => Int => Int =
+      x => y => x + y
+
+    assertEquals(
+      add `<$>` Nested(Id(5.right)) <*> Nested(Id(6.right)),
+      Nested(Id(11.right))
+    )
+
+    assertEquals(
+      add `<$>` Nested(Id(5.right[String])) <*> Nested(Id("whoops".left)),
+      Nested(Id("whoops".left[Int]))
+    )
+
+    assertEquals(
+      add `<$>` Nested(Id("whoops".left[Int])) <*> Nested(Id(6.right)),
+      Nested(Id("whoops".left[Int]))
+    )
+  }
 }
