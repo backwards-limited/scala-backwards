@@ -432,7 +432,7 @@ class NestedSuite extends ScalaCheckSuite {
     )
   }
 
-  property("Nested Id/Maybe Applicative and Functor function syntax") {
+  property("Nested List/Maybe Applicative and Functor function syntax") {
     import tech.backwards.fp.learn.Applicative.syntax.function._
     import tech.backwards.fp.learn.Functor.syntax.function._
     import tech.backwards.fp.learn.Maybe.syntax._
@@ -471,7 +471,110 @@ class NestedSuite extends ScalaCheckSuite {
     )
   }
 
-  // TODO - Nested List/Disjunction
+  property("Nested List/Disjunction Applicative") {
+    val nested: Nested[List, Disjunction[String, *], Int] =
+      Applicative[Nested[List, Disjunction[String, *], *]].ap(Nested(List(Right((_: Int) + 1), Right((_: Int) + 3))))(Nested(List(Right(5), Right(6))))
+
+    assertEquals(
+      nested,
+      Nested(List(Right[String, Int](6), Right(7), Right(8), Right(9)))
+    )
+
+    assertEquals(
+      Applicative[Nested[List, Disjunction[String, *], *]].ap(Nested(List(Right((_: Int) + 1), Right((_: Int) + 3))))(Nested(List(Right(5), Right(6)))),
+      Nested(List(Right[String, Int](6), Right(7), Right(8), Right(9)))
+    )
+
+    assertEquals(
+      Applicative[Nested[List, Disjunction[String, *], *]].ap(Nested(List(Right((_: Int) + 1), Right((_: Int) + 3))))(Nested(List(Right(5), Left("whoops")))),
+      Nested(List(Right(6), Left("whoops"), Right(8), Left("whoops")))
+    )
+
+    assertEquals(
+      Applicative[Nested[List, Disjunction[String, *], *]].ap(Nested(List(Right((_: Int) + 1), Left("whoops"))))(Nested(List(Right(5), Right(6)))),
+      Nested(List(Right(6), Right(7), Left("whoops"), Left("whoops")))
+    )
+  }
+
+  property("Nested List/Disjunction Applicative syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Disjunction.syntax._
+
+    assertEquals(
+      Nested(List(((_: Int) + 1).right[String], ((_: Int) + 3).right)) <*> Nested(List(5.right, 6.right)),
+      Nested(List(6.right[String], 7.right, 8.right, 9.right))
+    )
+
+    assertEquals(
+      Nested(List(((_: Int) + 1).right[String], ((_: Int) + 3).right)) <*> Nested(List(5.right, "whoops".left)),
+      Nested(List(6.right, "whoops".left, 8.right, "whoops".left))
+    )
+
+    assertEquals(
+      Nested(List(((_: Int) + 1).right[String], "whoops".left)).ap(Nested(List(5.right, 6.right))),
+      Nested(List(6.right, 7.right, "whoops".left, "whoops".left))
+    )
+  }
+
+  property("Nested List/Disjunction Applicative and Functor syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Disjunction.syntax._
+    import tech.backwards.fp.learn.Functor.syntax._
+
+    assertEquals(
+      Nested(List(1.right, 2.right, 3.right)).fmap((x: Int) => (y: Int) => x + y).ap(Nested(List(5.right, 6.right))).value,
+      List(6.right, 7.right, 7.right, 8.right, 8.right, 9.right)
+    )
+
+    assertEquals(
+      Nested(List(1.right[String], 2.right, 3.right)).fmap((x: Int) => (y: Int) => x + y).ap(Nested(List(5.right, "whoops".left))).value,
+      List(6.right, "whoops".left, 7.right, "whoops".left, 8.right, "whoops".left)
+    )
+
+    assertEquals(
+      Nested(List(1.right, "whoops".left, 3.right)).fmap((x: Int) => (y: Int) => x + y).ap(Nested(List(5.right, 6.right))).value,
+      List(6.right, 7.right, "whoops".left, "whoops".left, 8.right, 9.right)
+    )
+  }
+
+  property("Nested List/Disjunction Applicative and Functor function syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Disjunction.syntax._
+    import tech.backwards.fp.learn.Functor.syntax.function._
+
+    assertEquals(
+      ((x: Int) => (y: Int) => x + y) `<$>` Nested(List(1.right, 2.right, 3.right)) <*> Nested(List(5.right, 6.right)),
+      Nested(List(6.right, 7.right, 7.right, 8.right, 8.right, 9.right))
+    )
+
+    assertEquals(
+      ((x: Int) => (y: Int) => x + y) `<$>` Nested(List(1.right[String], 2.right, 3.right)) <*> Nested(List(5.right, "whoops".left)),
+      Nested(List(6.right, "whoops".left, 7.right, "whoops".left, 8.right, "whoops".left))
+    )
+
+    assertEquals(
+      ((x: Int) => (y: Int) => x + y) `<$>` Nested(List(1.right, "whoops".left, 3.right)) <*> Nested(List(5.right, 6.right)),
+      Nested(List(6.right, 7.right, "whoops".left, "whoops".left, 8.right, 9.right))
+    )
+
+    val add: Int => Int => Int =
+      x => y => x + y
+
+    assertEquals(
+      add `<$>` Nested(List(1.right, 2.right, 3.right)) <*> Nested(List(5.right, 6.right)),
+      Nested(List(6.right, 7.right, 7.right, 8.right, 8.right, 9.right))
+    )
+
+    assertEquals(
+      add `<$>` Nested(List(1.right[String], 2.right, 3.right)) <*> Nested(List(5.right, "whoops".left)),
+      Nested(List(6.right, "whoops".left, 7.right, "whoops".left, 8.right, "whoops".left))
+    )
+
+    assertEquals(
+      add `<$>` Nested(List(1.right, "whoops".left, 3.right)) <*> Nested(List(5.right, 6.right)),
+      Nested(List(6.right, 7.right, "whoops".left, "whoops".left, 8.right, 9.right))
+    )
+  }
 
   // TODO - Traverse (and Sequence)
 }
