@@ -123,7 +123,7 @@ class TraversalSuite extends ScalaCheckSuite {
     )
   }
 
-  property("Sequence Id[List]") {
+  property("Sequence Id[List] syntax") {
     import tech.backwards.fp.learn.Traversal.syntax._
 
     assertEquals(

@@ -576,5 +576,69 @@ class NestedSuite extends ScalaCheckSuite {
     )
   }
 
-  // TODO - Traverse (and Sequence)
+  property("Traverse Id[Nested[Id[Id]]]") {
+    val nested: Nested[Id, Id, Id[Int]] =
+      Traversal[Id].traverse(Id(5))(x => Nested(Id(Id(x + 1))))
+
+    assertEquals(
+      nested,
+      Nested(Id(Id(Id(6))))
+    )
+
+    assertEquals(
+      Traversal[Id].traverse(Id(5))(x => Nested(Id(Id(x + 1)))),
+      Nested(Id(Id(Id(6))))
+    )
+  }
+
+  property("Traverse Id[Nested[Id[Id]]] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Id(5).traverse(x => Nested(Id(Id(x + 1)))),
+      Nested(Id(Id(Id(6))))
+    )
+  }
+
+  property("Sequence Id[Nested[Id[Id]]] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      Id(Nested(Id(Id(5)))).sequence,
+      Nested(Id(Id(Id(5))))
+    )
+  }
+
+  property("Traverse List[Nested[Id[Id]]]") {
+    val nested: Nested[Id, Id, List[Int]] =
+      Traversal[List].traverse(List(1, 2))(x => Nested(Id(Id(x + 1))))
+
+    assertEquals(
+      nested,
+      Nested(Id(Id(List(2, 3))))
+    )
+
+    assertEquals(
+      Traversal[List].traverse(List(1, 2))(x => Nested(Id(Id(x + 1)))),
+      Nested(Id(Id(List(2, 3))))
+    )
+  }
+
+  property("Traverse List[Nested[Id[Id]]] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      List(1, 2).traverse(x => Nested(Id(Id(x + 1)))),
+      Nested(Id(Id(List(2, 3))))
+    )
+  }
+
+  property("Sequence List[Nested[Id[Id]]] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      List(Nested(Id(Id(1))), Nested(Id(Id(2)))).sequence,
+      Nested(Id(Id(List(1, 2))))
+    )
+  }
 }
