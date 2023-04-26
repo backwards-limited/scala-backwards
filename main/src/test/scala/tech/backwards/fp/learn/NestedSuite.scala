@@ -641,4 +641,129 @@ class NestedSuite extends ScalaCheckSuite {
       Nested(Id(Id(List(1, 2))))
     )
   }
+
+  property("Traverse List[Nested[List[Maybe]]]") {
+    val `in traversalList of fa.foldRight`: Nested[List, Maybe, List[Int]] =
+      Applicative[Nested[List, Maybe, *]].pure(List.empty[Int])
+
+    /*
+    TODO - Trying to explain, but the following isn't quite right yet:
+
+    List(1, 2).foldRight(Nested(List(Just(List()))))(2, Nested(List(Just(List()))) =>
+      list of initial iteration: Nested(List(Just(List())))
+
+      first
+      f(a) = Nested(List(Just(102), Nothing[Int], Just(103)))
+      then
+      f(a).map(...)
+      i.e.
+      Nested(List(Just(102), Nothing[Int], Just(103))).map(
+        first
+        102 => List() => List(102) resulting in Just(List(102))
+        then
+        map not applied because of Nothing[Int] resulting in Nothing[List[Int]]
+        then
+        103 => List() => List(103) resulting in Just(List(103))
+      )
+
+      seed for next iteration: Nested(List(Just(List(102)), Nothing[List[Int]], Just(List(103))))
+
+      second
+      f(a) = Nested(List(Just(11), Nothing[Int], Just(12)))
+      then
+      f(a).map(...)
+      i.e.
+      Nested(List(Just(11), Nothing[List[Int]], Just(12))).map(
+        first
+        11 => List(102) => List(11, 102) resulting in Just(List(11, 102))
+        then
+        map not applied because of Nothing[Int] resulting in Nothing[List[Int]]
+        then
+        11 => List(103) => List(11, 103) resulting in Just(List(11, 103))
+        then
+        12 => List(102) => List(12, 102) resulting in Just(List(12, 102))
+        then
+        map not applied because of Nothing[Int] resulting in Nothing[List[Int]]
+        then
+        12 => List(103) => List(12, 103) resulting in Just(List(12, 103))
+      )
+    )
+    */
+
+    val nested: Nested[List, Maybe, List[Int]] =
+      Traversal[List].traverse(List(1, 2)) {
+        case x @ 1 => Nested(List(Just(x + 10), Nothing[Int], Just(x + 11)))
+        case x @ 2 => Nested(List(Just(x + 100), Nothing[Int], Just(x + 101)))
+      }
+
+    assertEquals(
+      nested,
+      Nested(
+        List(
+          Just(List(11, 102)),
+          Nothing[List[Int]],
+          Just(List(11, 103)),
+          Nothing[List[Int]],
+          Nothing[List[Int]],
+          Nothing[List[Int]],
+          Just(List(12, 102)),
+          Nothing[List[Int]],
+          Just(List(12, 103))
+        )
+      )
+    )
+  }
+
+  property("Traverse List[Nested[List[Maybe]]] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    assertEquals(
+      List(1, 2) traverse {
+        case x @ 1 => Nested(List(Just(x + 10), Nothing[Int], Just(x + 11)))
+        case x @ 2 => Nested(List(Just(x + 100), Nothing[Int], Just(x + 101)))
+      },
+      Nested(
+        List(
+          Just(List(11, 102)),
+          Nothing[List[Int]],
+          Just(List(11, 103)),
+          Nothing[List[Int]],
+          Nothing[List[Int]],
+          Nothing[List[Int]],
+          Just(List(12, 102)),
+          Nothing[List[Int]],
+          Just(List(12, 103))
+        )
+      )
+    )
+  }
+
+  property("Sequence List[Nested[List[Maybe]]] syntax") {
+    import tech.backwards.fp.learn.Traversal.syntax._
+
+    println(List(
+      Nested(List(Just(1), Nothing[Int], Just(2))),
+      Nested(List(Just(101), Nothing[Int], Just(102)))
+    ).sequence)
+
+    assertEquals(
+      List(
+        Nested(List(Just(1), Nothing[Int], Just(2))),
+        Nested(List(Just(101), Nothing[Int], Just(102)))
+      ).sequence,
+      Nested(
+        List(
+          Just(List(1, 101)),
+          Nothing[List[Int]],
+          Just(List(1, 102)),
+          Nothing[List[Int]],
+          Nothing[List[Int]],
+          Nothing[List[Int]],
+          Just(List(2, 101)),
+          Nothing[List[Int]],
+          Just(List(2, 102))
+        )
+      )
+    )
+  }
 }
