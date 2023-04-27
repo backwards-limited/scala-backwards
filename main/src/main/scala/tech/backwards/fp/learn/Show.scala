@@ -1,12 +1,13 @@
 package tech.backwards.fp.learn
 
 import cats.implicits._
+import tech.backwards.fp.learn.Show.syntax.ShowSyntax
 
 trait Show[A] {
   def show(x: A): String
 }
 
-object Show extends ShowImplicits { self =>
+object Show { self =>
   def apply[A: Show]: Show[A] =
     implicitly
 
@@ -19,10 +20,6 @@ object Show extends ShowImplicits { self =>
         self.show(x)
     }
   }
-}
-
-sealed trait ShowImplicits {
-  import tech.backwards.fp.learn.Show.syntax._
 
   implicit val showInt: Show[Int] =
     _.toString

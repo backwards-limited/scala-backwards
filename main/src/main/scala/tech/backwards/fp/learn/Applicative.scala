@@ -9,7 +9,7 @@ abstract class Applicative[F[_]: Functor] {
   def ap[A, B](ff: F[A => B])(fa: F[A]): F[B]
 }
 
-object Applicative extends ApplicativeImplicits {
+object Applicative {
   def apply[F[_]: Applicative]: Applicative[F] =
     implicitly
 
@@ -29,9 +29,7 @@ object Applicative extends ApplicativeImplicits {
       }
     }
   }
-}
 
-sealed trait ApplicativeImplicits {
   implicit val applicativeList: Applicative[List] =
     new Applicative[List] {
       def pure[A](a: A): List[A] =

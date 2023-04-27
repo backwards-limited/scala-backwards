@@ -9,11 +9,11 @@ abstract class Monad[F[_]: Functor] {
   def flatMap[A, B](fa: F[A])(f: A => F[B]): F[B]
 }
 
-object Monad extends MonadImplicits {
+object Monad {
   def apply[F[_]: Monad]: Monad[F] =
     implicitly
 
-  object syntax extends LowerLevelImplicits {
+  object syntax extends LowerLevelSyntax {
     implicit class Syntax[A](a: A) {
       def pure[F[_]: Monad]: F[A] =
         apply[F].pure(a)
@@ -30,7 +30,7 @@ object Monad extends MonadImplicits {
     }
   }
 
-  trait LowerLevelImplicits {
+  trait LowerLevelSyntax {
     implicit class MonadSyntax[F[_]: Monad, A](fa: F[A]) {
       def flatMap[B](f: A => F[B]): F[B] =
         apply[F].flatMap(fa)(f)
@@ -39,9 +39,7 @@ object Monad extends MonadImplicits {
         flatMap(f)
     }
   }
-}
 
-sealed trait MonadImplicits {
   implicit val monadList: Monad[List] =
     new Monad[List] {
       def pure[A](a: A): List[A] =

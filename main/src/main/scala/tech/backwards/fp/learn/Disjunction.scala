@@ -26,7 +26,7 @@ object Disjunction {
         Left[A, R](a)
     }
   }
-  
+
   /**
    * By using the "kind projector" compiler plugin the following becomes much easier:
    * {{{

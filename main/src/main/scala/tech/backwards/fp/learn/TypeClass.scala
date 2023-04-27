@@ -4,7 +4,7 @@ trait TypeClass[A] {
   def foo(a: A): String
 }
 
-object TypeClass extends TypeClassImplicits { self =>
+object TypeClass { self =>
   def apply[A: TypeClass]: TypeClass[A] =
     implicitly
 
@@ -17,9 +17,7 @@ object TypeClass extends TypeClassImplicits { self =>
         self.foo(a)
     }
   }
-}
 
-sealed trait TypeClassImplicits {
   implicit val typeClassInt: TypeClass[Int] =
     (a: Int) => s"Int: $a"
 

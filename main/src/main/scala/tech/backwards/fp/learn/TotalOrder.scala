@@ -1,12 +1,13 @@
 package tech.backwards.fp.learn
 
 import cats.implicits._
+import tech.backwards.fp.learn.TotalOrder.syntax.TotalOrderSyntax
 
 trait TotalOrder[A] {
   def less(x: A, y: A): Boolean
 }
 
-object TotalOrder extends TotalOrderImplicits { self =>
+object TotalOrder { self =>
   def apply[A: TotalOrder]: TotalOrder[A] =
     implicitly
 
@@ -19,10 +20,6 @@ object TotalOrder extends TotalOrderImplicits { self =>
         self.less(x, _)
     }
   }
-}
-
-sealed trait TotalOrderImplicits {
-  import tech.backwards.fp.learn.TotalOrder.syntax._
 
   implicit val totalOrderInt: TotalOrder[Int] =
     _ < _

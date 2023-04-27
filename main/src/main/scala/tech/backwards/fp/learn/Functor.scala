@@ -21,7 +21,7 @@ trait Functor[F[_]] {
   def fmap[A, B](fa: F[A])(f: A => B): F[B]
 }
 
-object Functor extends FunctorImplicits {
+object Functor {
   def apply[F[_]: Functor]: Functor[F] =
     implicitly
 
@@ -53,9 +53,7 @@ object Functor extends FunctorImplicits {
       }
     }
   }
-}
 
-sealed trait FunctorImplicits {
   implicit val functorList: Functor[List] =
     new Functor[List] {
       def fmap[A, B](fa: List[A])(f: A => B): List[B] =

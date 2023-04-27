@@ -1,12 +1,13 @@
 package tech.backwards.fp.learn
 
 import cats.implicits._
+import tech.backwards.fp.learn.Eq.syntax.EqSyntax
 
 trait Eq[A] {
   def eq(x: A, y: A): Boolean
 }
 
-object Eq extends EqImplicits { self =>
+object Eq { self =>
   def apply[A: Eq]: Eq[A] =
     implicitly
 
@@ -22,10 +23,6 @@ object Eq extends EqImplicits { self =>
         ==== andThen (!_)
     }
   }
-}
-
-sealed trait EqImplicits {
-  import tech.backwards.fp.learn.Eq.syntax._
 
   implicit val eqInt: Eq[Int] =
     _ == _
@@ -47,8 +44,8 @@ sealed trait EqImplicits {
 
   // Alternative version - foldM to short circuit
   implicit def eqList[A: Eq]: Eq[List[A]] =
-    (xs, ys) =>
-      (xs.length == ys.length) && xs.zip(ys).foldM(true) { case (outcome, (x, y)) =>
+    (xs, ys) => (xs.length == ys.length) && xs.zip(ys).foldM(true) {
+      case (outcome, (x, y)) =>
         Option.when(x ==== y)(outcome)
       }.getOrElse(false)
 }

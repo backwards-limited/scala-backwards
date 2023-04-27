@@ -6,9 +6,12 @@ trait Foldable[F[_]] {
   def foldr[A, B](fa: F[A])(seed: B)(f: (A, B) => B): B
 }
 
-object Foldable extends FoldableImplicits {
+object Foldable {
   def apply[F[_]: Foldable]: Foldable[F] =
     implicitly
+
+  def foldRight[A, B](xs: List[A])(seed: B)(f: (A, B) => B): B =
+    xs.foldRight(seed)(f)
 
   object syntax {
     implicit class FoldableSyntax[F[_]: Foldable, A](fa: F[A]) {
@@ -26,11 +29,6 @@ object Foldable extends FoldableImplicits {
         foldableTuple3.foldr(fa)(seed)(f)
     }
   }
-}
-
-sealed trait FoldableImplicits {
-  def foldRight[A, B](xs: List[A])(seed: B)(f: (A, B) => B): B =
-    xs.foldRight(seed)(f)
 
   implicit val foldableList: Foldable[List] =
     new Foldable[List] {

@@ -4,7 +4,7 @@ abstract class Traversal[F[_]] {
   def traverse[G[_]: Applicative, A, B](fa: F[A])(f: A => G[B]): G[F[B]]
 }
 
-object Traversal extends TraversalImplicits {
+object Traversal {
   def apply[F[_]: Traversal]: Traversal[F] =
     implicitly
 
@@ -55,9 +55,7 @@ object Traversal extends TraversalImplicits {
       }
     }
   }
-}
 
-sealed trait TraversalImplicits {
   implicit val traversalTuple2: Traversal[Lambda[X => (X, X)]] =
     new Traversal[Lambda[X => (X, X)]] {
       def traverse[G[_]: Applicative, A, B](fa: (A, A))(f: A => G[B]): G[(B, B)] = {

@@ -1,12 +1,14 @@
 package tech.backwards.fp.learn
 
+import tech.backwards.fp.learn.Monoid.syntax.MonoidSyntax
+
 trait Monoid[A] {
   def mzero: A
 
   def mappend(x: A, y: A): A
 }
 
-object Monoid extends MonoidImplicits {
+object Monoid {
   def apply[A: Monoid]: Monoid[A] =
     implicitly
 
@@ -16,10 +18,6 @@ object Monoid extends MonoidImplicits {
         apply[A].mappend(x, _)
     }
   }
-}
-
-sealed trait MonoidImplicits {
-  import tech.backwards.fp.learn.Monoid.syntax._
 
   implicit val monoidString: Monoid[String] =
     new Monoid[String] {
