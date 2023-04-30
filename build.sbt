@@ -1,4 +1,4 @@
-import sbt._
+import sbt.*
 
 lazy val root = project("scala-backwards", file("."))
   .settings(description := "Scala by Backwards")
@@ -70,5 +70,5 @@ def project(id: String, base: File): Project =
       testFrameworks += new TestFramework("weaver.framework.CatsEffect")
     )
     .configs(IntegrationTest extend Test)
-    .settings(inConfig(IntegrationTest extend Test)(Defaults.testSettings): _*)
-    .settings(Defaults.itSettings: _*)
+    .settings(inConfig(IntegrationTest extend Test)(Defaults.testSettings) *)
+    .settings(Defaults.itSettings *)

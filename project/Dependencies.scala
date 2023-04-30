@@ -1,4 +1,4 @@
-import sbt._
+import sbt.*
 
 object Dependencies {
   def apply(): Seq[ModuleID] =
@@ -11,17 +11,17 @@ object Dependencies {
     ).flatten
 
   lazy val scalaMeta: Seq[ModuleID] =
-    List("org.scalameta" %% "scalameta" % "4.7.1")
+    List("org.scalameta" %% "scalameta" % "4.7.7")
 
   lazy val scalatest: Seq[ModuleID] =
-    List("org.scalatest" %% "scalatest" % "3.2.14" % "test, it" withSources() withJavadoc())
+    List("org.scalatest" %% "scalatest" % "3.2.15" % "test, it" withSources() withJavadoc())
 
   lazy val scalatestplus: Seq[ModuleID] =
     List("org.scalatestplus" %% "scalacheck-1-15" % "3.2.11.0" % "test, it" withSources() withJavadoc())
 
   lazy val specs2: Seq[ModuleID] = {
     val group = "org.specs2"
-    val version = "4.19.0"
+    val version = "4.20.0"
 
     List(
       "specs2-core", "specs2-scalacheck", "specs2-matcher-extra", "specs2-cats", "specs2-shapeless"
@@ -43,7 +43,7 @@ object Dependencies {
     List("org.typelevel" %% "munit-cats-effect-3" % "1.0.7" % "test, it" force() withSources() withJavadoc())
 
   lazy val weaver: Seq[ModuleID] =
-    List("com.disneystreaming" %% "weaver-cats" % "0.8.1" % "test, it" withSources() withJavadoc())
+    List("com.disneystreaming" %% "weaver-cats" % "0.8.3" % "test, it" withSources() withJavadoc())
 
   lazy val scalaMock: Seq[ModuleID] =
     List("org.scalamock" %% "scalamock" % "5.2.0" % "test, it" withSources() withJavadoc())
@@ -71,7 +71,7 @@ object Dependencies {
 
   lazy val log4Cats: Seq[ModuleID] = {
     val group = "org.typelevel"
-    val version = "2.5.0"
+    val version = "2.6.0"
 
     List(
       "log4cats-core", "log4cats-slf4j"
@@ -79,11 +79,11 @@ object Dependencies {
   }
 
   lazy val scribe: Seq[ModuleID] =
-    List("com.outr" %% "scribe" % "3.10.5" withSources() withJavadoc())
+    List("com.outr" %% "scribe" % "3.11.1" withSources() withJavadoc())
 
   lazy val pureConfig: Seq[ModuleID] = {
     val group = "com.github.pureconfig"
-    val version = "0.17.2"
+    val version = "0.17.3"
 
     List("pureconfig").map(group %% _ % version withSources() withJavadoc())
   }
@@ -106,7 +106,7 @@ object Dependencies {
 
   lazy val catsEffect: Seq[ModuleID] = {
     val group = "org.typelevel"
-    val version = "3.4.4"
+    val version = "3.4.10"
 
     List(
       "cats-effect"
@@ -136,7 +136,7 @@ object Dependencies {
 
   lazy val refined: Seq[ModuleID] = {
     val group = "eu.timepit"
-    val version = "0.10.1"
+    val version = "0.10.3"
 
     List(
       "refined", "refined-pureconfig", "refined-cats"
@@ -167,13 +167,13 @@ object Dependencies {
   }
 
   lazy val chimney: Seq[ModuleID] =
-    List("io.scalaland" %% "chimney" % "0.6.2")
+    List("io.scalaland" %% "chimney" % "0.7.4")
 
   lazy val scalaParallelCollections: Seq[ModuleID] =
     List("org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4")
 
   lazy val parserCombinators: Seq[ModuleID] =
-    List("org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1")
+    List("org.scala-lang.modules" %% "scala-parser-combinators" % "2.3.0")
 
   lazy val http4s: Seq[ModuleID] = {
     val group = "org.http4s"
@@ -188,7 +188,7 @@ object Dependencies {
 
   lazy val fs2: Seq[ModuleID] = {
     val group = "co.fs2"
-    val version = "3.4.0"
+    val version = "3.6.1"
 
     List(
       "fs2-core", "fs2-io", "fs2-reactive-streams"
@@ -199,11 +199,11 @@ object Dependencies {
     List("io.lemonlabs" %% "scala-uri" % "4.0.3" withSources() withJavadoc())
 
   lazy val betterFiles: Seq[ModuleID] =
-    List("com.github.pathikrit" %% "better-files" % "3.9.1" withSources() withJavadoc())
+    List("com.github.pathikrit" %% "better-files" % "3.9.2" withSources() withJavadoc())
 
   lazy val sttp: Seq[ModuleID] = {
     val group = "com.softwaremill.sttp.client3"
-    val version = "3.8.6"
+    val version = "3.8.15"
 
     List(
       "core", "circe", "async-http-client-backend-cats", "async-http-client-backend-zio"
@@ -212,7 +212,7 @@ object Dependencies {
 
   lazy val caliban: Seq[ModuleID] = {
     val group = "com.github.ghostdogpr"
-    val version = "2.0.2"
+    val version = "2.1.0"
 
     List(
       "caliban-client"
@@ -220,7 +220,7 @@ object Dependencies {
   }
 
   lazy val awsJava: Seq[ModuleID] =
-    List("com.amazonaws" % "aws-java-sdk" % "1.12.377")
+    List("com.amazonaws" % "aws-java-sdk" % "1.12.459")
 
   lazy val quill: Seq[ModuleID] = {
     val group = "io.getquill"
@@ -234,14 +234,14 @@ object Dependencies {
   }
 
   lazy val postgresql: Seq[ModuleID] =
-    List("org.postgresql" % "postgresql" % "42.5.1")
+    List("org.postgresql" % "postgresql" % "42.6.0")
 
   lazy val circe: Seq[ModuleID] = {
     val group = "io.circe"
-    val version = "0.14.3"
+    val version = "0.14.5"
 
     List(
-      "circe-core", "circe-generic", "circe-generic-extras", "circe-parser", "circe-refined"
+      "circe-core", "circe-generic", /*"circe-generic-extras",*/ "circe-parser", "circe-refined"
     ).map(group %% _ % version withSources() withJavadoc()) ++ List(
       "circe-testing", "circe-literal"
     ).map(group %% _ % version % "test, it" withSources() withJavadoc())
