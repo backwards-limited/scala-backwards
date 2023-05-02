@@ -70,6 +70,7 @@ Go through in the following order:
   - MaybeT
   - WriterT
   - StateT
+  - ReaderT
 - Free
 - ContravariantFunctor
   - Show
