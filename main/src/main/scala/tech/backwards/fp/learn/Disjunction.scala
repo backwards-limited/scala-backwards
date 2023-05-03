@@ -46,6 +46,21 @@ object Disjunction {
         }
     }
 
+  implicit def applicativeDisjunction[L]: Applicative[Disjunction[L, *]] =
+    new Applicative[Disjunction[L, *]] {
+      def pure[A](a: A): Disjunction[L, A] =
+        Right(a)
+
+      def ap[A, B](ff: Disjunction[L, A => B])(fa: Disjunction[L, A]): Disjunction[L, B] =
+        ff match {
+          case Left(l) =>
+            Left(l)
+
+          case Right(f) =>
+            Functor[Disjunction[L, *]].fmap(fa)(f)
+        }
+    }
+
   /**
    * By using the "kind projector" compiler plugin the following becomes much easier:
    * {{{
@@ -84,21 +99,6 @@ object Disjunction {
 
           case Right(a) =>
             f(a, seed)
-        }
-    }
-
-  implicit def applicativeDisjunction[L]: Applicative[Disjunction[L, *]] =
-    new Applicative[Disjunction[L, *]] {
-      def pure[A](a: A): Disjunction[L, A] =
-        Right(a)
-
-      def ap[A, B](ff: Disjunction[L, A => B])(fa: Disjunction[L, A]): Disjunction[L, B] =
-        ff match {
-          case Left(l) =>
-            Left(l)
-
-          case Right(f) =>
-            Functor[Disjunction[L, *]].fmap(fa)(f)
         }
     }
 

@@ -30,6 +30,27 @@ object Writer {
   /**
    * By using the "kind projector" compiler plugin the following becomes much easier:
    * {{{
+   *  implicit def applicativeWriter[W: Monoid] =
+   *    new Applicative[({ type E[A] = Writer[W, A] })# E]
+   * }}}
+   */
+  implicit def applicativeWriter[W: Monoid]: Applicative[Writer[W, *]] =
+    new Applicative[Writer[W, *]] {
+      import tech.backwards.fp.learn.Functor.syntax._
+      import tech.backwards.fp.learn.Monoid.syntax._
+
+      def pure[A](a: A): Writer[W, A] =
+        writer[W].as(a)
+
+      def ap[A, B](ff: Writer[W, A => B])(fa: Writer[W, A]): Writer[W, B] =
+        (ff.run(), fa.run()) match {
+          case ((w, f), (w2, a)) => tell(w |+| w2).as(f(a))
+        }
+    }
+
+  /**
+   * By using the "kind projector" compiler plugin the following becomes much easier:
+   * {{{
    *  implicit def monadWriter[W: Monoid] =
    *    new Monad[({ type E[A] = Writer[W, A] })# E]
    * }}}
@@ -48,27 +69,6 @@ object Writer {
 
         tell(w |+| w2).as(b)
       }
-    }
-
-  /**
-   * By using the "kind projector" compiler plugin the following becomes much easier:
-   * {{{
-   *  implicit def applicativeWriter[W: Monoid] =
-   *    new Applicative[({ type E[A] = Writer[W, A] })# E]
-   * }}}
-   */
-  implicit def applicativeWriter[W: Monoid]: Applicative[Writer[W, *]] =
-    new Applicative[Writer[W, *]] {
-      import tech.backwards.fp.learn.Functor.syntax._
-      import tech.backwards.fp.learn.Monoid.syntax._
-
-      def pure[A](a: A): Writer[W, A] =
-        writer[W].as(a)
-
-      def ap[A, B](ff: Writer[W, A => B])(fa: Writer[W, A]): Writer[W, B] =
-        (ff.run(), fa.run()) match {
-          case ((w, f), (w2, a)) => tell(w |+| w2).as(f(a))
-        }
     }
 
   implicit def traversalWriter[W: Monoid]: Traversal[Writer[W, *]] =

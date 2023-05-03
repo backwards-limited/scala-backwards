@@ -36,6 +36,21 @@ object Maybe {
         }
     }
 
+  implicit val applicativeMaybe: Applicative[Maybe] =
+    new Applicative[Maybe] {
+      def pure[A](a: A): Maybe[A] =
+        Just(a)
+
+      def ap[A, B](ff: Maybe[A => B])(fa: Maybe[A]): Maybe[B] =
+        ff match {
+          case Just(f) =>
+            functorMaybe.fmap(fa)(f)
+
+          case _ =>
+            Nothing[B]
+        }
+    }
+
   implicit val monadMaybe: Monad[Maybe] =
     new Monad[Maybe] {
       def pure[A](a: A): Maybe[A] =
@@ -60,21 +75,6 @@ object Maybe {
 
           case Just(a) =>
             f(a, seed)
-        }
-    }
-
-  implicit val applicativeMaybe: Applicative[Maybe] =
-    new Applicative[Maybe] {
-      def pure[A](a: A): Maybe[A] =
-        Just(a)
-
-      def ap[A, B](ff: Maybe[A => B])(fa: Maybe[A]): Maybe[B] =
-        ff match {
-          case Just(f) =>
-            functorMaybe.fmap(fa)(f)
-
-          case _ =>
-            Nothing[B]
         }
     }
 

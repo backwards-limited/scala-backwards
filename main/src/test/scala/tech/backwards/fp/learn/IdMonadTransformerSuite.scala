@@ -7,32 +7,84 @@ class IdMonadTransformerSuite extends ScalaCheckSuite {
   override protected def scalaCheckTestParameters: Test.Parameters =
     super.scalaCheckTestParameters.withMinSuccessfulTests(100).withMaxDiscardRatio(10)
 
-  property("Blah") {
-
-    val v: IdT[Maybe, Int] =
+  property("IdT") {
+    val transformer: IdT[Maybe, Int] =
       IdT(Just(Id(10)))
 
-    println(v.value) // Maybe[Id[Int]]
-    ???
+    assertEquals(transformer.value, Just(Id(10)))
   }
 
-  property("Blah Blah") {
-
-    val v: IdT[Maybe, Int] =
+  property("IdT pure") {
+    val transformer: IdT[Maybe, Int] =
       IdT.pure[Maybe, Int](10)
 
-    println(v.value) // Maybe[Id[Int]]
-    ???
+    assertEquals(transformer.value, Just(Id(10)))
   }
 
-  property("Blah Blah Blah") {
+  property("IdT Functor") {
+    val transformer: IdT[Maybe, Int] =
+      IdT(Just(Id(10)))
 
-    import tech.backwards.fp.learn.Applicative.syntax._
+    assertEquals(
+      Functor[IdT[Maybe, *]].fmap(transformer)(_ + 1).value,
+      Just(Id(11))
+    )
 
-    val v: IdT[Maybe, Int] =
+    assertEquals(
+      Functor[IdT[Maybe, *]].fmap(IdT(Just(Id(10))))(_ + 1).value,
+      Just(Id(11))
+    )
+  }
+
+  property("IdT Functor syntax") {
+    import tech.backwards.fp.learn.Functor.syntax._
+
+    val transformer: IdT[Maybe, Int] =
+      IdT(Just(Id(10)))
+
+    assertEquals(
+      transformer.fmap(_ + 1).value,
+      Just(Id(11))
+    )
+
+    assertEquals(
+      IdT(Just(Id(10))).fmap(_ + 1).value,
+      Just(Id(11))
+    )
+  }
+
+  property("IdT Monad") {
+    import tech.backwards.fp.learn.Monad.syntax._
+
+    val transformer: IdT[Maybe, Int] =
       10.pure[IdT[Maybe, *]]
 
-    println(v.value) // Maybe[Id[Int]]
-    ???
+    assertEquals(
+      Monad[IdT[Maybe, *]].flatMap(transformer)(a => (a + 1).pure[IdT[Maybe, *]]).value,
+      Just(Id(11))
+    )
+
+    /*assertEquals(
+      Functor[IdT[Maybe, *]].fmap(10.pure[IdT[Maybe, *]])(_ + 1).value,
+      Just(Id(11))
+    )*/
   }
+
+  /*property("IdT Applicative") {
+    import tech.backwards.fp.learn.Applicative.syntax._
+
+    val transformer: IdT[Maybe, Int] =
+      10.pure[IdT[Maybe, *]]
+
+    assertEquals(transformer.value, Just(Id(10)))
+  }*/
+
+  /*property("IdT Applicative syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax._
+
+    val transformer: IdT[Maybe, Int] =
+      10.pure[IdT[Maybe, *]]
+
+    assertEquals(transformer.value, Just(Id(10)))
+  }*/
 }
