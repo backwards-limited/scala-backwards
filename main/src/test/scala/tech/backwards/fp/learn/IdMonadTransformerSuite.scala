@@ -54,20 +54,35 @@ class IdMonadTransformerSuite extends ScalaCheckSuite {
   }
 
   property("IdT Monad") {
+    val transformer: IdT[Maybe, Int] =
+      Monad[IdT[Maybe, *]].pure(10)
+
+    assertEquals(
+      Monad[IdT[Maybe, *]].flatMap(transformer)(a => Monad[IdT[Maybe, *]].pure(a + 1)).value,
+      Just(Id(11))
+    )
+
+    assertEquals(
+      Monad[IdT[Maybe, *]].flatMap(Monad[IdT[Maybe, *]].pure(10))(a => Monad[IdT[Maybe, *]].pure(a + 1)).value,
+      Just(Id(11))
+    )
+  }
+
+  property("IdT Monad syntax") {
     import tech.backwards.fp.learn.Monad.syntax._
 
     val transformer: IdT[Maybe, Int] =
       10.pure[IdT[Maybe, *]]
 
     assertEquals(
-      Monad[IdT[Maybe, *]].flatMap(transformer)(a => (a + 1).pure[IdT[Maybe, *]]).value,
+      transformer.flatMap(a => (a + 1).pure[IdT[Maybe, *]]).value,
       Just(Id(11))
     )
 
-    /*assertEquals(
-      Functor[IdT[Maybe, *]].fmap(10.pure[IdT[Maybe, *]])(_ + 1).value,
+    assertEquals(
+      10.pure[IdT[Maybe, *]].flatMap(a => (a + 1).pure[IdT[Maybe, *]]).value,
       Just(Id(11))
-    )*/
+    )
   }
 
   /*property("IdT Applicative") {

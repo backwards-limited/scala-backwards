@@ -26,10 +26,12 @@ object IdT {
       def ap[A, B](ff: IdT[F, A => B])(fa: IdT[F, A]): IdT[F, B] = ???
     }
 
-  implicit def monadIdT[F[_]: Functor]: Monad[IdT[F, *]] =
+  implicit def monadIdT[F[_]: Functor: Monad]: Monad[IdT[F, *]] =
     new Monad[IdT[F, *]] {
-      def pure[A](a: A): IdT[F, A] = ???
+      def pure[A](a: A): IdT[F, A] =
+        IdT(Monad[F].pure(Id(a)))
 
-      def flatMap[A, B](fa: IdT[F, A])(f: A => IdT[F, B]): IdT[F, B] = ???
+      def flatMap[A, B](fa: IdT[F, A])(f: A => IdT[F, B]): IdT[F, B] =
+        IdT(Monad[F].flatMap(fa.value)(idA => f(idA.value).value))
     }
 }
