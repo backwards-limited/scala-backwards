@@ -18,7 +18,7 @@ object Nothing {
 
 object Maybe {
   object syntax {
-    implicit class Syntax[A](a: A) {
+    implicit class MaybeSyntax[A](a: A) {
       def just: Maybe[A] =
         Just(a)
     }

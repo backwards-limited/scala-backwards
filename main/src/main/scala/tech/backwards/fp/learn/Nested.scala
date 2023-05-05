@@ -27,7 +27,6 @@ object Nested {
     new Applicative[Nested[F, G, *]] {
       import tech.backwards.fp.learn.Functor.syntax._
       import tech.backwards.fp.learn.Applicative.syntax._
-      import tech.backwards.fp.learn.Applicative.syntax.function._
 
       def pure[A](a: A): Nested[F, G, A] =
         Nested(a.pure[G].pure[F]) // i.e. Nested(Applicative[F].pure(Applicative[G].pure(a)))

@@ -14,19 +14,25 @@ object Applicative {
     implicitly
 
   object syntax {
-    implicit class Syntax[A](a: A) {
-      def pure[F[_]: Applicative]: F[A] =
+    implicit class ApplicativeSyntax[A](a: A) {
+      def pure[F[_] : Applicative]: F[A] =
         apply[F].pure(a)
     }
 
-    object function {
-      implicit class ApplicativeSyntax[F[_]: Applicative, A, B](ff: F[A => B]) {
-        def ap(fa: F[A]): F[B] =
-          apply[F].ap(ff)(fa)
+    implicit class ApplicativeTypeConstructorSyntax[F[_]: Applicative, A](fa: F[A]) {
+      def ap[B](ff: F[A => B]): F[B] =
+        apply[F].ap(ff)(fa)
 
-        def <*>(fa: F[A]): F[B] =
-          ap(fa)
-      }
+      def <*>[B](ff: F[A => B]): F[B] =
+        ap(ff)
+    }
+
+    implicit class ApplicativeTypeFunctionConstructorSyntax[F[_]: Applicative, A, B](ff: F[A => B]) {
+      def ap(fa: F[A]): F[B] =
+        apply[F].ap(ff)(fa)
+
+      def <*>(fa: F[A]): F[B] =
+        ap(fa)
     }
   }
 

@@ -20,10 +20,14 @@ object IdT {
 
   implicit def applicativeIdT[F[_]: Functor: Applicative]: Applicative[IdT[F, *]] =
     new Applicative[IdT[F, *]] {
+      import tech.backwards.fp.learn.Functor.syntax._
+      import tech.backwards.fp.learn.Applicative.syntax._
+
       def pure[A](a: A): IdT[F, A] =
         IdT(Applicative[F].pure(Id(a)))
 
-      def ap[A, B](ff: IdT[F, A => B])(fa: IdT[F, A]): IdT[F, B] = ???
+      def ap[A, B](ff: IdT[F, A => B])(fa: IdT[F, A]): IdT[F, B] =
+        IdT(ff.value `<$>` ((ff: Id[A => B]) => (fa: Id[A]) => ff <*> fa) <*> fa.value)
     }
 
   implicit def monadIdT[F[_]: Functor: Monad]: Monad[IdT[F, *]] =

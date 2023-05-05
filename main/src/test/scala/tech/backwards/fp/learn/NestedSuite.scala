@@ -120,7 +120,7 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested Id/Id Applicative syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
 
     assertEquals(
       Nested(Id(Id((_: Int) + 1))).ap(Nested(Id(Id(5)))).value,
@@ -129,7 +129,7 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested Id/Id Applicative and Functor syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
 
     assertEquals(
@@ -139,7 +139,7 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested Id/Id Applicative and Functor function syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     assertEquals(
@@ -182,7 +182,7 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested Id/Maybe Applicative syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Maybe.syntax._
 
     assertEquals(
@@ -202,7 +202,7 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested Id/Maybe Applicative and Functor syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
     import tech.backwards.fp.learn.Maybe.syntax._
 
@@ -223,7 +223,7 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested Id/Maybe Applicative and Functor function syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
     import tech.backwards.fp.learn.Maybe.syntax._
 
@@ -287,7 +287,7 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested Id/Disjunction Applicative syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Disjunction.syntax._
 
     assertEquals(
@@ -307,7 +307,7 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested Id/Disjunction Applicative and Functor syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
 
@@ -328,7 +328,7 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested Id/Disjunction Applicative and Functor function syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
@@ -392,7 +392,7 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested List/Maybe Applicative syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Maybe.syntax._
 
     assertEquals(
@@ -412,7 +412,7 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested List/Maybe Applicative and Functor syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
     import tech.backwards.fp.learn.Maybe.syntax._
 
@@ -433,7 +433,7 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested List/Maybe Applicative and Functor function syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
     import tech.backwards.fp.learn.Maybe.syntax._
 
@@ -497,7 +497,7 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested List/Disjunction Applicative syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Disjunction.syntax._
 
     assertEquals(
@@ -517,7 +517,7 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested List/Disjunction Applicative and Functor syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
 
@@ -538,7 +538,7 @@ class NestedSuite extends ScalaCheckSuite {
   }
 
   property("Nested List/Disjunction Applicative and Functor function syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
 

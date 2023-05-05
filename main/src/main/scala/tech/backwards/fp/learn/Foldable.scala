@@ -14,7 +14,7 @@ object Foldable {
     xs.foldRight(seed)(f)
 
   object syntax {
-    implicit class FoldableSyntax[F[_]: Foldable, A](fa: F[A]) {
+    implicit class FoldableTypeConstructorSyntax[F[_]: Foldable, A](fa: F[A]) {
       def foldr[B](seed: B)(f: (A, B) => B): B =
         apply[F].foldr(fa)(seed)(f)
     }

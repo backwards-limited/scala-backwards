@@ -44,7 +44,7 @@ class ListApplicativeSuite extends ScalaCheckSuite {
   }
 
   property("List Applicative ap syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
 
     val add: Int => Int => Int =
@@ -92,7 +92,7 @@ class ListApplicativeSuite extends ScalaCheckSuite {
   }
 
   property("List Nil Applicative ap syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
 
     val add: Int => Int => Int =
@@ -115,7 +115,7 @@ class ListApplicativeSuite extends ScalaCheckSuite {
   }
 
   property("List Applicative ap function syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     val add: Int => Int => Int =
@@ -147,7 +147,7 @@ class ListApplicativeSuite extends ScalaCheckSuite {
   }
 
   property("List Nil Applicative ap function syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     val add: Int => Int => Int =
@@ -170,7 +170,7 @@ class ListApplicativeSuite extends ScalaCheckSuite {
   }
 
   property("List Applicative ap function of arbitrary syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     val add: Int => Int => Int =

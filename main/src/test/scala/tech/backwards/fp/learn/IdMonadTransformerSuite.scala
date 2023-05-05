@@ -85,21 +85,50 @@ class IdMonadTransformerSuite extends ScalaCheckSuite {
     )
   }
 
-  /*property("IdT Applicative") {
+  property("IdT Applicative") {
+    val transformerFn: IdT[Maybe, Int => Int] =
+      Applicative[IdT[Maybe, *]].pure((x: Int) => x + 1)
+
+    val transformer: IdT[Maybe, Int] =
+      Applicative[IdT[Maybe, *]].pure(10)
+
+    assertEquals(
+      Applicative[IdT[Maybe, *]].ap(transformerFn)(transformer).value,
+      Just(Id(11))
+    )
+
+    assertEquals(
+      Applicative[IdT[Maybe, *]].ap(Applicative[IdT[Maybe, *]].pure((x: Int) => x + 1))(Applicative[IdT[Maybe, *]].pure(10)).value,
+      Just(Id(11))
+    )
+  }
+
+  property("IdT Applicative syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
+
+    val transformerFn: IdT[Maybe, Int => Int] =
+      ((x: Int) => x + 1).pure[IdT[Maybe, *]]
 
     val transformer: IdT[Maybe, Int] =
       10.pure[IdT[Maybe, *]]
 
-    assertEquals(transformer.value, Just(Id(10)))
-  }*/
+    assertEquals(
+      transformerFn.ap(transformer).value,
+      Just(Id(11))
+    )
 
-  /*property("IdT Applicative syntax") {
+    assertEquals(
+      ((x: Int) => x + 1).pure[IdT[Maybe, *]].ap(10.pure[IdT[Maybe, *]]).value,
+      Just(Id(11))
+    )
+  }
+
+  property("IdT Applicative syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
 
-    val transformer: IdT[Maybe, Int] =
-      10.pure[IdT[Maybe, *]]
-
-    assertEquals(transformer.value, Just(Id(10)))
-  }*/
+    assertEquals(
+      10.pure[IdT[Maybe, *]].ap(((x: Int) => x + 1).pure[IdT[Maybe, *]]).value,
+      Just(Id(11))
+    )
+  }
 }

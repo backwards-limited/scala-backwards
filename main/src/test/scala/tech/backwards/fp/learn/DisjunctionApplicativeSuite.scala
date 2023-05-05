@@ -62,7 +62,7 @@ class DisjunctionApplicativeSuite extends ScalaCheckSuite {
   }
 
   property("Disjunction Right Applicative ap syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
 
     val add: Int => Int => Int => Int =
@@ -104,7 +104,7 @@ class DisjunctionApplicativeSuite extends ScalaCheckSuite {
   }
 
   property("Disjunction Left Applicative ap syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
 
@@ -128,7 +128,7 @@ class DisjunctionApplicativeSuite extends ScalaCheckSuite {
   }
 
   property("Disjunction Right Applicative ap function syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     val add: Int => Int => Int => Int =
@@ -151,7 +151,7 @@ class DisjunctionApplicativeSuite extends ScalaCheckSuite {
   }
 
   property("Disjunction Left Applicative ap function syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
@@ -175,7 +175,7 @@ class DisjunctionApplicativeSuite extends ScalaCheckSuite {
   }
 
   property("Disjunction Right Applicative ap function of arbitrary syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     val add: Int => Int => Int => Int =

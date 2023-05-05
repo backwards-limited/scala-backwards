@@ -115,7 +115,7 @@ class IOSuite extends ScalaCheckSuite {
   }
 
   property("IO Applicative function") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     def add(x: Int, y: Int, z: Int): Int =

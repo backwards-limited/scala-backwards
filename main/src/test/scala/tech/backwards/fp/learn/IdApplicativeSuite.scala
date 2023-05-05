@@ -44,7 +44,7 @@ class IdApplicativeSuite extends ScalaCheckSuite {
   }
 
   property("Id Applicative ap syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
 
     val add: Int => Int => Int => Int =
@@ -67,7 +67,7 @@ class IdApplicativeSuite extends ScalaCheckSuite {
   }
 
   property("Id Applicative ap function syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     val add: Int => Int => Int => Int =
@@ -90,7 +90,7 @@ class IdApplicativeSuite extends ScalaCheckSuite {
   }
 
   property("Id Applicative ap function of arbitrary syntax") {
-    import tech.backwards.fp.learn.Applicative.syntax.function._
+    import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     val add: Int => Int => Int => Int =

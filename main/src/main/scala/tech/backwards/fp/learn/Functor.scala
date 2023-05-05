@@ -26,7 +26,7 @@ object Functor {
     implicitly
 
   object syntax {
-    implicit class FunctorSyntax[F[_]: Functor, A](fa: F[A]) {
+    implicit class FunctorTypeConstructorSyntax[F[_]: Functor, A](fa: F[A]) {
       def fmap[B](f: A => B): F[B] =
         apply[F].fmap(fa)(f)
 
@@ -40,8 +40,9 @@ object Functor {
         fmap(_ => b)
     }
 
+    // Annoyingly F[A] and A => B are essentially both type constructors, so we have to declare separately
     object function {
-      implicit class FunctorSyntax[A, B](f: A => B) {
+      implicit class FunctorFunctionSyntax[A, B](f: A => B) {
         def fmap[F[_]: Functor](fa: F[A]): F[B] =
           apply[F].fmap(fa)(f)
 
