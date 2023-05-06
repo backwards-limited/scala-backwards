@@ -82,3 +82,26 @@ Go through in the following order:
 - ReaderT
 - Applicative for Monad Transformers
 - Applicative for Free
+
+At a high level, the following mentions a few functional concepts.
+
+## Monad Transformer
+
+The simplest is:
+```scala
+final case class IdT[F[_], A](value: F[Id[A]])
+```
+where another variation, specifically from the Cats library:
+```scala
+final case class IdT[F[_], A](value: F[A])
+```
+
+A monad transformer can be thought of as a more specific version of Nested, which is declared as:
+```scala
+final case class Nested[F[_], G[_], A](value: F[G[A]])
+```
+
+We can see that the Nested version is a type constructor `G` wrapped in another type constructor `F`.
+Whereas, `IdT` is an (hard coded) `Id` type constructor wrapped in type constructor `F`.
+
+Then of course there are other transformers such as, `OptionT`, `EitherT` etc.
