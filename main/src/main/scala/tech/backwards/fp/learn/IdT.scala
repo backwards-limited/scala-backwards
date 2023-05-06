@@ -12,6 +12,9 @@ object IdT {
   def pure[F[_]: Applicative, A](a: A): IdT[F, A] =
     IdT(Applicative[F].pure(Id(a)))
 
+  def lift[F[_]: Functor, A](fa: F[A]): IdT[F, A] =
+    IdT(Functor[F].fmap(fa)(Id.apply))
+
   implicit def functorIdT[F[_]: Functor]: Functor[IdT[F, *]] =
     new Functor[IdT[F, *]] {
       def fmap[A, B](fa: IdT[F, A])(f: A => B): IdT[F, B] =

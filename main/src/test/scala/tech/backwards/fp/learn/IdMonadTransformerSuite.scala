@@ -11,14 +11,40 @@ class IdMonadTransformerSuite extends ScalaCheckSuite {
     val transformer: IdT[Maybe, Int] =
       IdT(Just(Id(10)))
 
-    assertEquals(transformer.value, Just(Id(10)))
+    assertEquals(
+      transformer.value,
+      Just(Id(10))
+    )
   }
 
   property("IdT pure") {
     val transformer: IdT[Maybe, Int] =
       IdT.pure[Maybe, Int](10)
 
-    assertEquals(transformer.value, Just(Id(10)))
+    assertEquals(
+      transformer.value,
+      Just(Id(10))
+    )
+  }
+
+  property("IdT lift") {
+    val transformer: IdT[Maybe, Int] =
+      IdT.lift(Just(10))
+
+    assertEquals(
+      transformer.value,
+      Just(Id(10))
+    )
+
+    assertEquals(
+      IdT.lift(Just(10)).value,
+      Just(Id(10))
+    )
+
+    assertEquals(
+      IdT.lift(Nothing[Int]).value,
+      Nothing[Id[Int]]
+    )
   }
 
   property("IdT Functor") {
@@ -228,11 +254,76 @@ class IdMonadTransformerSuite extends ScalaCheckSuite {
     )
   }
 
-  property("IdT Functor and Applicative".ignore) {
-    ???
+  property("IdT Functor and Applicative syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax._
+    import tech.backwards.fp.learn.Functor.syntax._
+
+    assertEquals(
+      IdT(Just(Id(10))) `<$>` (x => (y: Int) => x + y) <*> IdT(Just(Id(1))),
+      IdT(Just(Id(11)))
+    )
+
+    assertEquals(
+      IdT(Nothing[Id[Int]]) `<$>` (x => (y: Int) => x + y) <*> IdT(Just(Id(1))),
+      IdT(Nothing[Id[Int]])
+    )
+
+    assertEquals(
+      IdT(Just(Id(10))) `<$>` (x => (y: Int) => x + y) <*> IdT(Nothing[Id[Int]]),
+      IdT(Nothing[Id[Int]])
+    )
+
+    val add: Int => Int => Int =
+      x => y => x + y
+
+    assertEquals(
+      IdT(Just(Id(10))) `<$>` add <*> IdT(Nothing[Id[Int]]),
+      IdT(Nothing[Id[Int]])
+    )
   }
 
-  property("IdT Functor and Applicative syntax".ignore) {
-    ???
+  property("IdT Functor and Applicative function syntax") {
+    import tech.backwards.fp.learn.Applicative.syntax._
+    import tech.backwards.fp.learn.Functor.syntax.function._
+
+    assertEquals(
+      ((x: Int) => (y: Int) => x + y) `<$>` IdT(Just(Id(10))) <*> IdT(Just(Id(1))),
+      IdT(Just(Id(11)))
+    )
+
+    assertEquals(
+      ((x: Int) => (y: Int) => x + y) `<$>` IdT(Nothing[Id[Int]]) <*> IdT(Just(Id(1))),
+      IdT(Nothing[Id[Int]])
+    )
+
+    assertEquals(
+      ((x: Int) => (y: Int) => x + y) `<$>` IdT(Just(Id(10))) <*> IdT(Nothing[Id[Int]]),
+      IdT(Nothing[Id[Int]])
+    )
+
+    val add: Int => Int => Int =
+      x => y => x + y
+
+    assertEquals(
+      add `<$>` IdT(Just(Id(10))) <*> IdT(Just(Id(1))),
+      IdT(Just(Id(11)))
+    )
+  }
+
+  property("IdT for comprehension") {
+    import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Monad.syntax._
+
+    val transformer: IdT[Maybe, Int] =
+      for {
+        x <- 10.pure[IdT[Maybe, *]]
+        y <- 11.pure[IdT[Maybe, *]]
+        z <- 12.pure[IdT[Maybe, *]]
+      } yield x + y + z
+
+    assertEquals(
+      transformer.value,
+      Just(Id(33))
+    )
   }
 }
