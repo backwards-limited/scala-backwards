@@ -68,6 +68,7 @@ Go through in the following order:
 - MonadTransformer
   - IdT
   - MaybeT
+  - DisjunctionT
   - WriterT
   - StateT
   - ReaderT
