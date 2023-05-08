@@ -8,6 +8,9 @@ import org.scalacheck.Test
  *  - IdMonadTransformerSuite
  *  - IdMonadTransformerMaybeSuite
  *  - IdMonadTransformerDisjunctionSuite
+ *  - IdMonadTransformerListSuite
+ *  - IdMonadTransformerStateSuite
+ *  - IdMonadTransformerWriterSuite
  */
 class IdMonadTransformerSuite extends ScalaCheckSuite {
   override protected def scalaCheckTestParameters: Test.Parameters =
