@@ -19,9 +19,12 @@ object Nothing {
 object Maybe {
   object syntax {
     implicit class MaybeSyntax[A](a: A) {
-      def just: Maybe[A] =
+      lazy val just: Maybe[A] =
         Just(a)
     }
+
+    def nothing[A]: Maybe[A] =
+      Nothing.apply[A]
   }
 
   implicit val functorMaybe: Functor[Maybe] =

@@ -47,57 +47,58 @@ class IdMonadTransformerDisjunctionSuite extends ScalaCheckSuite {
     )
   }
 
-  /*property("IdT Functor") {
-    val transformer: IdT[Maybe, Int] =
-      IdT(Just(Id(10)))
+  property("IdT Functor") {
+    val transformer: IdT[Disjunction[String, *], Int] =
+      IdT(Right(Id(10)))
 
     assertEquals(
-      Functor[IdT[Maybe, *]].fmap(transformer)(_ + 1).value,
-      Just(Id(11))
+      Functor[IdT[Disjunction[String, *], *]].fmap(transformer)(_ + 1).value,
+      Right(Id(11))
     )
 
     assertEquals(
-      Functor[IdT[Maybe, *]].fmap(IdT(Just(Id(10))))(_ + 1).value,
-      Just(Id(11))
+      Functor[IdT[Disjunction[String, *], *]].fmap(IdT(Right(Id(10))))(_ + 1).value,
+      Right(Id(11))
     )
 
     assertEquals(
-      Functor[IdT[Maybe, *]].fmap(IdT(Nothing[Id[Int]]))(_ + 1).value,
-      Nothing[Id[Int]]
+      Functor[IdT[Disjunction[String, *], *]].fmap(IdT(Left[String, Id[Int]]("whoops")))(_ + 1).value,
+      Left("whoops")
     )
-  }*/
+  }
 
-  /*property("IdT Functor syntax") {
+  property("IdT Functor syntax") {
+    import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
 
-    val transformer: IdT[Maybe, Int] =
-      IdT(Just(Id(10)))
+    val transformer: IdT[Disjunction[String, *], Int] =
+      IdT(Id(10).right)
 
     assertEquals(
       transformer.fmap(_ + 1).value,
-      Just(Id(11))
+      Id(11).right
     )
 
     assertEquals(
-      IdT(Just(Id(10))).fmap(_ + 1).value,
-      Just(Id(11))
+      IdT(Id(10).right).fmap(_ + 1).value,
+      Id(11).right
     )
 
     assertEquals(
-      IdT(Just(Id(10))) fmap (_ + 1),
-      IdT(Just(Id(11)))
+      IdT(Id(10).right) fmap (_ + 1),
+      IdT(Id(11).right)
     )
 
     assertEquals(
-      IdT(Just(Id(10))) `<$>` (_ + 1),
-      IdT(Just(Id(11)))
+      IdT(Id(10).right) `<$>` (_ + 1),
+      IdT(Id(11).right)
     )
 
     assertEquals(
-      IdT(Nothing[Id[Int]]) `<$>` (_ + 1),
-      IdT(Nothing[Id[Int]])
+      IdT("whoops".left[Id[Int]]) `<$>` (_ + 1),
+      IdT("whoops".left[Id[Int]])
     )
-  }*/
+  }
 
   /*property("IdT Monad") {
     val transformer: IdT[Maybe, Int] =

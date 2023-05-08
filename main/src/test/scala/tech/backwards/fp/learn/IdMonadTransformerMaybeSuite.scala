@@ -34,7 +34,7 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
       Just(Id(10))
     )
   }
-  
+
   property("IdT lift") {
     val transformer: IdT[Maybe, Int] =
       IdT.lift(Just(10))
@@ -77,33 +77,34 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
 
   property("IdT Functor syntax") {
     import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Maybe.syntax._
 
     val transformer: IdT[Maybe, Int] =
-      IdT(Just(Id(10)))
+      IdT(Id(10).just)
 
     assertEquals(
       transformer.fmap(_ + 1).value,
-      Just(Id(11))
+      Id(11).just
     )
 
     assertEquals(
-      IdT(Just(Id(10))).fmap(_ + 1).value,
-      Just(Id(11))
+      IdT(Id(10).just).fmap(_ + 1).value,
+      Id(11).just
     )
 
     assertEquals(
-      IdT(Just(Id(10))) fmap (_ + 1),
-      IdT(Just(Id(11)))
+      IdT(Id(10).just) fmap (_ + 1),
+      IdT(Id(11).just)
     )
 
     assertEquals(
-      IdT(Just(Id(10))) `<$>` (_ + 1),
-      IdT(Just(Id(11)))
+      IdT(Id(10).just) `<$>` (_ + 1),
+      IdT(Id(11).just)
     )
 
     assertEquals(
-      IdT(Nothing[Id[Int]]) `<$>` (_ + 1),
-      IdT(Nothing[Id[Int]])
+      IdT(nothing[Id[Int]]) `<$>` (_ + 1),
+      IdT(nothing[Id[Int]])
     )
   }
 
@@ -133,6 +134,7 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
   }
 
   property("IdT Monad syntax") {
+    import tech.backwards.fp.learn.Maybe.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
 
     val transformer: IdT[Maybe, Int] =
@@ -140,32 +142,32 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
 
     assertEquals(
       transformer.flatMap(a => (a + 1).pure[IdT[Maybe, *]]).value,
-      Just(Id(11))
+      Id(11).just
     )
 
     assertEquals(
       10.pure[IdT[Maybe, *]].flatMap(a => (a + 1).pure[IdT[Maybe, *]]).value,
-      Just(Id(11))
+      Id(11).just
     )
 
     assertEquals(
-      10.pure[IdT[Maybe, *]] flatMap (a => IdT(Just(Id(a + 1)))),
-      IdT(Just(Id(11)))
+      10.pure[IdT[Maybe, *]] flatMap (a => IdT(Id(a + 1).just)),
+      IdT(Id(11).just)
     )
 
     assertEquals(
-      10.pure[IdT[Maybe, *]] >>= (a => IdT(Just(Id(a + 1)))),
-      IdT(Just(Id(11)))
+      10.pure[IdT[Maybe, *]] >>= (a => IdT(Id(a + 1).just)),
+      IdT(Id(11).just)
     )
 
     assertEquals(
-      IdT(Nothing[Id[Int]]) >>= (a => IdT(Just(Id(a + 1)))),
-      IdT(Nothing[Id[Int]])
+      IdT(nothing[Id[Int]]) >>= (a => IdT(Id(a + 1).just)),
+      IdT(nothing[Id[Int]])
     )
 
     assertEquals(
-      10.pure[IdT[Maybe, *]] >>= (_ => IdT(Nothing[Id[Int]])),
-      IdT(Nothing[Id[Int]])
+      10.pure[IdT[Maybe, *]] >>= (_ => IdT(nothing[Id[Int]])),
+      IdT(nothing[Id[Int]])
     )
   }
 
@@ -199,6 +201,7 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
 
   property("IdT Applicative syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
+    import tech.backwards.fp.learn.Maybe.syntax._
 
     val transformerFn: IdT[Maybe, Int => Int] =
       ((x: Int) => x + 1).pure[IdT[Maybe, *]]
@@ -208,118 +211,121 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
 
     assertEquals(
       transformerFn.ap(transformer).value,
-      Just(Id(11))
+      Id(11).just
     )
 
     assertEquals(
       ((x: Int) => x + 1).pure[IdT[Maybe, *]].ap(10.pure[IdT[Maybe, *]]).value,
-      Just(Id(11))
+      Id(11).just
     )
 
     assertEquals(
-      ((x: Int) => x + 1).pure[IdT[Maybe, *]].ap(IdT(Nothing[Id[Int]])).value,
-      Nothing[Id[Int]]
+      ((x: Int) => x + 1).pure[IdT[Maybe, *]].ap(IdT(nothing[Id[Int]])).value,
+      nothing[Id[Int]]
     )
 
     assertEquals(
-      IdT(Nothing[Id[Int => Int]]).ap(10.pure[IdT[Maybe, *]]).value,
-      Nothing[Id[Int]]
+      IdT(nothing[Id[Int => Int]]).ap(10.pure[IdT[Maybe, *]]).value,
+      nothing[Id[Int]]
     )
 
     assertEquals(
-      IdT(Nothing[Id[Int => Int]]) ap 10.pure[IdT[Maybe, *]],
-      IdT(Nothing[Id[Int]])
+      IdT(nothing[Id[Int => Int]]) ap 10.pure[IdT[Maybe, *]],
+      IdT(nothing[Id[Int]])
     )
 
     assertEquals(
-      IdT(Nothing[Id[Int => Int]]) <*> 10.pure[IdT[Maybe, *]],
-      IdT(Nothing[Id[Int]])
+      IdT(nothing[Id[Int => Int]]) <*> 10.pure[IdT[Maybe, *]],
+      IdT(nothing[Id[Int]])
     )
 
     assertEquals(
       10.pure[IdT[Maybe, *]].ap(((x: Int) => x + 1).pure[IdT[Maybe, *]]).value,
-      Just(Id(11))
+      Id(11).just
     )
 
     assertEquals(
-      10.pure[IdT[Maybe, *]].ap(IdT(Nothing[Id[Int => Int]])).value,
-      Nothing[Id[Int]]
+      10.pure[IdT[Maybe, *]].ap(IdT(nothing[Id[Int => Int]])).value,
+      nothing[Id[Int]]
     )
 
     assertEquals(
-      IdT(Nothing[Id[Int]]).ap(((x: Int) => x + 1).pure[IdT[Maybe, *]]).value,
-      Nothing[Id[Int]]
+      IdT(nothing[Id[Int]]).ap(((x: Int) => x + 1).pure[IdT[Maybe, *]]).value,
+      nothing[Id[Int]]
     )
 
     assertEquals(
-      IdT(Nothing[Id[Int]]) ap ((x: Int) => x + 1).pure[IdT[Maybe, *]],
-      IdT(Nothing[Id[Int]])
+      IdT(nothing[Id[Int]]) ap ((x: Int) => x + 1).pure[IdT[Maybe, *]],
+      IdT(nothing[Id[Int]])
     )
 
     assertEquals(
-      IdT(Nothing[Id[Int]]) <*> ((x: Int) => x + 1).pure[IdT[Maybe, *]],
-      IdT(Nothing[Id[Int]])
+      IdT(nothing[Id[Int]]) <*> ((x: Int) => x + 1).pure[IdT[Maybe, *]],
+      IdT(nothing[Id[Int]])
     )
   }
 
   property("IdT Functor and Applicative syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Maybe.syntax._
 
     assertEquals(
-      IdT(Just(Id(10))) `<$>` (x => (y: Int) => x + y) <*> IdT(Just(Id(1))),
-      IdT(Just(Id(11)))
+      IdT(Id(10).just) `<$>` (x => (y: Int) => x + y) <*> IdT(Id(1).just),
+      IdT(Id(11).just)
     )
 
     assertEquals(
-      IdT(Nothing[Id[Int]]) `<$>` (x => (y: Int) => x + y) <*> IdT(Just(Id(1))),
-      IdT(Nothing[Id[Int]])
+      IdT(nothing[Id[Int]]) `<$>` (x => (y: Int) => x + y) <*> IdT(Id(1).just),
+      IdT(nothing[Id[Int]])
     )
 
     assertEquals(
-      IdT(Just(Id(10))) `<$>` (x => (y: Int) => x + y) <*> IdT(Nothing[Id[Int]]),
-      IdT(Nothing[Id[Int]])
+      IdT(Id(10).just) `<$>` (x => (y: Int) => x + y) <*> IdT(nothing[Id[Int]]),
+      IdT(nothing[Id[Int]])
     )
 
     val add: Int => Int => Int =
       x => y => x + y
 
     assertEquals(
-      IdT(Just(Id(10))) `<$>` add <*> IdT(Nothing[Id[Int]]),
-      IdT(Nothing[Id[Int]])
+      IdT(Id(10).just) `<$>` add <*> IdT(nothing[Id[Int]]),
+      IdT(nothing[Id[Int]])
     )
   }
 
   property("IdT Functor and Applicative function syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
+    import tech.backwards.fp.learn.Maybe.syntax._
 
     assertEquals(
-      ((x: Int) => (y: Int) => x + y) `<$>` IdT(Just(Id(10))) <*> IdT(Just(Id(1))),
-      IdT(Just(Id(11)))
+      ((x: Int) => (y: Int) => x + y) `<$>` IdT(Id(10).just) <*> IdT(Id(1).just),
+      IdT(Id(11).just)
     )
 
     assertEquals(
-      ((x: Int) => (y: Int) => x + y) `<$>` IdT(Nothing[Id[Int]]) <*> IdT(Just(Id(1))),
-      IdT(Nothing[Id[Int]])
+      ((x: Int) => (y: Int) => x + y) `<$>` IdT(nothing[Id[Int]]) <*> IdT(Id(1).just),
+      IdT(nothing[Id[Int]])
     )
 
     assertEquals(
-      ((x: Int) => (y: Int) => x + y) `<$>` IdT(Just(Id(10))) <*> IdT(Nothing[Id[Int]]),
-      IdT(Nothing[Id[Int]])
+      ((x: Int) => (y: Int) => x + y) `<$>` IdT(Id(10).just) <*> IdT(nothing[Id[Int]]),
+      IdT(nothing[Id[Int]])
     )
 
     val add: Int => Int => Int =
       x => y => x + y
 
     assertEquals(
-      add `<$>` IdT(Just(Id(10))) <*> IdT(Just(Id(1))),
-      IdT(Just(Id(11)))
+      add `<$>` IdT(Id(10).just) <*> IdT(Id(1).just),
+      IdT(Id(11).just)
     )
   }
 
   property("IdT for comprehension") {
     import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Maybe.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
 
     val transformer: IdT[Maybe, Int] =
@@ -336,20 +342,20 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
 
     assertEquals(
       for {
-        x <- IdT.lift(Just(10))
-        y <- IdT.lift(Just(11))
-        z <- IdT.lift(Just(12))
+        x <- IdT.lift(10.just)
+        y <- IdT.lift(11.just)
+        z <- IdT.lift(12.just)
       } yield x + y + z,
       IdT(Just(Id(33)))
     )
 
     assertEquals(
       for {
-        x <- IdT.lift(Just(10))
-        y <- IdT.lift(Nothing[Int])
-        z <- IdT.lift(Just(12))
+        x <- IdT.lift(10.just)
+        y <- IdT.lift(nothing[Int])
+        z <- IdT.lift(12.just)
       } yield x + y + z,
-      IdT(Nothing[Id[Int]])
+      IdT(nothing[Id[Int]])
     )
   }
 }
