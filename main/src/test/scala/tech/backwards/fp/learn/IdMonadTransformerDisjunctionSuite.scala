@@ -252,33 +252,34 @@ class IdMonadTransformerDisjunctionSuite extends ScalaCheckSuite {
     )
   }
 
-  /*property("IdT Functor and Applicative syntax") {
+  property("IdT Functor and Applicative syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
+    import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
 
     assertEquals(
-      IdT(Just(Id(10))) `<$>` (x => (y: Int) => x + y) <*> IdT(Just(Id(1))),
-      IdT(Just(Id(11)))
+      IdT(Right(Id(10))) `<$>` (x => (y: Int) => x + y) <*> IdT(Right(Id(1))),
+      IdT(Right(Id(11)))
     )
 
     assertEquals(
-      IdT(Nothing[Id[Int]]) `<$>` (x => (y: Int) => x + y) <*> IdT(Just(Id(1))),
-      IdT(Nothing[Id[Int]])
+      IdT("whoops".left[Id[Int]]) `<$>` (x => (y: Int) => x + y) <*> IdT(Id(1).right),
+      IdT("whoops".left[Id[Int]])
     )
 
     assertEquals(
-      IdT(Just(Id(10))) `<$>` (x => (y: Int) => x + y) <*> IdT(Nothing[Id[Int]]),
-      IdT(Nothing[Id[Int]])
+      IdT(Id(10).right[String]) `<$>` (x => (y: Int) => x + y) <*> IdT("whoops".left[Id[Int]]),
+      IdT("whoops".left[Id[Int]])
     )
 
     val add: Int => Int => Int =
       x => y => x + y
 
     assertEquals(
-      IdT(Just(Id(10))) `<$>` add <*> IdT(Nothing[Id[Int]]),
-      IdT(Nothing[Id[Int]])
+      IdT(Id(10).right[String]) `<$>` add <*> IdT("whoops".left[Id[Int]]),
+      IdT("whoops".left[Id[Int]])
     )
-  }*/
+  }
 
   /*property("IdT Functor and Applicative function syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
