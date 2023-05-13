@@ -100,160 +100,157 @@ class IdMonadTransformerDisjunctionSuite extends ScalaCheckSuite {
     )
   }
 
-  /*property("IdT Monad") {
-    val transformer: IdT[Maybe, Int] =
-      Monad[IdT[Maybe, *]].pure(10)
+  property("IdT Monad") {
+    val transformer: IdT[Disjunction[String, *], Int] =
+      Monad[IdT[Disjunction[String, *], *]].pure(10)
 
     assertEquals(
-      Monad[IdT[Maybe, *]].flatMap(transformer)(a => Monad[IdT[Maybe, *]].pure(a + 1)).value,
-      Just(Id(11))
+      Monad[IdT[Disjunction[String, *], *]].flatMap(transformer)(a => Monad[IdT[Disjunction[String, *], *]].pure(a + 1)).value,
+      Right(Id(11))
     )
 
     assertEquals(
-      Monad[IdT[Maybe, *]].flatMap(Monad[IdT[Maybe, *]].pure(10))(a => Monad[IdT[Maybe, *]].pure(a + 1)).value,
-      Just(Id(11))
+      Monad[IdT[Disjunction[String, *], *]].flatMap(Monad[IdT[Disjunction[String, *], *]].pure(10))(a => Monad[IdT[Disjunction[String, *], *]].pure(a + 1)).value,
+      Right(Id(11))
     )
 
     assertEquals(
-      Monad[IdT[Maybe, *]].flatMap(IdT(Nothing[Id[Int]]))(a => Monad[IdT[Maybe, *]].pure(a + 1)).value,
-      Nothing[Id[Int]]
+      Monad[IdT[Disjunction[String, *], *]].flatMap(IdT(Left[String, Id[Int]]("whoops")))(a => Monad[IdT[Disjunction[String, *], *]].pure(a + 1)).value,
+      Left("whoops")
     )
 
     assertEquals(
-      Monad[IdT[Maybe, *]].flatMap(Monad[IdT[Maybe, *]].pure(10))(_ => IdT(Nothing[Id[Int]])).value,
-      Nothing[Id[Int]]
+      Monad[IdT[Disjunction[String, *], *]].flatMap(Monad[IdT[Disjunction[String, *], *]].pure(10))(_ => IdT(Left[String, Id[Int]]("whoops"))).value,
+      Left("whoops")
     )
-  }*/
+  }
 
-  /*property("IdT Monad syntax") {
+  property("IdT Monad syntax") {
+    import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
 
-    val transformer: IdT[Maybe, Int] =
-      10.pure[IdT[Maybe, *]]
+    val transformer: IdT[Disjunction[String, *], Int] =
+      10.pure[IdT[Disjunction[String, *], *]]
 
     assertEquals(
-      transformer.flatMap(a => (a + 1).pure[IdT[Maybe, *]]).value,
-      Just(Id(11))
+      transformer.flatMap(a => (a + 1).pure[IdT[Disjunction[String, *], *]]).value,
+      Id(11).right
     )
 
     assertEquals(
-      10.pure[IdT[Maybe, *]].flatMap(a => (a + 1).pure[IdT[Maybe, *]]).value,
-      Just(Id(11))
+      10.pure[IdT[Disjunction[String, *], *]].flatMap(a => (a + 1).pure[IdT[Disjunction[String, *], *]]).value,
+      Id(11).right
     )
 
     assertEquals(
-      10.pure[IdT[Maybe, *]] flatMap (a => IdT(Just(Id(a + 1)))),
-      IdT(Just(Id(11)))
+      10.pure[IdT[Disjunction[String, *], *]] flatMap (a => IdT(Id(a + 1).right)),
+      IdT(Id(11).right[String])
     )
 
     assertEquals(
-      10.pure[IdT[Maybe, *]] >>= (a => IdT(Just(Id(a + 1)))),
-      IdT(Just(Id(11)))
+      10.pure[IdT[Disjunction[String, *], *]] >>= (a => IdT(Id(a + 1).right)),
+      IdT(Id(11).right[String])
     )
 
     assertEquals(
-      IdT(Nothing[Id[Int]]) >>= (a => IdT(Just(Id(a + 1)))),
-      IdT(Nothing[Id[Int]])
+      IdT("whoops".left[Id[Int]]) >>= (a => IdT(Id(a + 1).right)),
+      IdT("whoops".left[Id[Int]])
+    )
+  }
+
+  property("IdT Applicative") {
+    val transformerFn: IdT[Disjunction[String, *], Int => Int] =
+      Applicative[IdT[Disjunction[String, *], *]].pure(_ + 1)
+
+    val transformer: IdT[Disjunction[String, *], Int] =
+      Applicative[IdT[Disjunction[String, *], *]].pure(10)
+
+    assertEquals(
+      Applicative[IdT[Disjunction[String, *], *]].ap(transformerFn)(transformer).value,
+      Right(Id(11))
     )
 
     assertEquals(
-      10.pure[IdT[Maybe, *]] >>= (_ => IdT(Nothing[Id[Int]])),
-      IdT(Nothing[Id[Int]])
-    )
-  }*/
-
-  /*property("IdT Applicative") {
-    val transformerFn: IdT[Maybe, Int => Int] =
-      Applicative[IdT[Maybe, *]].pure((x: Int) => x + 1)
-
-    val transformer: IdT[Maybe, Int] =
-      Applicative[IdT[Maybe, *]].pure(10)
-
-    assertEquals(
-      Applicative[IdT[Maybe, *]].ap(transformerFn)(transformer).value,
-      Just(Id(11))
+      Applicative[IdT[Disjunction[String, *], *]].ap(Applicative[IdT[Disjunction[String, *], *]].pure((x: Int) => x + 1))(Applicative[IdT[Disjunction[String, *], *]].pure(10)).value,
+      Right(Id(11))
     )
 
     assertEquals(
-      Applicative[IdT[Maybe, *]].ap(Applicative[IdT[Maybe, *]].pure((x: Int) => x + 1))(Applicative[IdT[Maybe, *]].pure(10)).value,
-      Just(Id(11))
+      Applicative[IdT[Disjunction[String, *], *]].ap(IdT(Left[String, Id[Int => Int]]("whoops")))(Applicative[IdT[Disjunction[String, *], *]].pure(10)).value,
+      Left("whoops")
     )
 
     assertEquals(
-      Applicative[IdT[Maybe, *]].ap(IdT(Nothing[Id[Int => Int]]))(Applicative[IdT[Maybe, *]].pure(10)).value,
-      Nothing[Id[Int]]
+      Applicative[IdT[Disjunction[String, *], *]].ap(Applicative[IdT[Disjunction[String, *], *]].pure((x: Int) => x + 1))(IdT(Left[String, Id[Int]]("whoops"))).value,
+      Left("whoops")
     )
+  }
 
-    assertEquals(
-      Applicative[IdT[Maybe, *]].ap(Applicative[IdT[Maybe, *]].pure((x: Int) => x + 1))(IdT(Nothing[Id[Int]])).value,
-      Nothing[Id[Int]]
-    )
-  }*/
-
-  /*property("IdT Applicative syntax") {
+  property("IdT Applicative syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
+    import tech.backwards.fp.learn.Disjunction.syntax._
 
-    val transformerFn: IdT[Maybe, Int => Int] =
-      ((x: Int) => x + 1).pure[IdT[Maybe, *]]
+    val transformerFn: IdT[Disjunction[String, *], Int => Int] =
+      ((x: Int) => x + 1).pure[IdT[Disjunction[String, *], *]]
 
-    val transformer: IdT[Maybe, Int] =
-      10.pure[IdT[Maybe, *]]
+    val transformer: IdT[Disjunction[String, *], Int] =
+      10.pure[IdT[Disjunction[String, *], *]]
 
     assertEquals(
       transformerFn.ap(transformer).value,
-      Just(Id(11))
+      Id(11).right
     )
 
     assertEquals(
-      ((x: Int) => x + 1).pure[IdT[Maybe, *]].ap(10.pure[IdT[Maybe, *]]).value,
-      Just(Id(11))
+      ((x: Int) => x + 1).pure[IdT[Disjunction[String, *], *]].ap(10.pure[IdT[Disjunction[String, *], *]]).value,
+      Id(11).right
     )
 
     assertEquals(
-      ((x: Int) => x + 1).pure[IdT[Maybe, *]].ap(IdT(Nothing[Id[Int]])).value,
-      Nothing[Id[Int]]
+      ((x: Int) => x + 1).pure[IdT[Disjunction[String, *], *]].ap(IdT("whoops".left[Id[Int]])).value,
+      "whoops".left
     )
 
     assertEquals(
-      IdT(Nothing[Id[Int => Int]]).ap(10.pure[IdT[Maybe, *]]).value,
-      Nothing[Id[Int]]
+      IdT("whoops".left[Id[Int => Int]]).ap(10.pure[IdT[Disjunction[String, *], *]]).value,
+      "whoops".left
     )
 
     assertEquals(
-      IdT(Nothing[Id[Int => Int]]) ap 10.pure[IdT[Maybe, *]],
-      IdT(Nothing[Id[Int]])
+      IdT("whoops".left[Id[Int => Int]]) ap 10.pure[IdT[Disjunction[String, *], *]],
+      IdT("whoops".left[Id[Int]])
     )
 
     assertEquals(
-      IdT(Nothing[Id[Int => Int]]) <*> 10.pure[IdT[Maybe, *]],
-      IdT(Nothing[Id[Int]])
+      IdT("whoops".left[Id[Int => Int]]) <*> 10.pure[IdT[Disjunction[String, *], *]],
+      IdT("whoops".left[Id[Int]])
     )
 
     assertEquals(
-      10.pure[IdT[Maybe, *]].ap(((x: Int) => x + 1).pure[IdT[Maybe, *]]).value,
-      Just(Id(11))
+      10.pure[IdT[Disjunction[String, *], *]].ap(((x: Int) => x + 1).pure[IdT[Disjunction[String, *], *]]).value,
+      Id(11).right
     )
 
     assertEquals(
-      10.pure[IdT[Maybe, *]].ap(IdT(Nothing[Id[Int => Int]])).value,
-      Nothing[Id[Int]]
+      10.pure[IdT[Disjunction[String, *], *]].ap(IdT("whoops".left[Id[Int => Int]])).value,
+      "whoops".left
     )
 
     assertEquals(
-      IdT(Nothing[Id[Int]]).ap(((x: Int) => x + 1).pure[IdT[Maybe, *]]).value,
-      Nothing[Id[Int]]
+      IdT("whoops".left[Id[Int]]).ap(((x: Int) => x + 1).pure[IdT[Disjunction[String, *], *]]).value,
+      "whoops".left
     )
 
     assertEquals(
-      IdT(Nothing[Id[Int]]) ap ((x: Int) => x + 1).pure[IdT[Maybe, *]],
-      IdT(Nothing[Id[Int]])
+      IdT("whoops".left[Id[Int]]) ap ((x: Int) => x + 1).pure[IdT[Disjunction[String, *], *]],
+      IdT("whoops".left[Id[Int]])
     )
 
     assertEquals(
-      IdT(Nothing[Id[Int]]) <*> ((x: Int) => x + 1).pure[IdT[Maybe, *]],
-      IdT(Nothing[Id[Int]])
+      IdT("whoops".left[Id[Int]]) <*> ((x: Int) => x + 1).pure[IdT[Disjunction[String, *], *]],
+      IdT("whoops".left[Id[Int]])
     )
-  }*/
+  }
 
   /*property("IdT Functor and Applicative syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
@@ -332,6 +329,7 @@ class IdMonadTransformerDisjunctionSuite extends ScalaCheckSuite {
         x <- IdT.lift(Just(10))
         y <- IdT.lift(Just(11))
         z <- IdT.lift(Just(12))
+        _ <- IdT(0.just.map(Id.apply)) // Without "lift"
       } yield x + y + z,
       IdT(Just(Id(33)))
     )

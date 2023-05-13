@@ -173,7 +173,7 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
 
   property("IdT Applicative") {
     val transformerFn: IdT[Maybe, Int => Int] =
-      Applicative[IdT[Maybe, *]].pure((x: Int) => x + 1)
+      Applicative[IdT[Maybe, *]].pure(_ + 1)
 
     val transformer: IdT[Maybe, Int] =
       Applicative[IdT[Maybe, *]].pure(10)
@@ -345,8 +345,9 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
         x <- IdT.lift(10.just)
         y <- IdT.lift(11.just)
         z <- IdT.lift(12.just)
+        _ <- IdT(0.just.map(Id.apply)) // Without "lift"
       } yield x + y + z,
-      IdT(Just(Id(33)))
+      IdT(Id(33).just)
     )
 
     assertEquals(
