@@ -281,67 +281,69 @@ class IdMonadTransformerDisjunctionSuite extends ScalaCheckSuite {
     )
   }
 
-  /*property("IdT Functor and Applicative function syntax") {
+  property("IdT Functor and Applicative function syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
+    import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
 
     assertEquals(
-      ((x: Int) => (y: Int) => x + y) `<$>` IdT(Just(Id(10))) <*> IdT(Just(Id(1))),
-      IdT(Just(Id(11)))
+      ((x: Int) => (y: Int) => x + y) `<$>` IdT(Right(Id(10))) <*> IdT(Right(Id(1))),
+      IdT(Right(Id(11)))
     )
 
     assertEquals(
-      ((x: Int) => (y: Int) => x + y) `<$>` IdT(Nothing[Id[Int]]) <*> IdT(Just(Id(1))),
-      IdT(Nothing[Id[Int]])
+      ((x: Int) => (y: Int) => x + y) `<$>` IdT("whoops".left[Id[Int]]) <*> IdT(Right(Id(1))),
+      IdT("whoops".left[Id[Int]])
     )
 
     assertEquals(
-      ((x: Int) => (y: Int) => x + y) `<$>` IdT(Just(Id(10))) <*> IdT(Nothing[Id[Int]]),
-      IdT(Nothing[Id[Int]])
+      ((x: Int) => (y: Int) => x + y) `<$>` IdT(Id(10).right[String]) <*> IdT("whoops".left[Id[Int]]),
+      IdT("whoops".left[Id[Int]])
     )
 
     val add: Int => Int => Int =
       x => y => x + y
 
     assertEquals(
-      add `<$>` IdT(Just(Id(10))) <*> IdT(Just(Id(1))),
-      IdT(Just(Id(11)))
+      add `<$>` IdT(Right(Id(10))) <*> IdT(Right(Id(1))),
+      IdT(Right(Id(11)))
     )
-  }*/
+  }
 
-  /*property("IdT for comprehension") {
+  property("IdT for comprehension") {
+    import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
 
-    val transformer: IdT[Maybe, Int] =
+    val transformer: IdT[String Disjunction *, Int] =
       for {
-        x <- 10.pure[IdT[Maybe, *]]
-        y <- 11.pure[IdT[Maybe, *]]
-        z <- 12.pure[IdT[Maybe, *]]
+        x <- 10.pure[IdT[String Disjunction *, *]]
+        y <- 11.pure[IdT[String Disjunction *, *]]
+        z <- 12.pure[IdT[String Disjunction *, *]]
       } yield x + y + z
 
     assertEquals(
       transformer.value,
-      Just(Id(33))
+      Right(Id(33))
     )
 
     assertEquals(
       for {
-        x <- IdT.lift(Just(10))
-        y <- IdT.lift(Just(11))
-        z <- IdT.lift(Just(12))
-        _ <- IdT(0.just.map(Id.apply)) // Without "lift"
+        x <- IdT.lift(10.right[String])
+        y <- IdT.lift(11.right[String])
+        z <- IdT.lift(12.right[String])
+        _ <- IdT(0.right[String].map(Id.apply)) // Without "lift"
       } yield x + y + z,
-      IdT(Just(Id(33)))
+      IdT(Id(33).right[String])
     )
 
     assertEquals(
       for {
-        x <- IdT.lift(Just(10))
-        y <- IdT.lift(Nothing[Int])
-        z <- IdT.lift(Just(12))
+        x <- IdT.lift(10.right[String])
+        y <- IdT.lift("whoops".left[Int])
+        z <- IdT.lift(12.right[String])
       } yield x + y + z,
-      IdT(Nothing[Id[Int]])
+      IdT("whoops".left[Id[Int]])
     )
-  }*/
+  }
 }
