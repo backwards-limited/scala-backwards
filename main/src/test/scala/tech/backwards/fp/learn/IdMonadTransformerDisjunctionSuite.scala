@@ -156,6 +156,11 @@ class IdMonadTransformerDisjunctionSuite extends ScalaCheckSuite {
       IdT("whoops".left[Id[Int]]) >>= (a => IdT(Id(a + 1).right)),
       IdT("whoops".left[Id[Int]])
     )
+
+    assertEquals(
+      IdT(Id(10).right[String]) >>= (_ => IdT("whoops".left[Id[Int]])),
+      IdT("whoops".left[Id[Int]])
+    )
   }
 
   property("IdT Applicative") {
