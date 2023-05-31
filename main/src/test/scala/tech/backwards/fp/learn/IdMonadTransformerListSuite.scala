@@ -312,7 +312,6 @@ class IdMonadTransformerListSuite extends ScalaCheckSuite {
 
   property("IdT for comprehension") {
     import tech.backwards.fp.learn.Functor.syntax._
-    import tech.backwards.fp.learn.Maybe.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
 
     val transformer: IdT[List, Int] =
