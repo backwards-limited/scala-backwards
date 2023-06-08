@@ -91,6 +91,31 @@ class IOSuite extends ScalaCheckSuite {
     import tech.backwards.fp.learn.Functor.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
 
+    val readFile: StateT[IO, String, String] =
+      StateT((s: String) => IO(s -> s))
+
+    val appendFile: String => StateT[IO, String, Unit] =
+      s => StateT.modify(_ + s)
+
+    val program: StateT[IO, String, (String, String)] =
+      for {
+        originalContents <- readFile
+        _ <- appendFile(s"bar$lineSeparator")
+        latestConents <- readFile
+      } yield originalContents -> latestConents
+
+    val (latestContents1, (originalContents, latestContents2)) =
+      program.run(s"foo$lineSeparator").unsafeRunSync()
+
+    assertEquals(originalContents, s"foo$lineSeparator")
+    assertEquals(latestContents1, s"foo${lineSeparator}bar$lineSeparator")
+    assertEquals(latestContents1, latestContents2)
+  }
+
+  property("IO simulate reading from a file twice with an update") {
+    import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Monad.syntax._
+
     val fileContents: AtomicReference[String] =
       new AtomicReference[String]("foo")
 
