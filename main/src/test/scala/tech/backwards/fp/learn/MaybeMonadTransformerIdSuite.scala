@@ -3,21 +3,29 @@ package tech.backwards.fp.learn
 import munit.ScalaCheckSuite
 import org.scalacheck.Test
 
-class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
+/**
+ * First of the following MaybeT suites:
+ *  - MaybeMonadTransformerMaybeSuite
+ *  - MaybeMonadTransformerDisjunctionSuite
+ *  - MaybeMonadTransformerListSuite
+ *  - MaybeMonadTransformerStateSuite
+ *  - MaybeMonadTransformerWriterSuite
+ */
+class MaybeMonadTransformerIdSuite extends ScalaCheckSuite {
   override protected def scalaCheckTestParameters: Test.Parameters =
     super.scalaCheckTestParameters.withMinSuccessfulTests(100).withMaxDiscardRatio(10)
 
-  property("IdT") {
-    val transformer: IdT[Maybe, Int] =
-      IdT(Just(Id(10)))
+  property("MaybeT") {
+    val transformer: MaybeT[Id, Int] =
+      MaybeT(Id(Just(10)))
 
     assertEquals(
       transformer.value,
-      Just(Id(10))
+      Id(Just(10))
     )
   }
 
-  property("IdT pure") {
+  /*property("IdT pure") {
     val transformer: IdT[Maybe, Int] =
       IdT.pure[Maybe, Int](10)
 
@@ -25,9 +33,9 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
       transformer.value,
       Just(Id(10))
     )
-  }
+  }*/
 
-  property("IdT lift") {
+  /*property("IdT lift") {
     val transformer: IdT[Maybe, Int] =
       IdT.lift(Just(10))
 
@@ -45,9 +53,9 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
       IdT.lift(Nothing[Int]).value,
       Nothing[Id[Int]]
     )
-  }
+  }*/
 
-  property("IdT Functor") {
+  /*property("IdT Functor") {
     val transformer: IdT[Maybe, Int] =
       IdT(Just(Id(10)))
 
@@ -65,9 +73,9 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
       Functor[IdT[Maybe, *]].fmap(IdT(Nothing[Id[Int]]))(_ + 1).value,
       Nothing[Id[Int]]
     )
-  }
+  }*/
 
-  property("IdT Functor syntax") {
+  /*property("IdT Functor syntax") {
     import tech.backwards.fp.learn.Functor.syntax._
     import tech.backwards.fp.learn.Maybe.syntax._
 
@@ -98,9 +106,9 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
       IdT(nothing[Id[Int]]) `<$>` (_ + 1),
       IdT(nothing[Id[Int]])
     )
-  }
+  }*/
 
-  property("IdT Monad") {
+  /*property("IdT Monad") {
     val transformer: IdT[Maybe, Int] =
       Monad[IdT[Maybe, *]].pure(10)
 
@@ -123,9 +131,9 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
       Monad[IdT[Maybe, *]].flatMap(Monad[IdT[Maybe, *]].pure(10))(_ => IdT(Nothing[Id[Int]])).value,
       Nothing[Id[Int]]
     )
-  }
+  }*/
 
-  property("IdT Monad syntax") {
+  /*property("IdT Monad syntax") {
     import tech.backwards.fp.learn.Maybe.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
 
@@ -161,9 +169,9 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
       10.pure[IdT[Maybe, *]] >>= (_ => IdT(nothing[Id[Int]])),
       IdT(nothing[Id[Int]])
     )
-  }
+  }*/
 
-  property("IdT Applicative") {
+  /*property("IdT Applicative") {
     val transformerFn: IdT[Maybe, Int => Int] =
       Applicative[IdT[Maybe, *]].pure(_ + 1)
 
@@ -189,9 +197,9 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
       Applicative[IdT[Maybe, *]].ap(Applicative[IdT[Maybe, *]].pure((x: Int) => x + 1))(IdT(Nothing[Id[Int]])).value,
       Nothing[Id[Int]]
     )
-  }
+  }*/
 
-  property("IdT Applicative syntax") {
+  /*property("IdT Applicative syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Maybe.syntax._
 
@@ -255,9 +263,9 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
       IdT(nothing[Id[Int]]) <*> ((x: Int) => x + 1).pure[IdT[Maybe, *]],
       IdT(nothing[Id[Int]])
     )
-  }
+  }*/
 
-  property("IdT Functor and Applicative syntax") {
+  /*property("IdT Functor and Applicative syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
     import tech.backwards.fp.learn.Maybe.syntax._
@@ -284,9 +292,9 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
       IdT(Id(10).just) `<$>` add <*> IdT(nothing[Id[Int]]),
       IdT(nothing[Id[Int]])
     )
-  }
+  }*/
 
-  property("IdT Functor and Applicative function syntax") {
+  /*property("IdT Functor and Applicative function syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
     import tech.backwards.fp.learn.Maybe.syntax._
@@ -313,9 +321,9 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
       add `<$>` IdT(Id(10).just) <*> IdT(Id(1).just),
       IdT(Id(11).just)
     )
-  }
+  }*/
 
-  property("IdT for comprehension") {
+  /*property("IdT for comprehension") {
     import tech.backwards.fp.learn.Functor.syntax._
     import tech.backwards.fp.learn.Maybe.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
@@ -350,5 +358,5 @@ class IdMonadTransformerMaybeSuite extends ScalaCheckSuite {
       } yield x + y + z,
       IdT(nothing[Id[Int]])
     )
-  }
+  }*/
 }
