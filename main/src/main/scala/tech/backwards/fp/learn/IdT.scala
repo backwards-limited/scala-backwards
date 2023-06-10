@@ -8,7 +8,7 @@ package tech.backwards.fp.learn
  */
 final case class IdT[F[_], A](value: F[Id[A]])
 
-object IdT { self =>
+object IdT {
   def pure[F[_]: Applicative, A](a: A): IdT[F, A] =
     IdT(Applicative[F].pure(Id(a)))
 
