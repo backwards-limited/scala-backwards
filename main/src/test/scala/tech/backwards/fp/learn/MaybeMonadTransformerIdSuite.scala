@@ -165,192 +165,161 @@ class MaybeMonadTransformerIdSuite extends ScalaCheckSuite {
     )
   }
 
-  /*property("IdT Applicative") {
-    val transformerFn: IdT[Maybe, Int => Int] =
-      Applicative[IdT[Maybe, *]].pure(_ + 1)
+  property("MaybeT Applicative") {
+    val transformerFn: MaybeT[Id, Int => Int] =
+      Applicative[MaybeT[Id, *]].pure(_ + 1)
 
-    val transformer: IdT[Maybe, Int] =
-      Applicative[IdT[Maybe, *]].pure(10)
+    val transformer: MaybeT[Id, Int] =
+      Applicative[MaybeT[Id, *]].pure(10)
 
     assertEquals(
-      Applicative[IdT[Maybe, *]].ap(transformerFn)(transformer).value,
-      Just(Id(11))
+      Applicative[MaybeT[Id, *]].ap(transformerFn)(transformer).value,
+      Id(Just(11))
     )
 
     assertEquals(
-      Applicative[IdT[Maybe, *]].ap(Applicative[IdT[Maybe, *]].pure((x: Int) => x + 1))(Applicative[IdT[Maybe, *]].pure(10)).value,
-      Just(Id(11))
+      Applicative[MaybeT[Id, *]].ap(Applicative[MaybeT[Id, *]].pure((x: Int) => x + 1))(Applicative[MaybeT[Id, *]].pure(10)).value,
+      Id(Just(11))
     )
 
     assertEquals(
-      Applicative[IdT[Maybe, *]].ap(IdT(Nothing[Id[Int => Int]]))(Applicative[IdT[Maybe, *]].pure(10)).value,
-      Nothing[Id[Int]]
+      Applicative[MaybeT[Id, *]].ap(MaybeT(Id(Nothing[Int => Int])))(Applicative[MaybeT[Id, *]].pure(10)).value,
+      Id(Nothing[Int])
     )
 
     assertEquals(
-      Applicative[IdT[Maybe, *]].ap(Applicative[IdT[Maybe, *]].pure((x: Int) => x + 1))(IdT(Nothing[Id[Int]])).value,
-      Nothing[Id[Int]]
+      Applicative[MaybeT[Id, *]].ap(Applicative[MaybeT[Id, *]].pure((x: Int) => x + 1))(MaybeT(Id(Nothing[Int]))).value,
+      Id(Nothing[Int])
     )
-  }*/
+  }
 
-  /*property("IdT Applicative syntax") {
+  property("MaybeT Applicative sytax") {
     import tech.backwards.fp.learn.Applicative.syntax._
-    import tech.backwards.fp.learn.Maybe.syntax._
 
-    val transformerFn: IdT[Maybe, Int => Int] =
-      ((x: Int) => x + 1).pure[IdT[Maybe, *]]
+    val transformerFn: MaybeT[Id, Int => Int] =
+      ((x: Int) => x + 1).pure[MaybeT[Id, *]]
 
-    val transformer: IdT[Maybe, Int] =
-      10.pure[IdT[Maybe, *]]
+    val transformer: MaybeT[Id, Int] =
+      10.pure[MaybeT[Id, *]]
 
     assertEquals(
       transformerFn.ap(transformer).value,
-      Id(11).just
+      Id(Just(11))
     )
 
     assertEquals(
-      ((x: Int) => x + 1).pure[IdT[Maybe, *]].ap(10.pure[IdT[Maybe, *]]).value,
-      Id(11).just
+      ((x: Int) => x + 1).pure[MaybeT[Id, *]].ap(10.pure[MaybeT[Id, *]]).value,
+      Id(Just(11))
     )
 
     assertEquals(
-      ((x: Int) => x + 1).pure[IdT[Maybe, *]].ap(IdT(nothing[Id[Int]])).value,
-      nothing[Id[Int]]
+      MaybeT(Id(Nothing[Int => Int])).ap(10.pure[MaybeT[Id, *]]).value,
+      Id(Nothing[Int])
     )
 
     assertEquals(
-      IdT(nothing[Id[Int => Int]]).ap(10.pure[IdT[Maybe, *]]).value,
-      nothing[Id[Int]]
+      ((x: Int) => x + 1).pure[MaybeT[Id, *]].ap(MaybeT(Id(Nothing[Int]))).value,
+      Id(Nothing[Int])
     )
 
     assertEquals(
-      IdT(nothing[Id[Int => Int]]) ap 10.pure[IdT[Maybe, *]],
-      IdT(nothing[Id[Int]])
+      ((x: Int) => x + 1).pure[MaybeT[Id, *]] <*> MaybeT(Id(Nothing[Int])),
+      MaybeT(Id(Nothing[Int]))
     )
+  }
 
-    assertEquals(
-      IdT(nothing[Id[Int => Int]]) <*> 10.pure[IdT[Maybe, *]],
-      IdT(nothing[Id[Int]])
-    )
-
-    assertEquals(
-      10.pure[IdT[Maybe, *]].ap(((x: Int) => x + 1).pure[IdT[Maybe, *]]).value,
-      Id(11).just
-    )
-
-    assertEquals(
-      10.pure[IdT[Maybe, *]].ap(IdT(nothing[Id[Int => Int]])).value,
-      nothing[Id[Int]]
-    )
-
-    assertEquals(
-      IdT(nothing[Id[Int]]).ap(((x: Int) => x + 1).pure[IdT[Maybe, *]]).value,
-      nothing[Id[Int]]
-    )
-
-    assertEquals(
-      IdT(nothing[Id[Int]]) ap ((x: Int) => x + 1).pure[IdT[Maybe, *]],
-      IdT(nothing[Id[Int]])
-    )
-
-    assertEquals(
-      IdT(nothing[Id[Int]]) <*> ((x: Int) => x + 1).pure[IdT[Maybe, *]],
-      IdT(nothing[Id[Int]])
-    )
-  }*/
-
-  /*property("IdT Functor and Applicative syntax") {
+  property("MaybeT Functor and Applicative syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
     import tech.backwards.fp.learn.Maybe.syntax._
 
     assertEquals(
-      IdT(Id(10).just) `<$>` (x => (y: Int) => x + y) <*> IdT(Id(1).just),
-      IdT(Id(11).just)
+      MaybeT(Id(Just(10))) `<$>` (x => (y: Int) => x + y) <*> MaybeT(Id(Just(1))),
+      MaybeT(Id(Just(11)))
     )
 
     assertEquals(
-      IdT(nothing[Id[Int]]) `<$>` (x => (y: Int) => x + y) <*> IdT(Id(1).just),
-      IdT(nothing[Id[Int]])
+      MaybeT(Id(nothing[Int])) `<$>` (x => (y: Int) => x + y) <*> MaybeT(Id(Just(1))),
+      MaybeT(Id(nothing[Int]))
     )
 
     assertEquals(
-      IdT(Id(10).just) `<$>` (x => (y: Int) => x + y) <*> IdT(nothing[Id[Int]]),
-      IdT(nothing[Id[Int]])
+      MaybeT(Id(Just(10))) `<$>` (x => (y: Int) => x + y) <*> MaybeT(Id(nothing[Int])),
+      MaybeT(Id(nothing[Int]))
     )
 
     val add: Int => Int => Int =
       x => y => x + y
 
     assertEquals(
-      IdT(Id(10).just) `<$>` add <*> IdT(nothing[Id[Int]]),
-      IdT(nothing[Id[Int]])
+      MaybeT(Id(Just(10))) `<$>` add <*> MaybeT(Id(nothing[Int])),
+      MaybeT(Id(nothing[Int]))
     )
-  }*/
+  }
 
-  /*property("IdT Functor and Applicative function syntax") {
+  property("MaybeT Functor and Applicative function syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
     import tech.backwards.fp.learn.Maybe.syntax._
 
     assertEquals(
-      ((x: Int) => (y: Int) => x + y) `<$>` IdT(Id(10).just) <*> IdT(Id(1).just),
-      IdT(Id(11).just)
+      ((x: Int) => (y: Int) => x + y) `<$>` MaybeT(Id(Just(10))) <*> MaybeT(Id(Just(1))),
+      MaybeT(Id(Just(11)))
     )
 
     assertEquals(
-      ((x: Int) => (y: Int) => x + y) `<$>` IdT(nothing[Id[Int]]) <*> IdT(Id(1).just),
-      IdT(nothing[Id[Int]])
+      ((x: Int) => (y: Int) => x + y) `<$>` MaybeT(Id(nothing[Int])) <*> MaybeT(Id(Just(1))),
+      MaybeT(Id(nothing[Int]))
     )
 
     assertEquals(
-      ((x: Int) => (y: Int) => x + y) `<$>` IdT(Id(10).just) <*> IdT(nothing[Id[Int]]),
-      IdT(nothing[Id[Int]])
+      ((x: Int) => (y: Int) => x + y) `<$>` MaybeT(Id(Just(10))) <*> MaybeT(Id(nothing[Int])),
+      MaybeT(Id(nothing[Int]))
     )
 
     val add: Int => Int => Int =
       x => y => x + y
 
     assertEquals(
-      add `<$>` IdT(Id(10).just) <*> IdT(Id(1).just),
-      IdT(Id(11).just)
+      add `<$>` MaybeT(Id(Just(10))) <*> MaybeT(Id(Just(1))),
+      MaybeT(Id(Just(11)))
     )
-  }*/
+  }
 
-  /*property("IdT for comprehension") {
+  property("MaybeT for comprehension") {
     import tech.backwards.fp.learn.Functor.syntax._
     import tech.backwards.fp.learn.Maybe.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
 
-    val transformer: IdT[Maybe, Int] =
+    val transformer: MaybeT[Id, Int] =
       for {
-        x <- 10.pure[IdT[Maybe, *]]
-        y <- 11.pure[IdT[Maybe, *]]
-        z <- 12.pure[IdT[Maybe, *]]
+        x <- 10.pure[MaybeT[Id, *]]
+        y <- 11.pure[MaybeT[Id, *]]
+        z <- 12.pure[MaybeT[Id, *]]
       } yield x + y + z
 
     assertEquals(
       transformer.value,
-      Just(Id(33))
+      Id(Just(33))
     )
 
     assertEquals(
       for {
-        x <- IdT.lift(10.just)
-        y <- IdT.lift(11.just)
-        z <- IdT.lift(12.just)
-        _ <- IdT(0.just.map(Id.apply)) // Without "lift"
+        x <- MaybeT.lift(Id(10))
+        y <- MaybeT.lift(Id(11))
+        z <- MaybeT.lift(Id(12))
+        _ <- MaybeT(Id(0).map(Just.apply)) // Without "lift"
       } yield x + y + z,
-      IdT(Id(33).just)
+      MaybeT(Id(Just(33)))
     )
 
     assertEquals(
       for {
-        x <- IdT.lift(10.just)
-        y <- IdT.lift(nothing[Int])
-        z <- IdT.lift(12.just)
+        x <- MaybeT.lift(Id(10))
+        y <- MaybeT(Id(nothing[Int]))
+        z <- MaybeT.lift(Id(12))
       } yield x + y + z,
-      IdT(nothing[Id[Int]])
+      MaybeT(Id(nothing[Int]))
     )
-  }*/
+  }
 }
