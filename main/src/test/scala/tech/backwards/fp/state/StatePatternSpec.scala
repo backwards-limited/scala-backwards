@@ -232,7 +232,7 @@ class StatePatternSpec extends FunSuite {
   test("post order calculator version 1") {
     def execute(f: (Int, Int) => Int): List[Int] => Int = {
       case a :: b :: Nil => f(a, b)
-      case Nil => sys.error("fail!")
+      case _ => sys.error("fail!")
     }
 
     def transform(token: String)(xs: List[Int]): List[Int] =
@@ -264,7 +264,7 @@ class StatePatternSpec extends FunSuite {
   test("post order calculator version 2") {
     def execute(f: (Int, Int) => Int): List[Int] => Int = {
       case a :: b :: Nil => f(a, b)
-      case Nil => sys.error("fail!")
+      case _ => sys.error("fail!")
     }
 
     def transform(token: String)(xs: List[Int]): List[Int] =
@@ -294,7 +294,7 @@ class StatePatternSpec extends FunSuite {
   test("post order calculator version 3") {
     def execute(f: (Int, Int) => Int): List[Int] => Int = {
       case a :: b :: Nil => f(a, b)
-      case Nil => sys.error("fail!")
+      case _ => sys.error("fail!")
     }
 
     def transform(token: String)(xs: List[Int]): List[Int] =

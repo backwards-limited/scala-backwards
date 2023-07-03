@@ -12,7 +12,7 @@ class Ex4aSuite extends FunSuite {
   type Name = String
   type Age = Int
 
-  final case class Person(name: Name, age: Age)
+  case class Person(name: Name, age: Age)
 
   val ageL: Lens[Person, Age] =
     GenLens[Person](_.age)

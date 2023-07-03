@@ -7,7 +7,7 @@ import munit._
  * Applicatives - ZipList
  */
 class Ex3Suite extends FunSuite {
-  final case class ZipList[A](value: List[A]) // extends AnyVal
+  case class ZipList[A](value: List[A]) // extends AnyVal
 
   object ZipList {
     def apply[A](xs: A*): ZipList[A] =

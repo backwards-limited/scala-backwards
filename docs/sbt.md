@@ -2,6 +2,6 @@
 
 To check for updated dependencies:
 
-```bash
+```shell
 sbt dependencyUpdates
 ```

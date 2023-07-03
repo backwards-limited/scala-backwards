@@ -6,7 +6,7 @@ import cats.implicits._
 /**
  * `import tech.backwards.essentialeffects.debug._` to access the `debug` extension methods.
  */
-@deprecated(message = "Latest Cats Effect has a debug function", since = "09-12-2022")
+// TODO Since 09-12-2022 Cats Effect has a debug function
 object debug {
   /** Extension methods for an effect of type `F[A]`. */
   implicit class DebugHelper[A](ioa: IO[A]) {

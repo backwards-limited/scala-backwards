@@ -70,5 +70,5 @@ def project(id: String, base: File): Project =
       testFrameworks += new TestFramework("weaver.framework.CatsEffect")
     )
     .configs(IntegrationTest extend Test)
-    .settings(inConfig(IntegrationTest extend Test)(Defaults.testSettings) *)
-    .settings(Defaults.itSettings *)
+    .settings(inConfig(IntegrationTest extend Test)(Defaults.testSettings))
+    .settings(Defaults.itSettings)

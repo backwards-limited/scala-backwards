@@ -106,11 +106,11 @@ final case class LITERAL(str: String) extends WorkflowToken
 
 final case class INDENTATION(spaces: Int) extends WorkflowToken
 
-case object EXIT extends WorkflowToken
+case object EXITS extends WorkflowToken
 
-case object READINPUT extends WorkflowToken
+case object READ_INPUT extends WorkflowToken
 
-case object CALLSERVICE extends WorkflowToken
+case object CALL_SERVICE extends WorkflowToken
 
 case object SWITCH extends WorkflowToken
 
@@ -120,7 +120,7 @@ case object COLON extends WorkflowToken
 
 case object ARROW extends WorkflowToken
 
-case object EQUALS extends WorkflowToken
+case object EQUAL_TO extends WorkflowToken
 
 case object COMMA extends WorkflowToken
 
@@ -161,11 +161,11 @@ object WorkflowLexer extends RegexParsers {
       INDENTATION(nSpaces)
     }
 
-  lazy val exit: Parser[EXIT.type] = "exit" ^^ (_ => EXIT)
+  lazy val exit: Parser[EXITS.type] = "exit" ^^ (_ => EXITS)
 
-  lazy val readInput: Parser[READINPUT.type] = "read input" ^^ (_ => READINPUT)
+  lazy val readInput: Parser[READ_INPUT.type] = "read input" ^^ (_ => READ_INPUT)
 
-  lazy val callService: Parser[CALLSERVICE.type] = "call service" ^^ (_ => CALLSERVICE)
+  lazy val callService: Parser[CALL_SERVICE.type] = "call service" ^^ (_ => CALL_SERVICE)
 
   lazy val switch: Parser[SWITCH.type] = "switch" ^^ (_ => SWITCH)
 
@@ -175,7 +175,7 @@ object WorkflowLexer extends RegexParsers {
 
   lazy val arrow: Parser[ARROW.type] = "->" ^^ (_ => ARROW)
 
-  lazy val equals: Parser[EQUALS.type] = "==" ^^ (_ => EQUALS)
+  lazy val equals: Parser[EQUAL_TO.type] = "==" ^^ (_ => EQUAL_TO)
 
   lazy val comma: Parser[COMMA.type] = "," ^^ (_ => COMMA)
 
@@ -241,7 +241,7 @@ object WorkflowParser extends Parsers {
     accept("string literal", { case lit @ LITERAL(name) => lit })
 
   lazy val condition: Parser[Equals] =
-    (identifier ~ EQUALS ~ literal) ^^ { case id ~ eq ~ lit => Equals(id.str, lit.str) }
+    (identifier ~ EQUAL_TO ~ literal) ^^ { case id ~ eq ~ lit => Equals(id.str, lit.str) }
 
   lazy val ifThen: Parser[IfThen] =
     (condition ~ ARROW ~ INDENT ~ block ~ DEDENT) ^^ {
@@ -254,15 +254,15 @@ object WorkflowParser extends Parsers {
     }
 
   lazy val statement: Parser[WorkflowAST] = {
-    val exit: Parser[Exit.type] = EXIT ^^ (_ => Exit)
+    val exit: Parser[Exit.type] = EXITS ^^ (_ => Exit)
 
     val readInput: Parser[ReadInput] =
-      READINPUT ~ rep(identifier ~ COMMA) ~ identifier ^^ {
+      READ_INPUT ~ rep(identifier ~ COMMA) ~ identifier ^^ {
         case read ~ inputs ~ IDENTIFIER(lastInput) => ReadInput(inputs.map(_._1.str) ++ List(lastInput))
       }
 
     val callService: Parser[CallService] =
-      CALLSERVICE ~ literal ^^ {
+      CALL_SERVICE ~ literal ^^ {
         case call ~ LITERAL(serviceName) => CallService(serviceName)
       }
 

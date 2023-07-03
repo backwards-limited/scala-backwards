@@ -145,7 +145,7 @@ class HListSpec extends AnyWordSpec with Matchers {
 
     "concatenate HLists" in {
       sealed trait HList {
-        def ++[That <: HList](that: That) /* ? Type ? */
+        def ++[That <: HList](that: That): Unit /* ? Type ? */
 
         // No matter the type being returned, we need it to be a subtype of HList
       }

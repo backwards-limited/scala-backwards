@@ -193,7 +193,7 @@ class MaybeMonadTransformerIdSuite extends ScalaCheckSuite {
     )
   }
 
-  property("MaybeT Applicative sytax") {
+  property("MaybeT Applicative syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
 
     val transformerFn: MaybeT[Id, Int => Int] =
