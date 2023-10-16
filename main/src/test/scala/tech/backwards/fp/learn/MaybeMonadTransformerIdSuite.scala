@@ -8,8 +8,8 @@ import org.scalacheck.Test
  *  - MaybeMonadTransformerMaybeSuite
  *  - MaybeMonadTransformerDisjunctionSuite
  *  - MaybeMonadTransformerListSuite
- *  - MaybeMonadTransformerStateSuite
  *  - MaybeMonadTransformerWriterSuite
+ *  - MaybeMonadTransformerStateSuite
  */
 class MaybeMonadTransformerIdSuite extends ScalaCheckSuite {
   override protected def scalaCheckTestParameters: Test.Parameters =
