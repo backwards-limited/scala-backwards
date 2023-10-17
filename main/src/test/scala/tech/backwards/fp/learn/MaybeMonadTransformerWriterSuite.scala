@@ -157,7 +157,6 @@ class MaybeMonadTransformerWriterSuite extends ScalaCheckSuite {
       Nil -> nothing[Int]
     )
 
-
     assertEquals(
       MaybeT(Writer(List.empty[String] -> Just(1))).flatMap(a => MaybeT(Writer(Nil -> Just(a + 1)))).value.run(),
       Nil -> Just(2)
