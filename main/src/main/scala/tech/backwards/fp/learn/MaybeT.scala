@@ -18,7 +18,7 @@ object MaybeT {
     }
   }
 
-  implicit def applicateMaybeT[F[_]: Functor: Applicative]: Applicative[MaybeT[F, *]] =
+  implicit def applicativeMaybeT[F[_]: Functor: Applicative]: Applicative[MaybeT[F, *]] =
     new Applicative[MaybeT[F, *]] {
       import tech.backwards.fp.learn.Functor.syntax._
       import tech.backwards.fp.learn.Applicative.syntax._
@@ -27,7 +27,9 @@ object MaybeT {
         MaybeT(Applicative[F].pure(Just(a)))
 
       def ap[A, B](ff: MaybeT[F, A => B])(fa: MaybeT[F, A]): MaybeT[F, B] =
-        MaybeT(ff.value `<$>` ((ff: Maybe[A => B]) => (fa: Maybe[A]) => ff <*> fa) <*> fa.value)
+        MaybeT(
+          ff.value `<$>` ((ff: Maybe[A => B]) => (fa: Maybe[A]) => ff <*> fa) <*> fa.value
+        )
     }
 
   implicit def monadMaybeT[F[_]: Functor: Monad]: Monad[MaybeT[F, *]] =
@@ -40,7 +42,7 @@ object MaybeT {
       def flatMap[A, B](fa: MaybeT[F, A])(f: A => MaybeT[F, B]): MaybeT[F, B] =
         MaybeT(
           fa.value.flatMap {
-            case Just(a) => f(a).value
+            case Just(a)   => f(a).value
             case Nothing() => Monad[F].pure(Nothing[B])
           }
         )
