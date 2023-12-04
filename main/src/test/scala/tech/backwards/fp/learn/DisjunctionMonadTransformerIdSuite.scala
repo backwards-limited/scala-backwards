@@ -4,7 +4,7 @@ import munit.ScalaCheckSuite
 import org.scalacheck.Test
 
 /**
- * First of the following MaybeT suites:
+ * First of the following DisjunctionT suites:
  *  - DisjunctionMonadTransformerMaybeSuite
  *  - DisjunctionMonadTransformerDisjunctionSuite
  *  - DisjunctionMonadTransformerListSuite
