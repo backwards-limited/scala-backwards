@@ -194,7 +194,7 @@ class DisjunctionMonadTransformerMaybeSuite extends ScalaCheckSuite {
     )
 
     assertEquals(
-      DisjunctionT(Just("whoops".left[Int])).flatMap(_ => DisjunctionT(Just("whoops".left[Int]))).value,
+      DisjunctionT(Just("whoops".left[Int])).flatMap(_ => DisjunctionT(Just("I did it again".left[Int]))).value,
       Just("whoops".left[Int])
     )
 
