@@ -1,376 +1,380 @@
 package tech.backwards.fp.learn
 
 import munit.ScalaCheckSuite
+import tech.backwards.fp.learn.Maybe.syntax.nothing
 import org.scalacheck.Test
 
 class DisjunctionMonadTransformerWriterSuite extends ScalaCheckSuite {
   override protected def scalaCheckTestParameters: Test.Parameters =
     super.scalaCheckTestParameters.withMinSuccessfulTests(100).withMaxDiscardRatio(10)
 
-  // TODO
   property("DisjunctionT") {
-    /*val transformer: MaybeT[Writer[String, *], Int] =
-      MaybeT(Writer("" -> Just(10)))
+    val transformer: DisjunctionT[Writer[String, *], String, Int] =
+      DisjunctionT(Writer("" -> Right(10)))
+
+    val example: Writer[String, String Disjunction Int] =
+      transformer.value
 
     assertEquals(
       transformer.value.run(),
-      "" -> Just(10)
+      "" -> Right(10)
     )
 
     assertEquals(
-      MaybeT(Writer(Nil -> Nothing[Int])).value.run(),
-      Nil -> Nothing[Int]
-    )*/
+      DisjunctionT(Writer(Nil -> Left[String, Int]("whoops"))).value.run(),
+      Nil -> Left("whoops")
+    )
   }
 
-  /*property("MaybeT pure") {
-    val transformer: MaybeT[Writer[String, *], Int] =
-      MaybeT.pure[Writer[String, *], Int](10)
+  property("DisjunctionT pure") {
+    val transformer: DisjunctionT[Writer[String, *], String, Int] =
+      DisjunctionT.pure[Writer[String, *], String, Int](10)
 
     assertEquals(
       transformer.value.run(),
-      "" -> Just(10)
+      "" -> Right(10)
     )
 
     assertEquals(
-      MaybeT.pure[Writer[List[String], *], Int](10).value.run(),
-      Nil -> Just(10)
+      DisjunctionT.pure[Writer[List[String], *], String, Int](10).value.run(),
+      Nil -> Right(10)
     )
   }
 
-  property("MaybeT lift") {
-    val transformer: MaybeT[Writer[String, *], Int] =
-      MaybeT.lift(Writer("" -> 10))
+  property("DisjunctionT lift") {
+    val transformer: DisjunctionT[Writer[String, *], String, Int] =
+      DisjunctionT.lift(Writer("" -> 10))
 
     assertEquals(
       transformer.value.run(),
-      "" -> Just(10)
+      "" -> Right(10)
     )
 
     assertEquals(
-      MaybeT.lift(Writer(Nil -> 10)).value.run(),
-      Nil -> Just(10)
+      DisjunctionT.lift(Writer(Nil -> 10)).value.run(),
+      Nil -> Right(10)
     )
   }
 
-  property("MaybeT Functor") {
-    val transformer: MaybeT[Writer[String, *], Int] =
-      MaybeT(Writer("" -> Just(10)))
+  property("DisjunctionT Functor") {
+    val transformer: DisjunctionT[Writer[String, *], String, Int] =
+      DisjunctionT(Writer("" -> Right(10)))
 
     assertEquals(
-      Functor[MaybeT[Writer[String, *], *]].fmap(transformer)(_ + 1).value.run(),
-      "" -> Just(11)
+      Functor[DisjunctionT[Writer[String, *], String, *]].fmap(transformer)(_ + 1).value.run(),
+      "" -> Right(11)
     )
 
     assertEquals(
-      Functor[MaybeT[Writer[List[String], *], *]].fmap(MaybeT(Writer(Nil -> Just(10))))(_ + 1).value.run(),
-      Nil -> Just(11)
+      Functor[DisjunctionT[Writer[List[String], *], String, *]].fmap(DisjunctionT(Writer(Nil -> Right[String, Int](10))))(_ + 1).value.run(),
+      Nil -> Right(11)
     )
 
     assertEquals(
-      Functor[MaybeT[Writer[List[String], *], *]].fmap(MaybeT(Writer(Nil -> Nothing[Int])))(_ + 1).value.run(),
-      Nil -> Nothing[Int]
+      Functor[DisjunctionT[Writer[List[String], *], String, *]].fmap(DisjunctionT(Writer(Nil -> Left[String, Int]("whoops"))))(_ + 1).value.run(),
+      Nil -> Left[String, Int]("whoops")
     )
   }
 
-  property("MaybeT Functor syntax") {
+  property("DisjunctionT Functor syntax") {
+    import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
-    import tech.backwards.fp.learn.Maybe.syntax._
 
-    val transformer: MaybeT[Writer[String, *], Int] =
-      MaybeT(Writer("" -> 10.just))
+    val transformer: DisjunctionT[Writer[String, *], String, Int] =
+      DisjunctionT(Writer("" -> 10.right))
 
     assertEquals(
       transformer.fmap(_ + 1).value.run(),
-      "" -> 11.just
+      "" -> 11.right
     )
 
     assertEquals(
-      MaybeT(Writer(Nil -> 10.just)).fmap(_ + 1).value.run(),
-      Nil -> 11.just
+      DisjunctionT(Writer(Nil -> 10.right[String])).fmap(_ + 1).value.run(),
+      Nil -> 11.right
     )
 
     assertEquals(
-      MaybeT(Writer(Nil -> Nothing[Int])).fmap(_ + 1).value.run(),
-      Nil -> Nothing[Int]
+      DisjunctionT(Writer(Nil -> "whoops".left[Int])).fmap(_ + 1).value.run(),
+      Nil -> "whoops".left[Int]
     )
   }
 
-  property("MaybeT Monad") {
-    val transformer: MaybeT[Writer[String, *], Int] =
-      Monad[MaybeT[Writer[String, *], *]].pure(10)
+  property("DisjunctionT Monad") {
+    val transformer: DisjunctionT[Writer[String, *], String, Int] =
+      Monad[DisjunctionT[Writer[String, *], String, *]].pure(10)
 
     assertEquals(
-      Monad[MaybeT[Writer[String, *], *]].flatMap(transformer)(a => Monad[MaybeT[Writer[String, *], *]].pure(a + 1)).value.run(),
-      "" -> Just(11)
+      Monad[DisjunctionT[Writer[String, *], String, *]].flatMap(transformer)(a => Monad[DisjunctionT[Writer[String, *], String, *]].pure(a + 1)).value.run(),
+      "" -> Right(11)
     )
 
     assertEquals(
-      Monad[MaybeT[Writer[List[String], *], *]].flatMap(Monad[MaybeT[Writer[List[String], *], *]].pure(10))(a => Monad[MaybeT[Writer[List[String], *], *]].pure(a + 1)).value.run(),
-      Nil -> Just(11)
+      Monad[DisjunctionT[Writer[List[String], *], String, *]].flatMap(Monad[DisjunctionT[Writer[List[String], *], String, *]].pure(10))(a => Monad[DisjunctionT[Writer[List[String], *], String, *]].pure(a + 1)).value.run(),
+      Nil -> Right(11)
     )
 
     assertEquals(
-      Monad[MaybeT[Writer[List[String], *], *]].flatMap(MaybeT(Writer(Nil -> Nothing[Int])))(a => Monad[MaybeT[Writer[List[String], *], *]].pure(a + 1)).value.run(),
-      Nil -> Nothing[Int]
+      Monad[DisjunctionT[Writer[List[String], *], String, *]].flatMap(DisjunctionT(Writer(Nil -> Left[String, Int]("whoops"))))(a => Monad[DisjunctionT[Writer[List[String], *], String, *]].pure(a + 1)).value.run(),
+      Nil -> Left[String, Int]("whoops")
     )
 
     assertEquals(
-      Monad[MaybeT[Writer[List[String], *], *]].flatMap(Monad[MaybeT[Writer[List[String], *], *]].pure(10))(_ => MaybeT(Writer(Nil -> Nothing[Int]))).value.run(),
-      Nil -> Nothing[Int]
+      Monad[DisjunctionT[Writer[List[String], *], String, *]].flatMap(Monad[DisjunctionT[Writer[List[String], *], String, *]].pure(10))(_ => DisjunctionT(Writer(Nil -> Left[String, Int]("whoops")))).value.run(),
+      Nil -> Left[String, Int]("whoops")
     )
 
     assertEquals(
-      Monad[MaybeT[Writer[List[String], *], *]].flatMap(MaybeT(Writer(Nil -> Just(1))))(a => MaybeT(Writer(Nil -> Just(a + 1)))).value.run(),
-      Nil -> Just(2)
+      Monad[DisjunctionT[Writer[List[String], *], String, *]].flatMap(DisjunctionT(Writer(Nil -> Right[String, Int](1))))(a => DisjunctionT(Writer(Nil -> Right[String, Int](a + 1)))).value.run(),
+      Nil -> Right(2)
     )
 
     assertEquals(
-      Monad[MaybeT[Writer[List[String], *], *]].flatMap(MaybeT(Writer(List("foo") -> Just(1))))(a => MaybeT(Writer(List("bar") -> Just(a + 1)))).value.run(),
-      List("foo", "bar") -> Just(2)
+      Monad[DisjunctionT[Writer[List[String], *], String, *]].flatMap(DisjunctionT(Writer(List("foo") -> Right[String, Int](1))))(a => DisjunctionT(Writer(List("bar") -> Right[String, Int](a + 1)))).value.run(),
+      List("foo", "bar") -> Right(2)
     )
   }
 
   property("MaybeT Monad syntax") {
-    import tech.backwards.fp.learn.Maybe.syntax._
+    import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
 
-    val transformer: MaybeT[Writer[String, *], Int] =
-      10.pure[MaybeT[Writer[String, *], *]]
+    val transformer: DisjunctionT[Writer[String, *], String, Int] =
+      10.pure[DisjunctionT[Writer[String, *], String, *]]
 
     assertEquals(
-      transformer.flatMap(a => (a + 1).pure[MaybeT[Writer[String, *], *]]).value.run(),
-      "" -> 11.just
+      transformer.flatMap(a => (a + 1).pure[DisjunctionT[Writer[String, *], String, *]]).value.run(),
+      "" -> 11.right
     )
 
     assertEquals(
-      10.pure[MaybeT[Writer[List[String], *], *]].flatMap(a => (a + 1).pure[MaybeT[Writer[List[String], *], *]]).value.run(),
-      Nil -> 11.just
+      10.pure[DisjunctionT[Writer[List[String], *], String, *]].flatMap(a => (a + 1).pure[DisjunctionT[Writer[List[String], *], String, *]]).value.run(),
+      Nil -> 11.right
     )
 
     assertEquals(
-      MaybeT(Writer(List.empty[String] -> nothing[Int])).flatMap(a => (a + 1).pure[MaybeT[Writer[List[String], *], *]]).value.run(),
-      Nil -> nothing[Int]
+      DisjunctionT(Writer(List.empty[String] -> "whoops".left[Int])).flatMap(a => (a + 1).pure[DisjunctionT[Writer[List[String], *], String, *]]).value.run(),
+      Nil -> "whoops".left[Int]
     )
 
     assertEquals(
-      10.pure[MaybeT[Writer[List[String], *], *]].flatMap(_ => MaybeT(Writer(Nil -> nothing[Int]))).value.run(),
-      Nil -> nothing[Int]
+      10.pure[DisjunctionT[Writer[List[String], *], String, *]].flatMap(_ => DisjunctionT(Writer(Nil -> "whoops".left[Int]))).value.run(),
+      Nil -> "whoops".left[Int]
     )
 
     assertEquals(
-      MaybeT(Writer(List.empty[String] -> Just(1))).flatMap(a => MaybeT(Writer(Nil -> Just(a + 1)))).value.run(),
-      Nil -> Just(2)
+      DisjunctionT(Writer(List.empty[String] -> 1.right[String])).flatMap(a => DisjunctionT(Writer(Nil -> (a + 1).right[String]))).value.run(),
+      Nil -> 2.right
     )
 
     assertEquals(
-      MaybeT(Writer(List("foo") -> Just(1))).flatMap(a => MaybeT(Writer(List("bar") -> Just(a + 1)))).value.run(),
-      List("foo", "bar") -> Just(2)
-    )
-  }
-
-  property("MaybeT Applicative") {
-    val transformerFn: MaybeT[Writer[String, *], Int => Int] =
-      Applicative[MaybeT[Writer[String, *], *]].pure(_ + 1)
-
-    val transformer: MaybeT[Writer[String, *], Int] =
-      Applicative[MaybeT[Writer[String, *], *]].pure(10)
-
-    assertEquals(
-      Applicative[MaybeT[Writer[String, *], *]].ap(transformerFn)(transformer).value.run(),
-      "" -> Just(11)
-    )
-
-    assertEquals(
-      Applicative[MaybeT[Writer[List[String], *], *]].ap(Applicative[MaybeT[Writer[List[String], *], *]].pure((x: Int) => x + 1))(Applicative[MaybeT[Writer[List[String], *], *]].pure(10)).value.run(),
-      Nil -> Just(11)
-    )
-
-    assertEquals(
-      Applicative[MaybeT[Writer[List[String], *], *]].ap(MaybeT(Writer(Nil -> Nothing[Int => Int])))(Applicative[MaybeT[Writer[List[String], *], *]].pure(10)).value.run(),
-      Nil -> Nothing[Int]
-    )
-
-    assertEquals(
-      Applicative[MaybeT[Writer[List[String], *], *]].ap(Applicative[MaybeT[Writer[List[String], *], *]].pure((x: Int) => x + 1))(MaybeT(Writer(Nil -> Nothing[Int]))).value.run(),
-      Nil -> Nothing[Int]
-    )
-
-    assertEquals(
-      Applicative[MaybeT[Writer[List[String], *], *]].ap(MaybeT(Writer(Nil -> Just((x: Int) => x + 1))))(MaybeT(Writer(Nil -> Nothing[Int]))).value.run(),
-      Nil -> Nothing[Int]
-    )
-
-    assertEquals(
-      Applicative[MaybeT[Writer[List[String], *], *]].ap(MaybeT(Writer(Nil -> Just((x: Int) => x + 1))))(MaybeT(Writer(Nil -> Just(1)))).value.run(),
-      Nil -> Just(2)
-    )
-
-    assertEquals(
-      Applicative[MaybeT[Writer[List[String], *], *]].ap(MaybeT(Writer(List("foo") -> Just((x: Int) => x + 1))))(MaybeT(Writer(List("bar") -> Just(1)))).value.run(),
-      List("foo", "bar") -> Just(2)
+      DisjunctionT(Writer(List("foo") -> 1.right[String])).flatMap(a => DisjunctionT(Writer(List("bar") -> (a + 1).right[String]))).value.run(),
+      List("foo", "bar") -> 2.right
     )
   }
 
-  property("MaybeT Applicative syntax") {
+  property("DisjunctionT Applicative") {
+    val transformerFn: DisjunctionT[Writer[String, *], String, Int => Int] =
+      Applicative[DisjunctionT[Writer[String, *], String, *]].pure(_ + 1)
+
+    val transformer: DisjunctionT[Writer[String, *], String, Int] =
+      Applicative[DisjunctionT[Writer[String, *], String, *]].pure(10)
+
+    assertEquals(
+      Applicative[DisjunctionT[Writer[String, *], String, *]].ap(transformerFn)(transformer).value.run(),
+      "" -> Right(11)
+    )
+
+    assertEquals(
+      Applicative[DisjunctionT[Writer[List[String], *], String, *]].ap(Applicative[DisjunctionT[Writer[List[String], *], String, *]].pure((x: Int) => x + 1))(Applicative[DisjunctionT[Writer[List[String], *], String, *]].pure(10)).value.run(),
+      Nil -> Right(11)
+    )
+
+    assertEquals(
+      Applicative[DisjunctionT[Writer[List[String], *], String, *]].ap(DisjunctionT(Writer(Nil -> Left[String, Int => Int]("whoops"))))(Applicative[DisjunctionT[Writer[List[String], *], String, *]].pure(10)).value.run(),
+      Nil -> Left[String, Int]("whoops")
+    )
+
+    assertEquals(
+      Applicative[DisjunctionT[Writer[List[String], *], String, *]].ap(Applicative[DisjunctionT[Writer[List[String], *], String, *]].pure((x: Int) => x + 1))(DisjunctionT(Writer(Nil -> Left[String, Int]("whoops")))).value.run(),
+      Nil -> Left[String, Int]("whoops")
+    )
+
+    assertEquals(
+      Applicative[DisjunctionT[Writer[List[String], *], String, *]].ap(DisjunctionT(Writer(Nil -> Right[String, Int => Int]((x: Int) => x + 1))))(DisjunctionT(Writer(Nil -> Left[String, Int]("whoops")))).value.run(),
+      Nil -> Left[String, Int]("whoops")
+    )
+
+    assertEquals(
+      Applicative[DisjunctionT[Writer[List[String], *], String, *]].ap(DisjunctionT(Writer(Nil -> Right[String, Int => Int]((x: Int) => x + 1))))(DisjunctionT(Writer(Nil -> Right(1)))).value.run(),
+      Nil -> Right(2)
+    )
+
+    assertEquals(
+      Applicative[DisjunctionT[Writer[List[String], *], String, *]].ap(DisjunctionT(Writer(List("foo") -> Right[String, Int => Int]((x: Int) => x + 1))))(DisjunctionT(Writer(List("bar") -> Right(1)))).value.run(),
+      List("foo", "bar") -> Right(2)
+    )
+  }
+
+  property("DisjunctionT Applicative syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
+    import tech.backwards.fp.learn.Disjunction.syntax._
 
-    val transformerFn: MaybeT[Writer[String, *], Int => Int] =
-      ((x: Int) => x + 1).pure[MaybeT[Writer[String, *], *]]
+    val transformerFn: DisjunctionT[Writer[String, *], String, Int => Int] =
+      ((x: Int) => x + 1).pure[DisjunctionT[Writer[String, *], String, *]]
 
-    val transformer: MaybeT[Writer[String, *], Int] =
-      10.pure[MaybeT[Writer[String, *], *]]
+    val transformer: DisjunctionT[Writer[String, *], String, Int] =
+      10.pure[DisjunctionT[Writer[String, *], String, *]]
 
     assertEquals(
       transformerFn.ap(transformer).value.run(),
-      "" -> Just(11)
+      "" -> 11.right
     )
 
     assertEquals(
-      ((x: Int) => x + 1).pure[MaybeT[Writer[List[String], *], *]].ap(10.pure[MaybeT[Writer[List[String], *], *]]).value.run(),
-      Nil -> Just(11)
+      ((x: Int) => x + 1).pure[DisjunctionT[Writer[List[String], *], String, *]].ap(10.pure[DisjunctionT[Writer[List[String], *], String, *]]).value.run(),
+      Nil -> 11.right
     )
 
     assertEquals(
-      MaybeT(Writer(List.empty[String] -> Nothing[Int => Int])).ap(10.pure[MaybeT[Writer[List[String], *], *]]).value.run(),
-      Nil -> Nothing[Int]
+      DisjunctionT(Writer(List.empty[String] -> "whoops".left[Int => Int])).ap(10.pure[DisjunctionT[Writer[List[String], *], String, *]]).value.run(),
+      Nil -> "whoops".left[Int]
     )
 
     assertEquals(
-      ((x: Int) => x + 1).pure[MaybeT[Writer[List[String], *], *]].ap(MaybeT(Writer(Nil -> Nothing[Int]))).value.run(),
-      Nil -> Nothing[Int]
+      ((x: Int) => x + 1).pure[DisjunctionT[Writer[List[String], *], String, *]].ap(DisjunctionT(Writer(Nil -> "whoops".left[Int]))).value.run(),
+      Nil -> "whoops".left[Int]
     )
 
     assertEquals(
-      MaybeT(Writer(List.empty[String] -> Just((x: Int) => x + 1))).ap(MaybeT(Writer(Nil -> Just(1)))).value.run(),
-      Nil -> Just(2)
+      DisjunctionT(Writer(List.empty[String] -> ((x: Int) => x + 1).right[String])).ap(DisjunctionT(Writer(Nil -> 1.right))).value.run(),
+      Nil -> 2.right
     )
 
     assertEquals(
-      MaybeT(Writer(List("foo") -> Just((x: Int) => x + 1))).ap(MaybeT(Writer(List("bar") -> Just(1)))).value.run(),
-      List("foo", "bar") -> Just(2)
+      DisjunctionT(Writer(List("foo") -> ((x: Int) => x + 1).right[String])).ap(DisjunctionT(Writer(List("bar") -> 1.right))).value.run(),
+      List("foo", "bar") -> 2.right
     )
   }
 
-  property("MaybeT Functor and Applicative syntax") {
+  property("DisjunctionT Functor and Applicative syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
+    import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
-    import tech.backwards.fp.learn.Maybe.syntax._
 
     assertEquals(
-      (MaybeT(Writer("foo" -> 10.just)) `<$>` (x => (y: Int) => x + y) <*> MaybeT(Writer("bar" -> 1.just))).value.run(),
-      "foobar" -> 11.just
+      (DisjunctionT(Writer("foo" -> 10.right[String])) `<$>` (x => (y: Int) => x + y) <*> DisjunctionT(Writer("bar" -> 1.right))).value.run(),
+      "foobar" -> 11.right
     )
 
     assertEquals(
-      (MaybeT(Writer(List("foo") -> nothing[Int])) `<$>` (x => (y: Int) => x + y) <*> MaybeT(Writer(List("bar") -> 1.just))).value.run(),
-      List("foo", "bar") -> nothing[Int]
+      (DisjunctionT(Writer(List("foo") -> "whoops".left[Int])) `<$>` (x => (y: Int) => x + y) <*> DisjunctionT(Writer(List("bar") -> 1.right))).value.run(),
+      List("foo", "bar") -> "whoops".left[Int]
     )
 
     assertEquals(
-      (MaybeT(Writer(List("foo") -> Just(1))) `<$>` (x => (y: Int) => x + y) <*> MaybeT(Writer(List("bar") -> nothing[Int]))).value.run(),
-      List("foo", "bar") -> nothing[Int]
+      (DisjunctionT(Writer(List("foo") -> 1.right[String])) `<$>` (x => (y: Int) => x + y) <*> DisjunctionT(Writer(List("bar") -> "whoops".left[Int]))).value.run(),
+      List("foo", "bar") -> "whoops".left[Int]
     )
 
     val add: Int => Int => Int =
       x => y => x + y
 
     assertEquals(
-      (MaybeT(Writer(List("foo") -> 10.just)) `<$>` add <*> MaybeT(Writer(List("bar") -> nothing[Int]))).value.run(),
-      List("foo", "bar") -> nothing[Int]
+      (DisjunctionT(Writer(List("foo") -> 10.right[String])) `<$>` add <*> DisjunctionT(Writer(List("bar") -> "whoops".left[Int]))).value.run(),
+      List("foo", "bar") -> "whoops".left[Int]
     )
 
     assertEquals(
-      (MaybeT(Writer(List("foo") -> 10.just)) `<$>` add <*> MaybeT(Writer(List("bar") -> Just(1)))).value.run(),
-      List("foo", "bar") -> Just(11)
+      (DisjunctionT(Writer(List("foo") -> 10.right[String])) `<$>` add <*> DisjunctionT(Writer(List("bar") -> 1.right))).value.run(),
+      List("foo", "bar") -> 11.right
     )
   }
 
-  property("MaybeT Functor and Applicative function syntax") {
+  property("DisjunctionT Functor and Applicative function syntax") {
     import tech.backwards.fp.learn.Applicative.syntax._
+    import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax.function._
-    import tech.backwards.fp.learn.Maybe.syntax._
 
     assertEquals(
-      (((x: Int) => (y: Int) => x + y) `<$>` MaybeT(Writer("foo" -> 10.just)) <*> MaybeT(Writer("bar" -> 1.just))).value.run(),
-      "foobar" -> 11.just
+      (((x: Int) => (y: Int) => x + y) `<$>` DisjunctionT(Writer("foo" -> 10.right[String])) <*> DisjunctionT(Writer("bar" -> 1.right))).value.run(),
+      "foobar" -> 11.right
     )
 
     assertEquals(
-      (((x: Int) => (y: Int) => x + y) `<$>` MaybeT(Writer(List("foo") -> nothing[Int])) <*> MaybeT(Writer(List("bar") -> 1.just))).value.run(),
-      List("foo", "bar") -> nothing[Int]
+      (((x: Int) => (y: Int) => x + y) `<$>` DisjunctionT(Writer(List("foo") -> "whoops".left[Int])) <*> DisjunctionT(Writer(List("bar") -> 1.right))).value.run(),
+      List("foo", "bar") -> "whoops".left[Int]
     )
 
     assertEquals(
-      (((x: Int) => (y: Int) => x + y) `<$>` MaybeT(Writer(List("foo") -> 10.just)) <*> MaybeT(Writer(List("bar") -> nothing[Int]))).value.run(),
-      List("foo", "bar") -> nothing[Int]
+      (((x: Int) => (y: Int) => x + y) `<$>` DisjunctionT(Writer(List("foo") -> 10.right[String])) <*> DisjunctionT(Writer(List("bar") -> "whoops".left[Int]))).value.run(),
+      List("foo", "bar") -> "whoops".left[Int]
     )
 
     val add: Int => Int => Int =
       x => y => x + y
 
     assertEquals(
-      (add `<$>` MaybeT(Writer(List("foo") -> 10.just)) <*> MaybeT(Writer(List("bar") -> 1.just))).value.run(),
-      List("foo", "bar") -> 11.just
+      (add `<$>` DisjunctionT(Writer(List("foo") -> 10.right[String])) <*> DisjunctionT(Writer(List("bar") -> 1.right))).value.run(),
+      List("foo", "bar") -> 11.right
     )
 
     assertEquals(
-      (add `<$>` MaybeT(Writer(List("foo") -> 10.just)) <*> MaybeT(Writer(List("bar") -> nothing[Int]))).value.run(),
-      List("foo", "bar") -> nothing[Int]
+      (add `<$>` DisjunctionT(Writer(List("foo") -> 10.right[String])) <*> DisjunctionT(Writer(List("bar") -> "whoops".left[Int]))).value.run(),
+      List("foo", "bar") -> "whoops".left[Int]
     )
   }
 
-  property("MaybeT for comprehension") {
+  property("DisjunctionT for comprehension") {
+    import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
-    import tech.backwards.fp.learn.Maybe.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
 
-    val transformer: MaybeT[Writer[String, *], Int] =
+    val transformer: DisjunctionT[Writer[String, *], String, Int] =
       for {
-        x <- 10.pure[MaybeT[Writer[String, *], *]]
-        y <- 11.pure[MaybeT[Writer[String, *], *]]
-        z <- 12.pure[MaybeT[Writer[String, *], *]]
+        x <- 10.pure[DisjunctionT[Writer[String, *], String, *]]
+        y <- 11.pure[DisjunctionT[Writer[String, *], String, *]]
+        z <- 12.pure[DisjunctionT[Writer[String, *], String, *]]
       } yield x + y + z
 
     assertEquals(
       transformer.value.run(),
-      "" -> Just(33)
+      "" -> 33.right
     )
 
     assertEquals(
       (
         for {
-          x <- MaybeT.lift(Writer(List("foo") -> 10))
-          y <- MaybeT.lift(Writer(List("bar") -> 11))
-          z <- MaybeT.lift(Writer(List("baz") -> 12))
-          _ <- MaybeT(Writer(List("blah") -> 0).map(Just.apply)) // Without "lift"
+          x <- DisjunctionT.lift[Writer[List[String], *], String, Int](Writer(List("foo") -> 10))
+          y <- DisjunctionT.lift[Writer[List[String], *], String, Int](Writer(List("bar") -> 11))
+          z <- DisjunctionT.lift[Writer[List[String], *], String, Int](Writer(List("baz") -> 12))
+          _ <- DisjunctionT(Writer(List("blah") -> 0).map(Right[String, Int]))
         } yield x + y + z
       ).value.run(),
-      List("foo", "bar", "baz", "blah") -> Just(33)
+      List("foo", "bar", "baz", "blah") -> 33.right
     )
 
     assertEquals(
       (
         for {
-          x <- MaybeT.lift(Writer(List("foo") -> 10))
-          y <- MaybeT.lift(Writer(List("bar") -> 11))
-          z <- MaybeT.lift(Writer(List("baz") -> 12))
-          _ <- MaybeT(Writer(List("blah") -> 0).map(_ => Nothing[Int])) // Without "lift"
+          x <- DisjunctionT(Writer(List("foo") -> 10.right[String]))
+          y <- DisjunctionT(Writer(List("bar") -> 11.right[String]))
+          z <- DisjunctionT(Writer(List("baz") -> 12.right[String]))
+          _ <- DisjunctionT(Writer(List("blah") -> "whoops".left[Int]))
         } yield x + y + z
       ).value.run(),
-      List("foo", "bar", "baz", "blah") -> Nothing[Int]
+      List("foo", "bar", "baz", "blah") -> "whoops".left
     )
 
     assertEquals(
       (
         for {
-          x <- MaybeT(Writer(List("foo") -> nothing[Int]))
-          y <- MaybeT.lift(Writer(List("bar") -> 11))
-          z <- MaybeT.lift(Writer(List("baz") -> 12))
-          _ <- MaybeT(Writer(List("blah") -> 0).map(Just.apply)) // Without "lift"
+          x <- DisjunctionT(Writer(List("foo") -> "whoops".left[Int]))
+          y <- DisjunctionT(Writer(List("bar") -> 11.right[String]))
+          z <- DisjunctionT(Writer(List("baz") -> 12.right[String]))
+          _ <- DisjunctionT(Writer(List("blah") -> 0).map(Right[String, Int]))
         } yield x + y + z
       ).value.run(),
-      List("foo") -> nothing[Int]
+      List("foo") -> "whoops".left
     )
-  }*/
+  }
 }
