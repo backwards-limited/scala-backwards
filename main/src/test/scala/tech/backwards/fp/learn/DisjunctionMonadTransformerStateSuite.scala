@@ -90,65 +90,65 @@ class DisjunctionMonadTransformerStateSuite extends ScalaCheckSuite {
     )
   }
 
-  /*property("DisjunctionT Functor syntax") {
+  property("DisjunctionT Functor syntax") {
     import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
 
-    val transformer: DisjunctionT[Writer[String, *], String, Int] =
-      DisjunctionT(Writer("" -> 10.right))
+    val transformer: DisjunctionT[State[String, *], String, Int] =
+      DisjunctionT(State((s: String) => s + "bar" -> 10.right))
 
     assertEquals(
-      transformer.fmap(_ + 1).value.run(),
-      "" -> 11.right
+      transformer.fmap(_ + 1).value.run("foo"),
+      "foobar" -> 11.right
     )
 
     assertEquals(
-      DisjunctionT(Writer(Nil -> 10.right[String])).fmap(_ + 1).value.run(),
-      Nil -> 11.right
+      DisjunctionT(State((xs: List[String]) => xs ++ List("bar") -> 10.right[String])).fmap(_ + 1).value.run(List("foo")),
+      List("foo", "bar") -> 11.right
     )
 
     assertEquals(
-      DisjunctionT(Writer(Nil -> "whoops".left[Int])).fmap(_ + 1).value.run(),
+      DisjunctionT(State((xs: List[String]) => xs -> "whoops".left[Int])).fmap(_ + 1).value.run(Nil),
       Nil -> "whoops".left[Int]
     )
   }
 
   property("DisjunctionT Monad") {
-    val transformer: DisjunctionT[Writer[String, *], String, Int] =
-      Monad[DisjunctionT[Writer[String, *], String, *]].pure(10)
+    val transformer: DisjunctionT[State[String, *], String, Int] =
+      Monad[DisjunctionT[State[String, *], String, *]].pure(10)
 
     assertEquals(
-      Monad[DisjunctionT[Writer[String, *], String, *]].flatMap(transformer)(a => Monad[DisjunctionT[Writer[String, *], String, *]].pure(a + 1)).value.run(),
-      "" -> Right(11)
+      Monad[DisjunctionT[State[String, *], String, *]].flatMap(transformer)(a => Monad[DisjunctionT[State[String, *], String, *]].pure(a + 1)).value.run("foo"),
+      "foo" -> Right(11)
     )
 
     assertEquals(
-      Monad[DisjunctionT[Writer[List[String], *], String, *]].flatMap(Monad[DisjunctionT[Writer[List[String], *], String, *]].pure(10))(a => Monad[DisjunctionT[Writer[List[String], *], String, *]].pure(a + 1)).value.run(),
-      Nil -> Right(11)
+      Monad[DisjunctionT[State[List[String], *], String, *]].flatMap(Monad[DisjunctionT[State[List[String], *], String, *]].pure(10))(a => Monad[DisjunctionT[State[List[String], *], String, *]].pure(a + 1)).value.run(List("foo")),
+      List("foo") -> Right(11)
     )
 
     assertEquals(
-      Monad[DisjunctionT[Writer[List[String], *], String, *]].flatMap(DisjunctionT(Writer(Nil -> Left[String, Int]("whoops"))))(a => Monad[DisjunctionT[Writer[List[String], *], String, *]].pure(a + 1)).value.run(),
-      Nil -> Left[String, Int]("whoops")
+      Monad[DisjunctionT[State[List[String], *], String, *]].flatMap(DisjunctionT(State(_ -> Left[String, Int]("whoops"))))(a => Monad[DisjunctionT[State[List[String], *], String, *]].pure(a + 1)).value.run(List("foo")),
+      List("foo") -> Left[String, Int]("whoops")
     )
 
     assertEquals(
-      Monad[DisjunctionT[Writer[List[String], *], String, *]].flatMap(Monad[DisjunctionT[Writer[List[String], *], String, *]].pure(10))(_ => DisjunctionT(Writer(Nil -> Left[String, Int]("whoops")))).value.run(),
-      Nil -> Left[String, Int]("whoops")
+      Monad[DisjunctionT[State[List[String], *], String, *]].flatMap(Monad[DisjunctionT[State[List[String], *], String, *]].pure(10))(_ => DisjunctionT(State(_ -> Left[String, Int]("whoops")))).value.run(List("foo")),
+      List("foo") -> Left[String, Int]("whoops")
     )
 
     assertEquals(
-      Monad[DisjunctionT[Writer[List[String], *], String, *]].flatMap(DisjunctionT(Writer(Nil -> Right[String, Int](1))))(a => DisjunctionT(Writer(Nil -> Right[String, Int](a + 1)))).value.run(),
-      Nil -> Right(2)
+      Monad[DisjunctionT[State[List[String], *], String, *]].flatMap(DisjunctionT(State(_ -> Right[String, Int](1))))(a => DisjunctionT(State(_ -> Right[String, Int](a + 1)))).value.run(List("foo")),
+      List("foo") -> Right(2)
     )
 
     assertEquals(
-      Monad[DisjunctionT[Writer[List[String], *], String, *]].flatMap(DisjunctionT(Writer(List("foo") -> Right[String, Int](1))))(a => DisjunctionT(Writer(List("bar") -> Right[String, Int](a + 1)))).value.run(),
-      List("foo", "bar") -> Right(2)
+      Monad[DisjunctionT[State[List[String], *], String, *]].flatMap(DisjunctionT(State(_ ++ List("bar") -> Right[String, Int](1))))(a => DisjunctionT(State(_ ++ List("baz") -> Right[String, Int](a + 1)))).value.run(List("foo")),
+      List("foo", "bar", "baz") -> Right(2)
     )
   }
 
-  property("MaybeT Monad syntax") {
+  /*property("MaybeT Monad syntax") {
     import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
 
