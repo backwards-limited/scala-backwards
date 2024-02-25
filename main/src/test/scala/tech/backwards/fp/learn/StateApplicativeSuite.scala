@@ -82,14 +82,21 @@ class StateApplicativeSuite extends ScalaCheckSuite {
 
     // Example of a longer approach to the following tests:
     val example: (String, Int) =
-      State.modify[String](_ + "a").map(_ => 5).fmap(add)
+      State.modify[String](_ + "a")
+        .map(_ => 5)
+        .fmap(add)
         .ap(State.modify[String](_ + "b").map(_ => 10))
-        .ap(State.modify[String](_ +"c").map(_ => 20)).run("hello")
+        .ap(State.modify[String](_ +"c").map(_ => 20))
+        .run("hello")
 
     println(example)
 
     assertEquals(
-      State((s: String) => s"${s}a" -> 5).fmap(add).ap(State((s: String) => s"${s}b" -> 10)).ap(State((s: String) => s"${s}c" -> 20)).run("hello"),
+      State((s: String) => s"${s}a" -> 5)
+        .fmap(add)
+        .ap(State((s: String) => s"${s}b" -> 10))
+        .ap(State((s: String) => s"${s}c" -> 20))
+        .run("hello"),
       "helloabc" -> 35
     )
 
@@ -120,7 +127,11 @@ class StateApplicativeSuite extends ScalaCheckSuite {
     println(example)
 
     assertEquals(
-      State((s: List[String]) => (s :+ "a") -> 5).fmap(add).ap(State((s: List[String]) => (s :+ "b") -> 10)).ap(State((s: List[String]) => (s :+ "c") -> 20)).run(List("hello")),
+      State((s: List[String]) => (s :+ "a") -> 5)
+        .fmap(add)
+        .ap(State((s: List[String]) => (s :+ "b") -> 10))
+        .ap(State((s: List[String]) => (s :+ "c") -> 20))
+        .run(List("hello")),
       List("hello", "a", "b", "c") -> 35
     )
 
