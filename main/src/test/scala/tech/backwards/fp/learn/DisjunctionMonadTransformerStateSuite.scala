@@ -20,12 +20,14 @@ class DisjunctionMonadTransformerStateSuite extends ScalaCheckSuite {
     )
 
     assertEquals(
-      DisjunctionT(State[String, String Disjunction Int](_ -> Left[String, Int]("whoops"))).value.run("foo"),
+      DisjunctionT(State[String, String Disjunction Int](_ -> Left[String, Int]("whoops")))
+        .value.run("foo"),
       "foo" -> Left("whoops")
     )
 
     assertEquals(
-      DisjunctionT(State[List[String], String Disjunction Int](_ -> Left[String, Int]("whoops"))).value.run(Nil),
+      DisjunctionT(State[List[String], String Disjunction Int](_ -> Left[String, Int]("whoops")))
+        .value.run(Nil),
       Nil -> Left("whoops")
     )
   }
@@ -40,7 +42,8 @@ class DisjunctionMonadTransformerStateSuite extends ScalaCheckSuite {
     )
 
     assertEquals(
-      DisjunctionT.pure[State[List[String], *], String, Int](10).value.run(List("foo")),
+      DisjunctionT.pure[State[List[String], *], String, Int](10)
+        .value.run(List("foo")),
       List("foo") -> Right(10)
     )
   }
@@ -55,12 +58,14 @@ class DisjunctionMonadTransformerStateSuite extends ScalaCheckSuite {
     )
 
     assertEquals(
-      DisjunctionT.lift(State((xs: List[String]) => xs ++ List("bar") -> 10)).value.run(List("foo")),
+      DisjunctionT.lift(State((xs: List[String]) => xs ++ List("bar") -> 10))
+        .value.run(List("foo")),
       List("foo", "bar") -> Right(10)
     )
 
     assertEquals(
-      DisjunctionT.lift(State[List[String], Int](_ ++ List("bar") -> 10)).value.run(List("foo")),
+      DisjunctionT.lift(State[List[String], Int](_ ++ List("bar") -> 10))
+        .value.run(List("foo")),
       List("foo", "bar") -> Right(10)
     )
   }
@@ -70,22 +75,30 @@ class DisjunctionMonadTransformerStateSuite extends ScalaCheckSuite {
       DisjunctionT(State(_ -> Right(10)))
 
     assertEquals(
-      Functor[DisjunctionT[State[String, *], String, *]].fmap(transformer)(_ + 1).value.run("foo"),
+      Functor[DisjunctionT[State[String, *], String, *]]
+        .fmap(transformer)(_ + 1)
+        .value.run("foo"),
       "foo" -> Right(11)
     )
 
     assertEquals(
-      Functor[DisjunctionT[State[List[String], *], String, *]].fmap(DisjunctionT(State(_ -> Right[String, Int](10))))(_ + 1).value.run(List("foo")),
+      Functor[DisjunctionT[State[List[String], *], String, *]]
+        .fmap(DisjunctionT(State(_ -> Right[String, Int](10))))(_ + 1)
+        .value.run(List("foo")),
       List("foo") -> Right(11)
     )
 
     assertEquals(
-      Functor[DisjunctionT[State[List[String], *], String, *]].fmap(DisjunctionT(State((xs: List[String]) => xs ++ List("bar") -> Right[String, Int](10))))(_ + 1).value.run(List("foo")),
+      Functor[DisjunctionT[State[List[String], *], String, *]]
+        .fmap(DisjunctionT(State((xs: List[String]) => xs ++ List("bar") -> Right[String, Int](10))))(_ + 1)
+        .value.run(List("foo")),
       List("foo", "bar") -> Right(11)
     )
 
     assertEquals(
-      Functor[DisjunctionT[State[List[String], *], String, *]].fmap(DisjunctionT(State(_ -> Left[String, Int]("whoops"))))(_ + 1).value.run(List("foo")),
+      Functor[DisjunctionT[State[List[String], *], String, *]]
+        .fmap(DisjunctionT(State(_ -> Left[String, Int]("whoops"))))(_ + 1)
+        .value.run(List("foo")),
       List("foo") -> Left[String, Int]("whoops")
     )
   }
@@ -103,12 +116,16 @@ class DisjunctionMonadTransformerStateSuite extends ScalaCheckSuite {
     )
 
     assertEquals(
-      DisjunctionT(State((xs: List[String]) => xs ++ List("bar") -> 10.right[String])).fmap(_ + 1).value.run(List("foo")),
+      DisjunctionT(State((xs: List[String]) => xs ++ List("bar") -> 10.right[String]))
+        .fmap(_ + 1)
+        .value.run(List("foo")),
       List("foo", "bar") -> 11.right
     )
 
     assertEquals(
-      DisjunctionT(State((xs: List[String]) => xs -> "whoops".left[Int])).fmap(_ + 1).value.run(Nil),
+      DisjunctionT(State((xs: List[String]) => xs -> "whoops".left[Int]))
+        .fmap(_ + 1)
+        .value.run(Nil),
       Nil -> "whoops".left[Int]
     )
   }
@@ -118,75 +135,98 @@ class DisjunctionMonadTransformerStateSuite extends ScalaCheckSuite {
       Monad[DisjunctionT[State[String, *], String, *]].pure(10)
 
     assertEquals(
-      Monad[DisjunctionT[State[String, *], String, *]].flatMap(transformer)(a => Monad[DisjunctionT[State[String, *], String, *]].pure(a + 1)).value.run("foo"),
+      Monad[DisjunctionT[State[String, *], String, *]]
+        .flatMap(transformer)(a => Monad[DisjunctionT[State[String, *], String, *]].pure(a + 1))
+        .value.run("foo"),
       "foo" -> Right(11)
     )
 
     assertEquals(
-      Monad[DisjunctionT[State[List[String], *], String, *]].flatMap(Monad[DisjunctionT[State[List[String], *], String, *]].pure(10))(a => Monad[DisjunctionT[State[List[String], *], String, *]].pure(a + 1)).value.run(List("foo")),
+      Monad[DisjunctionT[State[List[String], *], String, *]]
+        .flatMap(Monad[DisjunctionT[State[List[String], *], String, *]].pure(10))(a => Monad[DisjunctionT[State[List[String], *], String, *]].pure(a + 1))
+        .value.run(List("foo")),
       List("foo") -> Right(11)
     )
 
     assertEquals(
-      Monad[DisjunctionT[State[List[String], *], String, *]].flatMap(DisjunctionT(State(_ -> Left[String, Int]("whoops"))))(a => Monad[DisjunctionT[State[List[String], *], String, *]].pure(a + 1)).value.run(List("foo")),
+      Monad[DisjunctionT[State[List[String], *], String, *]]
+        .flatMap(DisjunctionT(State(_ -> Left[String, Int]("whoops"))))(a => Monad[DisjunctionT[State[List[String], *], String, *]].pure(a + 1))
+        .value.run(List("foo")),
       List("foo") -> Left[String, Int]("whoops")
     )
 
     assertEquals(
-      Monad[DisjunctionT[State[List[String], *], String, *]].flatMap(Monad[DisjunctionT[State[List[String], *], String, *]].pure(10))(_ => DisjunctionT(State(_ -> Left[String, Int]("whoops")))).value.run(List("foo")),
+      Monad[DisjunctionT[State[List[String], *], String, *]]
+        .flatMap(Monad[DisjunctionT[State[List[String], *], String, *]].pure(10))(_ => DisjunctionT(State(_ -> Left[String, Int]("whoops"))))
+        .value.run(List("foo")),
       List("foo") -> Left[String, Int]("whoops")
     )
 
     assertEquals(
-      Monad[DisjunctionT[State[List[String], *], String, *]].flatMap(DisjunctionT(State(_ -> Right[String, Int](1))))(a => DisjunctionT(State(_ -> Right[String, Int](a + 1)))).value.run(List("foo")),
+      Monad[DisjunctionT[State[List[String], *], String, *]]
+        .flatMap(DisjunctionT(State(_ -> Right[String, Int](1))))(a => DisjunctionT(State(_ -> Right[String, Int](a + 1))))
+        .value.run(List("foo")),
       List("foo") -> Right(2)
     )
 
     assertEquals(
-      Monad[DisjunctionT[State[List[String], *], String, *]].flatMap(DisjunctionT(State(_ ++ List("bar") -> Right[String, Int](1))))(a => DisjunctionT(State(_ ++ List("baz") -> Right[String, Int](a + 1)))).value.run(List("foo")),
+      Monad[DisjunctionT[State[List[String], *], String, *]]
+        .flatMap(DisjunctionT(State(_ ++ List("bar") -> Right[String, Int](1))))(a => DisjunctionT(State(_ ++ List("baz") -> Right[String, Int](a + 1))))
+        .value.run(List("foo")),
       List("foo", "bar", "baz") -> Right(2)
     )
   }
 
-  /*property("MaybeT Monad syntax") {
+  property("DisjunctionT Monad syntax") {
     import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
 
-    val transformer: DisjunctionT[Writer[String, *], String, Int] =
-      10.pure[DisjunctionT[Writer[String, *], String, *]]
+    val transformer: DisjunctionT[State[String, *], String, Int] =
+      10.pure[DisjunctionT[State[String, *], String, *]]
 
     assertEquals(
-      transformer.flatMap(a => (a + 1).pure[DisjunctionT[Writer[String, *], String, *]]).value.run(),
-      "" -> 11.right
+      transformer.flatMap(a => (a + 1).pure[DisjunctionT[State[String, *], String, *]])
+        .value.run("foo"),
+      "foo" -> 11.right
     )
 
     assertEquals(
-      10.pure[DisjunctionT[Writer[List[String], *], String, *]].flatMap(a => (a + 1).pure[DisjunctionT[Writer[List[String], *], String, *]]).value.run(),
-      Nil -> 11.right
+      10.pure[DisjunctionT[State[List[String], *], String, *]]
+        .flatMap(a => (a + 1).pure[DisjunctionT[State[List[String], *], String, *]])
+        .value.run(List("foo")),
+      List("foo") -> 11.right
     )
 
     assertEquals(
-      DisjunctionT(Writer(List.empty[String] -> "whoops".left[Int])).flatMap(a => (a + 1).pure[DisjunctionT[Writer[List[String], *], String, *]]).value.run(),
-      Nil -> "whoops".left[Int]
+      DisjunctionT(State[List[String], String Disjunction Int](_ -> "whoops".left[Int]))
+        .flatMap(a => (a + 1).pure[DisjunctionT[State[List[String], *], String, *]])
+        .value.run(List("foo")),
+      List("foo") -> "whoops".left[Int]
     )
 
     assertEquals(
-      10.pure[DisjunctionT[Writer[List[String], *], String, *]].flatMap(_ => DisjunctionT(Writer(Nil -> "whoops".left[Int]))).value.run(),
-      Nil -> "whoops".left[Int]
+      10.pure[DisjunctionT[State[List[String], *], String, *]]
+        .flatMap(_ => DisjunctionT(State[List[String], String Disjunction Int](_ -> "whoops".left[Int])))
+        .value.run(List("foo")),
+      List("foo") -> "whoops".left[Int]
     )
 
     assertEquals(
-      DisjunctionT(Writer(List.empty[String] -> 1.right[String])).flatMap(a => DisjunctionT(Writer(Nil -> (a + 1).right[String]))).value.run(),
+      DisjunctionT(State[List[String], String Disjunction Int](_ -> 1.right[String]))
+        .flatMap(a => DisjunctionT(State(_ -> (a + 1).right[String])))
+        .value.run(Nil),
       Nil -> 2.right
     )
 
     assertEquals(
-      DisjunctionT(Writer(List("foo") -> 1.right[String])).flatMap(a => DisjunctionT(Writer(List("bar") -> (a + 1).right[String]))).value.run(),
-      List("foo", "bar") -> 2.right
+      DisjunctionT(State[List[String], String Disjunction Int](_ ++ List("bar") -> 1.right[String]))
+        .flatMap(a => DisjunctionT(State(_ ++ List("baz") -> (a + 1).right[String])))
+        .value.run(List("foo")),
+      List("foo", "bar", "baz") -> 2.right
     )
   }
 
-  property("DisjunctionT Applicative") {
+  /*property("DisjunctionT Applicative") {
     val transformerFn: DisjunctionT[Writer[String, *], String, Int => Int] =
       Applicative[DisjunctionT[Writer[String, *], String, *]].pure(_ + 1)
 

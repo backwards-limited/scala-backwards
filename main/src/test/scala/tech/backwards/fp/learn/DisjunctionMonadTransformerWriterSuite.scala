@@ -134,7 +134,7 @@ class DisjunctionMonadTransformerWriterSuite extends ScalaCheckSuite {
     )
   }
 
-  property("MaybeT Monad syntax") {
+  property("DisjunctionT Monad syntax") {
     import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
 
