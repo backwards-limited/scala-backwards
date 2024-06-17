@@ -1,7 +1,6 @@
 package tech.backwards.fp.learn
 
 import munit.ScalaCheckSuite
-import tech.backwards.fp.learn.Maybe.syntax.nothing
 import org.scalacheck.Test
 
 class DisjunctionMonadTransformerWriterSuite extends ScalaCheckSuite {
@@ -134,7 +133,7 @@ class DisjunctionMonadTransformerWriterSuite extends ScalaCheckSuite {
     )
   }
 
-  property("MaybeT Monad syntax") {
+  property("DisjunctionT Monad syntax") {
     import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Monad.syntax._
 
