@@ -7,11 +7,18 @@ abstract class Applicative[F[_]: Functor] {
   def pure[A](a: A): F[A]
 
   def ap[A, B](ff: F[A => B])(fa: F[A]): F[B]
+
+  def map2[A, B, C](fa: F[A], fb: F[B])(f: (A, B) => C): F[C] =
+    ap(ap(pure((a: A) => (b: B) => f(a, b)))(fa))(fb)
 }
 
 object Applicative {
   def apply[F[_]: Applicative]: Applicative[F] =
     implicitly
+
+  // Or simply Applicative[F].map2(fa, fb)(f), but don't actually need the following function
+  def map2[F[_]: Functor: Applicative, A, B, C](fa: F[A], fb: F[B])(f: (A, B) => C): F[C] =
+    Applicative[F].ap(Applicative[F].ap(Applicative[F].pure((a: A) => (b: B) => f(a, b)))(fa))(fb)
 
   object syntax {
     implicit class ApplicativeSyntax[A](a: A) {
