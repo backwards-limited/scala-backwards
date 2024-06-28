@@ -12,14 +12,11 @@ object WriterT {
   def lift[F[_]: Functor, W: Monoid, A](fa: F[A]): WriterT[F, W, A] =
     WriterT(() => Functor[F].fmap(fa)(Monoid[W].mzero -> _))
 
-  /*implicit def functorWriterT[F[_]: Functor]: Functor[WriterT[F, *]] = {
-    import tech.backwards.fp.learn.Functor.syntax._
-
-    new Functor[WriterT[F, *]] {
-      def fmap[A, B](fa: WriterT[F, A])(f: A => B): WriterT[F, B] =
-        WriterT(Functor[F].fmap(fa.value)(_.fmap(f)))
+  implicit def functorWriterT[F[_]: Functor, W]: Functor[WriterT[F, W, *]] =
+    new Functor[WriterT[F, W, *]] {
+      def fmap[A, B](fa: WriterT[F, W, A])(f: A => B): WriterT[F, W, B] =
+        WriterT(() => Functor[F].fmap(fa.run()) { case (w, a) => w -> f(a) })
     }
-  }*/
 
   /*implicit def applicativeWriterT[F[_]: Functor: Applicative]: Applicative[WriterT[F, *]] =
     new Applicative[WriterT[F, *]] {

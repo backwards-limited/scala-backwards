@@ -60,27 +60,17 @@ class WriterMonadTransformerIdSuite extends ScalaCheckSuite {
     )
   }
 
-  /*property("DisjunctionT Functor") {
-    val transformer: DisjunctionT[Id, String, Int] =
-      DisjunctionT(Id(Right[String, Int](10)))
+  property("WriterT Functor") {
+    val transformer: WriterT[Id, List[String], Int] =
+      WriterT(() => Id(List("foo") -> 10))
 
     assertEquals(
-      Functor[DisjunctionT[Id, String, *]].fmap(transformer)(_ + 1).value,
-      Id(Right[String, Int](11))
-    )
-
-    assertEquals(
-      Functor[DisjunctionT[Id, String, *]].fmap(DisjunctionT(Id(Right[String, Int](10))))(_ + 1).value,
-      Id(Right[String, Int](11))
-    )
-
-    assertEquals(
-      Functor[DisjunctionT[Id, String, *]].fmap(DisjunctionT(Id(Left[String, Int]("whoops"))))(_ + 1).value,
-      Id(Left[String, Int]("whoops"))
+      Functor[WriterT[Id, List[String], *]].fmap(transformer)(_ + 1).run().value,
+      List("foo") -> 11
     )
   }
 
-  property("DisjunctionT Functor syntax") {
+  /*property("DisjunctionT Functor syntax") {
     import tech.backwards.fp.learn.Disjunction.syntax._
     import tech.backwards.fp.learn.Functor.syntax._
 
