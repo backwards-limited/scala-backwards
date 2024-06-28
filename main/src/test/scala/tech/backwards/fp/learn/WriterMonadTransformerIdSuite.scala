@@ -40,22 +40,27 @@ class WriterMonadTransformerIdSuite extends ScalaCheckSuite {
     )
   }
 
-  /*property("DisjunctionT lift") {
-    val transformer: DisjunctionT[Id, String, Int] =
-      DisjunctionT.lift(Id(10))
+  property("WriterT tell") {
+    val transformer: WriterT[Id, List[String], Unit] =
+      WriterT.tell(List("foo", "bar"))
 
     assertEquals(
-      transformer.value,
-      Id(Right[String, Int](10))
-    )
-
-    assertEquals(
-      DisjunctionT.lift[Id, String, Int](Id(10)).value,
-      Id(Right[String, Int](10))
+      transformer.run().value,
+      List("foo", "bar") -> ()
     )
   }
 
-  property("DisjunctionT Functor") {
+  property("WriterT lift") {
+    val transformer: WriterT[Id, List[String], Int] =
+      WriterT.lift(Id(10))
+
+    assertEquals(
+      transformer.run().value,
+      Nil -> 10
+    )
+  }
+
+  /*property("DisjunctionT Functor") {
     val transformer: DisjunctionT[Id, String, Int] =
       DisjunctionT(Id(Right[String, Int](10)))
 
@@ -293,6 +298,26 @@ class WriterMonadTransformerIdSuite extends ScalaCheckSuite {
     assertEquals(
       add `<$>` DisjunctionT(Id(10.right[String])) <*> DisjunctionT(Id(1.right)),
       DisjunctionT(Id(11.right[String]))
+    )
+  }
+
+  property("Writer for comprehension syntax") {
+    import tech.backwards.fp.learn.Functor.syntax._
+    import tech.backwards.fp.learn.Monad.syntax._
+
+    val program: Writer[List[String], Int] =
+      for {
+        x <- 1.pure[Writer[List[String], *]]
+        _ <- tell(List("one"))
+        y <- 2.pure[Writer[List[String], *]]
+        _ <- tell(List("two"))
+        z <- 3.pure[Writer[List[String], *]]
+        _ <- tell(List("three"))
+      } yield x + y + z
+
+    assertEquals(
+      program.run(),
+      List("one", "two", "three") -> 6
     )
   }
 
