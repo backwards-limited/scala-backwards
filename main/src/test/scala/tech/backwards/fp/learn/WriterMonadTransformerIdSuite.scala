@@ -20,32 +20,27 @@ class WriterMonadTransformerIdSuite extends ScalaCheckSuite {
       WriterT(() => Id(List("foo") -> 10))
 
     assertEquals(
-      transformer.run(),
-      Id(List("foo") -> 10)
-    )
-
-    /*assertEquals(
-      DisjunctionT(Id(Left[String, Int]("whoops"))).value,
-      Id(Left[String, Int]("whoops"))
+      transformer.run().value,
+      List("foo") -> 10
     )
 
     assertEquals(
-      DisjunctionT(Id(Left[String, Int]("whoops"))).value.value,
-      Left[String, Int]("whoops")
-    )*/
-  }
-
-  /*property("DisjunctionT pure") {
-    val transformer: DisjunctionT[Id, String, Int] =
-      DisjunctionT.pure[Id, String, Int](10)
-
-    assertEquals(
-      transformer.value,
-      Id(Right[String, Int](10))
+      WriterT(() => Id(List("foo") -> 10)).run().value,
+      List("foo") -> 10
     )
   }
 
-  property("DisjunctionT lift") {
+  property("WriterT pure") {
+    val transformer: WriterT[Id, List[String], Int] =
+      WriterT.pure[Id, List[String], Int](10)
+
+    assertEquals(
+      transformer.run().value,
+      Nil -> 10
+    )
+  }
+
+  /*property("DisjunctionT lift") {
     val transformer: DisjunctionT[Id, String, Int] =
       DisjunctionT.lift(Id(10))
 

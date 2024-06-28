@@ -3,8 +3,16 @@ package tech.backwards.fp.learn
 final case class WriterT[F[_], W, A](run: () => F[(W, A)])
 
 object WriterT {
-  /*def pure[F[_]: Applicative, A](a: A): WriterT[F, A] =
-    WriterT(Applicative[F].pure(Just(a)))*/
+  /*
+  def pure[F[_]: Applicative, A](a: A): MaybeT[F, A] =
+    MaybeT(Applicative[F].pure(Just(a)))
+
+  def pure[F[_]: Applicative, L, R](r: R): DisjunctionT[F, L, R] =
+    DisjunctionT(Applicative[F].pure(r.right[L]))
+   */
+
+  def pure[F[_]: Applicative, W: Monoid, A](a: A): WriterT[F, W, A] =
+    WriterT(() => Applicative[F].pure(Monoid[W].mzero -> a))
 
   /*def lift[F[_]: Functor, A](fa: F[A]): WriterT[F, A] =
     WriterT(Functor[F].fmap(fa)(Just.apply))*/
